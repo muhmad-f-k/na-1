@@ -6,12 +6,11 @@
 </head>
 <body>
     <h1>Velkommen til middagsopprettings -template</h1>
-    <form>
-        <label for="fimage">Bilde:</label><br>
-        <input type="text" id="fimage" name="fimage"><br>
-        <label for="fname">Navn:</label><br>
-        <input type="text" id="fname" name="fname"><br>
-        <input type="submit" value="Submit">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        {{ form.dinnerName.label }}
+        {{ form.dinnerName }}
+        {{ form.submit }}
     </form>
 </body>
 </html>
