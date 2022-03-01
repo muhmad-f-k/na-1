@@ -6,10 +6,12 @@
 </head>
 <body>
     <h1>Velkommen til middagsopprettings -template</h1>
-    <form method="post" action="">
+    <form method="post">
         {{ form.hidden_tag() }}
         {{ form.dinnerName.label }}<br>
         {{ form.dinnerName }}<br>
+        {{ form.day.label }}<br>
+        {{ form.day }}<br>
         {{ form.image.label }}<br>
         {{ form.image }}<br>
         {{ form.submit }}
