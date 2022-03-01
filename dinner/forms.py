@@ -5,9 +5,9 @@ from wtforms.validators import DataRequired, Length, Optional
 
 
 class MakeDinnerForm(FlaskForm):
-    dinnerName = StringField('Navn',
+    mp_name = StringField('Navn',
                              validators=[DataRequired(), Length(min=2, max=20)])
-    mp_day = DateField('Dato', validators=[DataRequired()])
-    image = FileField('Bilde av middag',
+    mp_date = DateField('Dato', validators=[DataRequired()])
+    mp_image = FileField('Bilde av middag',
                       validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
     submit = SubmitField('Lagre')
