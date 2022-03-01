@@ -4,10 +4,10 @@ from wtforms import StringField, SubmitField, DateField
 from wtforms.validators import DataRequired, Length
 
 
-class RegistrationForm(FlaskForm):
+class MakeDinnerForm(FlaskForm):
     dinnerName = StringField('Navn',
                              validators=[DataRequired(), Length(min=2, max=20)])
-    day = DateField('Dato', format='%m/%d/%Y')
+    #mp_day = DateField('Dato', format='%m/%d/%Y')
     image = FileField('Bilde av middag',
-                      validators=[FileAllowed(['jpg', 'png']), FileRequired()])
+                      validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Lagre')

@@ -6,12 +6,19 @@
 </head>
 <body>
     <h1>Velkommen til middagsopprettings -template</h1>
-    <form method="post">
+    <div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {{ form.dinnerName.label }}<br>
         {{ form.dinnerName }}<br>
-        {{ form.day.label }}<br>
-        {{ form.day }}<br>
         {{ form.image.label }}<br>
         {{ form.image }}<br>
         {{ form.submit }}
