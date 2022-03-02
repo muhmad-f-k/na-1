@@ -20,4 +20,9 @@ class UpdateDinnerForm(FlaskForm):
     #mp_date = DateField('Dato', validators=[DataRequired()])
     mp_image = FileField('Bilde av middag',
                       validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
-    submit = SubmitField('Lagre')
+    submit = SubmitField('Oppdater')
+
+
+class DeleteDinnerForm(FlaskForm):
+    mp_id = IntegerField('Middags ID', validators=[DataRequired()])
+    submit = SubmitField('Slett')
