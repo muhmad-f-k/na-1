@@ -22,4 +22,4 @@ def index():
         # db.session.add(mp_dinner)
         # db.commit()
     # print(form.errors)
-    return render_template('dinner.html', form=form)
+    return render_template('makeDinner.html', form=form)
