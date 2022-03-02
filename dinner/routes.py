@@ -12,7 +12,7 @@ dinner = Blueprint('dinner', __name__)
 #    mp_image = None
 
 
-@dinner.route('/dinner', methods=['GET', 'POST'])
+@dinner.route('/makeDinner', methods=['GET', 'POST'])
 def index():
     form = MakeDinnerForm()
     if form.validate_on_submit():
