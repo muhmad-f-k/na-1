@@ -16,9 +16,9 @@ dinner = Blueprint('dinner', __name__)
 def make_dinner():
     form = MakeDinnerForm()
     if form.validate_on_submit():
-        flash(f'Middag {form.mp_name.data} opprettet!')
+        flash(f'Middag {form.mp_dinner_title.data} opprettet!')
         # UTKAST TIL DATABASE-LOGIKK
-        # mp_dinner = Dinner(mp_name=form.mp_name, mp_date=form.mp_date, mp_image=form.mp_image)
+        # mp_dinner = Dinner(mp_name=form.mp_dinner_title, mp_image=form.mp_dinner_image)
         # db.session.add(mp_dinner)
         # db.commit()
     # print(form.errors)
@@ -32,12 +32,12 @@ def update_dinner():
         # UTKAST TIL DATABASE-LOGIKK
         #stmt = (
         #    update(Dinner).
-        #        where(Dinner.mp_id == form.mp_id.data).
-        #        values(name=form.mp_name.data,
-        #               name=form.mp_image.data)
+        #        where(Dinner.mp_dinner_id == form.mp_dinner_id.data).
+        #        values(mp_dinner_title=form.mp_dinner_title.data,
+        #               mp_dinner_image=form.mp_dinner_image.data)
         #)
         # db.commit()
-        flash(f'Middag {form.mp_id.data} oppdatert!')
+        flash(f'Middag {form.mp_dinner_id.data} oppdatert!')
     return render_template('updateDinner.html', form=form)
 
 
@@ -45,8 +45,8 @@ def update_dinner():
 def delete_dinner():
     form = DeleteDinnerForm()
     if form.validate_on_submit():
-        #userId = db.session.get(Dinner, form.mp_id.data)
+        #userId = db.session.get(Dinner, form.mp_dinner_id.data)
         #db.session.delete(userId)
         #db.session.commit()
-        flash(f'Middag {form.mp_id.data} slettet!')
+        flash(f'Middag {form.mp_dinner_id.data} slettet!')
     return render_template('deleteDinner.html', form=form)

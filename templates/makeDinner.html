@@ -17,15 +17,15 @@
     </div>
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-        {{ form.mp_name.label }}<br>
-        {{ form.mp_name }}<br>
-        {{ form.mp_image.label }}<br>
-        {{ form.mp_image }}<br>
+        {{ form.mp_dinner_title.label }}<br>
+        {{ form.mp_dinner_title }}<br>
+        {{ form.mp_dinner_image.label }}<br>
+        {{ form.mp_dinner_image }}<br>
         {{ form.submit }}
     </form>
     <div>
-        {% if form.mp_image.errors %}
-            {% for error in form.mp_image.errors %}
+        {% if form.mp_dinner_image.errors %}
+            {% for error in form.mp_dinner_image.errors %}
                 <span class="text-danger"> {{ error }} </span><br>
             {% endfor %}
         {% endif %}
