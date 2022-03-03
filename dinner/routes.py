@@ -29,6 +29,14 @@ def make_dinner():
 def update_dinner():
     form = UpdateDinnerForm()
     if form.validate_on_submit():
+        # UTKAST TIL DATABASE-LOGIKK
+        #stmt = (
+        #    update(Dinner).
+        #        where(Dinner.mp_id == form.mp_id.data).
+        #        values(name=form.mp_name.data,
+        #               name=form.mp_image.data)
+        #)
+        # db.commit()
         flash(f'Middag {form.mp_id.data} oppdatert!')
     return render_template('updateDinner.html', form=form)
 
@@ -37,5 +45,8 @@ def update_dinner():
 def delete_dinner():
     form = DeleteDinnerForm()
     if form.validate_on_submit():
+        #userId = db.session.get(Dinner, form.mp_id.data)
+        #db.session.delete(userId)
+        #db.session.commit()
         flash(f'Middag {form.mp_id.data} slettet!')
     return render_template('deleteDinner.html', form=form)
