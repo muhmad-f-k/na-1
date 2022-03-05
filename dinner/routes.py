@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, flash, url_for, redirect
-from dinner.forms import MakeDinnerForm, UpdateDinnerForm, DeleteDinnerForm
+from dinner.forms import MakeDinnerForm, UpdateDinnerForm, DeleteDinnerForm, MakeMealForm
 
 dinner = Blueprint('dinner', __name__)
 
@@ -50,3 +50,12 @@ def delete_dinner():
         #db.session.commit()
         flash(f'Middag {form.mp_dinner_id.data} slettet!')
     return render_template('deleteDinner.html', form=form)
+
+
+
+@dinner.route('/makeMeal', methods=['GET', 'POST'])
+def make_meal():
+    form = MakeMealForm()
+    if form.validate_on_submit():
+        flash(f'Middag {form.mp_dinner_mp_dinner_id.data} lagt til dato {form.mp_meal_date.data}!')
+    return render_template('makeMeal.html', form=form)

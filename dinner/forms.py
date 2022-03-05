@@ -26,3 +26,9 @@ class UpdateDinnerForm(FlaskForm):
 class DeleteDinnerForm(FlaskForm):
     mp_dinner_id = IntegerField('Middags ID', validators=[DataRequired()])
     submit = SubmitField('Slett')
+
+
+class MakeMealForm(FlaskForm):
+    mp_meal_date = DateField('Middagens dato', validators=[DataRequired()])
+    mp_dinner_mp_dinner_id = IntegerField('Middags ID', validators=[DataRequired()])
+    submit = SubmitField('Lagre')
