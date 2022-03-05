@@ -15,3 +15,8 @@ def db_update_dinner(mp_dinner_id, mp_dinner_title, mp_dinner_image):
     incoming_dinner.title = mp_dinner_title
     incoming_dinner.image = mp_dinner_image
     session.commit()
+
+
+def db_delete_dinner(mp_dinner_id):
+    session.query(Dinner).filter_by(id=mp_dinner_id).delete()
+    session.commit()

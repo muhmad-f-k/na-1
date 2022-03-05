@@ -30,9 +30,7 @@ def update_dinner():
 def delete_dinner():
     form = DeleteDinnerForm()
     if form.validate_on_submit():
-        #userId = db.session.get(Dinner, form.mp_dinner_id.data)
-        #db.session.delete(userId)
-        #db.session.commit()
+        db_delete_dinner(form.mp_dinner_id.data)
         flash(f'Middag {form.mp_dinner_id.data} slettet!')
     return render_template('deleteDinner.html', form=form)
 
