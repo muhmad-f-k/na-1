@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Velkommen til middagsplanlegger</title>
+</head>
+<body>
+    <h1>Velkommen til middagsoppdaterings -template</h1>
+    <div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ form.mp_dinner_id.label }}<br>
+        {{ form.mp_dinner_id }}<br>
+        {{ form.mp_dinner_title.label }}<br>
+        {{ form.mp_dinner_title }}<br>
+        {{ form.mp_dinner_image.label }}<br>
+        {{ form.mp_dinner_image }}<br>
+        {{ form.submit }}
+    </form>
+    <div>
+        {% if form.mp_dinner_image.errors %}
+            {% for error in form.mp_dinner_image.errors %}
+                <span class="text-danger"> {{ error }} </span><br>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>

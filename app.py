@@ -1,10 +1,9 @@
 from flask import Flask
-from recipe.routes import recipe
-
-
+from dinner.routes import dinner
+#
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'jonis'
-app.register_blueprint(recipe)
+app.config['SECRET_KEY'] = 'mrbean'
+app.register_blueprint(dinner)
 
 if __name__ == '__main__':
     app.run(debug=True)
