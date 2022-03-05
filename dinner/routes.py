@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, flash, url_for, redirect
-from dinner.forms import MakeDinnerForm,\
+from dinner.forms import MakeDinnerForm, \
     UpdateDinnerForm, DeleteDinnerForm, MakeMealForm, UpdateMealForm, DeleteMealForm
 from dinner.queries import *
 
@@ -10,8 +10,11 @@ dinner = Blueprint('dinner', __name__)
 def make_dinner():
     form = MakeDinnerForm()
     if form.validate_on_submit():
-        content = form.mp_dinner_image.data.read()
-        db_new_dinner(form.mp_dinner_title.data, content)
+        if form.mp_dinner_image.data:
+            content = form.mp_dinner_image.data.read()
+            db_new_dinner(form.mp_dinner_title.data, form.mp_dinner_user_id.data, form.mp_dinner_group_id.data, content)
+        else:
+            db_new_dinner(form.mp_dinner_title.data, form.mp_dinner_user_id.data, form.mp_dinner_group_id.data, None)
         flash(f'Middag {form.mp_dinner_title.data} opprettet!')
     return render_template('makeDinner.html', form=form)
 
@@ -20,8 +23,13 @@ def make_dinner():
 def update_dinner():
     form = UpdateDinnerForm()
     if form.validate_on_submit():
-        content = form.mp_dinner_image.data.read()
-        db_update_dinner(form.mp_dinner_id.data, form.mp_dinner_title.data, content)
+        if form.mp_dinner_image.data:
+            content = form.mp_dinner_image.data.read()
+            db_update_dinner(form.mp_dinner_id.data, form.mp_dinner_title.data,
+                             form.mp_dinner_user_id.data, form.mp_dinner_group_id.data, content)
+        else:
+            db_update_dinner(form.mp_dinner_id.data, form.mp_dinner_title.data,
+                             form.mp_dinner_user_id.data, form.mp_dinner_group_id.data, None)
         flash(f'Middag {form.mp_dinner_id.data} oppdatert!')
     return render_template('updateDinner.html', form=form)
 
@@ -33,7 +41,6 @@ def delete_dinner():
         db_delete_dinner(form.mp_dinner_id.data)
         flash(f'Middag {form.mp_dinner_id.data} slettet!')
     return render_template('deleteDinner.html', form=form)
-
 
 
 @dinner.route('/makeMeal', methods=['GET', 'POST'])
