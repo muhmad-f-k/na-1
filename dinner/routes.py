@@ -6,26 +6,13 @@ from dinner.queries import *
 dinner = Blueprint('dinner', __name__)
 
 
-# !! PLACEHOLDER KLASSE, SLETT NÅR ORDENTLIG DATABSE ER OPPRETTET !!
-#class Dinner:
-#    id = 1
-#    mp_name = None
-#    mp_date = None
-#    mp_image = None
-
-
 @dinner.route('/makeDinner', methods=['GET', 'POST'])
 def make_dinner():
     form = MakeDinnerForm()
     if form.validate_on_submit():
         content = form.mp_dinner_image.data.read()
-        new_dinner(form.mp_dinner_title.data, content)
+        db_new_dinner(form.mp_dinner_title.data, content)
         flash(f'Middag {form.mp_dinner_title.data} opprettet!')
-        # UTKAST TIL DATABASE-LOGIKK
-        # mp_dinner = Dinner(mp_name=form.mp_dinner_title, mp_image=form.mp_dinner_image)
-        # db.session.add(mp_dinner)
-        # db.commit()
-    # print(form.errors)
     return render_template('makeDinner.html', form=form)
 
 
@@ -33,14 +20,8 @@ def make_dinner():
 def update_dinner():
     form = UpdateDinnerForm()
     if form.validate_on_submit():
-        # UTKAST TIL DATABASE-LOGIKK
-        #stmt = (
-        #    update(Dinner).
-        #        where(Dinner.mp_dinner_id == form.mp_dinner_id.data).
-        #        values(mp_dinner_title=form.mp_dinner_title.data,
-        #               mp_dinner_image=form.mp_dinner_image.data)
-        #)
-        # db.commit()
+        content = form.mp_dinner_image.data.read()
+        db_update_dinner(form.mp_dinner_id.data, form.mp_dinner_title.data, content)
         flash(f'Middag {form.mp_dinner_id.data} oppdatert!')
     return render_template('updateDinner.html', form=form)
 
