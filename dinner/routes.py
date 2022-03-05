@@ -47,6 +47,7 @@ def delete_dinner():
 def make_meal():
     form = MakeMealForm()
     if form.validate_on_submit():
+        db_new_meal(form.mp_meal_date.data, form.mp_dinner_mp_dinner_id.data)
         flash(f'Middag {form.mp_dinner_mp_dinner_id.data} lagt til dato {form.mp_meal_date.data}!')
     return render_template('makeMeal.html', form=form)
 
@@ -55,6 +56,7 @@ def make_meal():
 def update_meal():
     form = UpdateMealForm()
     if form.validate_on_submit():
+        db_update_meal(form.mp_meal_id.data, form.mp_meal_date.data, form.mp_dinner_mp_dinner_id.data)
         flash(f'Middag {form.mp_dinner_mp_dinner_id.data} lagt til / flyttet til dato {form.mp_meal_date.data}!')
     return render_template('updateMeal.html', form=form)
 
@@ -63,5 +65,6 @@ def update_meal():
 def delete_meal():
     form = DeleteMealForm()
     if form.validate_on_submit():
+        db_delete_meal(form.mp_meal_date.data)
         flash(f'Middag på dato {form.mp_meal_date.data} slettet!')
     return render_template('deleteMeal.html', form=form)
