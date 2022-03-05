@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, flash, url_for, redirect
 from dinner.forms import MakeDinnerForm,\
     UpdateDinnerForm, DeleteDinnerForm, MakeMealForm, UpdateMealForm, DeleteMealForm
+from dinner.queries import *
 
 dinner = Blueprint('dinner', __name__)
 
@@ -17,6 +18,8 @@ dinner = Blueprint('dinner', __name__)
 def make_dinner():
     form = MakeDinnerForm()
     if form.validate_on_submit():
+        content = form.mp_dinner_image.data.read()
+        new_dinner(form.mp_dinner_title.data, content)
         flash(f'Middag {form.mp_dinner_title.data} opprettet!')
         # UTKAST TIL DATABASE-LOGIKK
         # mp_dinner = Dinner(mp_name=form.mp_dinner_title, mp_image=form.mp_dinner_image)
