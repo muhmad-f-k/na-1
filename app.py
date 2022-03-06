@@ -6,4 +6,5 @@ app.config['SECRET_KEY'] = 'mrbean'
 app.register_blueprint(dinner)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.debug = True
+    app.run(host="0.0.0.0")
