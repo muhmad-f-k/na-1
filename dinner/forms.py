@@ -7,9 +7,10 @@ from wtforms.validators import DataRequired, Length, Optional
 class MakeDinnerForm(FlaskForm):
     mp_dinner_title = StringField('Navn',
                                   validators=[DataRequired(), Length(min=2, max=20)])
-    # mp_date = DateField('Dato', validators=[DataRequired()])
     mp_dinner_image = FileField('Bilde av middag',
                                 validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    mp_dinner_user_id = IntegerField('Bruker ID', validators=[DataRequired()])
+    mp_dinner_group_id = IntegerField('Gruppe ID', validators=[DataRequired()])
     submit = SubmitField('Lagre')
 
 
@@ -17,9 +18,10 @@ class UpdateDinnerForm(FlaskForm):
     mp_dinner_id = IntegerField('Middags ID', validators=[DataRequired()])
     mp_dinner_title = StringField('Navn',
                                   validators=[DataRequired(), Length(min=2, max=20)])
-    # mp_date = DateField('Dato', validators=[DataRequired()])
     mp_dinner_image = FileField('Bilde av middag',
                                 validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    mp_dinner_user_id = IntegerField('Bruker ID', validators=[DataRequired()])
+    mp_dinner_group_id = IntegerField('Gruppe ID', validators=[DataRequired()])
     submit = SubmitField('Oppdater')
 
 

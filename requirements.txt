@@ -1,4 +1,4 @@
-﻿autopep8==1.6.0
+autopep8==1.6.0
 greenlet==1.1.2
 pycodestyle==2.8.0
 SQLAlchemy==1.4.31
