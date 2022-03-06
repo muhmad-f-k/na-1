@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Oppskrift</title>
-</head>
-<body>
-    <h1>Oppdater oppskrift for ... -template</h1>
+{% extends "Base.html" %}
+
+{% block content %}
+  <h1>Oppdater oppskrift for ... -template</h1>
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}<br>
         {{ form.recipeApproach.label }}<br>
@@ -14,5 +10,5 @@
         {{ form.recipeVersion }} <br>
         {{ form.submit }}
     </form>
-</body>
-</html>
+{% endblock %}
+

@@ -14,11 +14,10 @@ app.config['SECRET_KEY'] = 'mrbean'
 app.register_blueprint(dinner)
 app.register_blueprint(home)
 app.register_blueprint(groups)
-app.register_blueprint(recipe)
 app.register_blueprint(users)
 app.register_blueprint(recipe)
 app.register_blueprint(comment)
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host="0.0.0.0")
+    app.run()

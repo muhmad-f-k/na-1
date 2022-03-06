@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="finaldata" uuid="6b3579d2-9a51-4874-a4ca-aebaf91c042c">
+    <data-source source="LOCAL" name="finaldata" uuid="ca291636-ee6f-4afb-9741-d02d84de4cf1">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\jonat\Systemutvikling\prosjektet\na-1\finaldata.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\Users\magnu\OneDrive\Datateknikk\Databaser og webapplikasjoner 1\na-1\finaldata.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

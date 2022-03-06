@@ -1,20 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Velkommen til middagsplanlegger</title>
-</head>
-<body>
-    <h1>Velkommen til middagsdato-oppdaterings -template</h1>
-    <div>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    {{ message }}
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
+{% extends "Base.html" %}
+
+{% block content %}
+  <h1>Velkommen til middagsdato-oppdaterings -template</h1>
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {{ form.mp_meal_id.label }}<br>
@@ -25,5 +12,5 @@
         {{ form.mp_dinner_mp_dinner_id }}<br>
         {{ form.submit }}
     </form>
-</body>
-</html>
+{% endblock %}
+
