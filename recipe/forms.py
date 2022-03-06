@@ -5,6 +5,11 @@ from wtforms.validators import DataRequired, Length, InputRequired
 
 
 class CreateRecipeForm(FlaskForm):
-    recipeApproach = TextAreaField('Approach', validators=[DataRequired(), Length(min=1, max=10000)])
-    recipeVersion = IntegerField('Versjon', validators=[InputRequired()])
+    recipeApproach = TextAreaField('Framgangsmåte', validators=[DataRequired(), Length(min=1, max=10000)])
     submit = SubmitField('Opprett')
+
+
+class UpdateRecipeForm(FlaskForm):
+    recipeApproach = TextAreaField('Framgangsmåte', validators=[DataRequired(), Length(min=1, max=10000)])
+    recipeVersion = IntegerField('Versjon', validators=[InputRequired()])
+    submit = SubmitField('Endre')
