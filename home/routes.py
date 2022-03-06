@@ -6,9 +6,9 @@ home = Blueprint('simple_page', __name__)
 
 @home.route('/home')
 def index():
-    return render_template('index.html')
+    return render_template('homeTemplates/index.html')
 
 
 @home.route('/')
 def Index():
-    return render_template('index.html')
+    return render_template('homeTemplates/index.html')

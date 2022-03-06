@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Velkommen til middagsplanlegger</title>
-</head>
-<body>
-    <h1>Velkommen til middagsdato-slettings -template</h1>
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Velkommen til middagsdato-tildeling </h1>
 
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {{ form.mp_meal_date.label }}<br>
         {{ form.mp_meal_date }}<br>
+        {{ form.mp_dinner_mp_dinner_id.label }}<br>
+        {{ form.mp_dinner_mp_dinner_id }}<br>
         {{ form.submit }}
     </form>
-</body>
-</html>
+{% endblock %}

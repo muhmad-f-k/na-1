@@ -14,7 +14,7 @@ def createRecipe():
         recipe_object = Recipe(approach=form.recipeApproach.data, version=version, dinner_id=dinner_id)
         session.add(recipe_object)
         session.commit()
-    return render_template('createRecipe.html', form=form)
+    return render_template('recipeTemplates/createRecipe.html', form=form)
 
 
 @recipe.route('/update_recipe', methods=['GET', 'POST'])
@@ -25,4 +25,4 @@ def updateRecipe():
         recipe_object = Recipe(approach=form.recipeApproach.data, version=form.recipeVersion.data, dinner_id=dinner_id)
         session.add(recipe_object)
         session.commit()
-    return render_template('updateRecipe.html', form=form)
+    return render_template('recipeTemplates/updateRecipe.html', form=form)

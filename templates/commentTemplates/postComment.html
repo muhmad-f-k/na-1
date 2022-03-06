@@ -1,13 +1,11 @@
-{% extends "Base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-    <h1>Opprett oppskrift for ... -template</h1>
+  <h1>Skriv kommentar til middag ... -template</h1>
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}<br>
-        {{ form.recipeApproach.label }}<br>
-        {{ form.recipeApproach }}<br>
+        {{ form.commentText.label }}<br>
+        {{ form.commentText }}<br>
         {{ form.submit }}
     </form>
 {% endblock %}
-
-

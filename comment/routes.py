@@ -14,7 +14,7 @@ def postComment():
         comment_object = Comment(text=form.commentText.data, user_id=user_id, dinner_id=dinner_id)
         session.add(comment_object)
         session.commit()
-    return render_template('postComment.html', form=form)
+    return render_template('commentTemplates/postComment.html', form=form)
 
 
 @comment.route('/edit_comment', methods=['GET', 'POST'])
