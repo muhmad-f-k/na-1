@@ -20,4 +20,5 @@ app.register_blueprint(recipe)
 app.register_blueprint(comment)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.debug = True
+    app.run(host="0.0.0.0")
