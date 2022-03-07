@@ -39,6 +39,9 @@ class User(base):
     dinner = relationship("Dinner")
     user = relationship("Comment")
 
+    def __repr__(self):
+        return f"{self.first_name} - {self.last_name} - {self.email} -  - {self.id}"
+
 
 class Role(base):
     __tablename__ = "role"
@@ -46,6 +49,9 @@ class Role(base):
                 nullable=False, autoincrement=True)
     name = Column(String(255))
     user_group_role = relationship("User_group_role", back_populates="role")
+
+    def __repr__(self):
+        return f"{self.name} - {self.id}"
 
 
 class Group(base):
@@ -57,14 +63,15 @@ class Group(base):
     shopping_lists = relationship("Shopping_list")
     dinner = relationship("Dinner")
 
+    def __repr__(self):
+        return f"{self.name} - {self.id}"
+
 
 class Recipe_ingredient_helper(base):
     __tablename__ = "recipe_ingredient_helper"
 
     id = Column(Integer, primary_key=True, index=True,
                 nullable=False, autoincrement=True)
-    recipe_ingredient_id = Column(Integer, ForeignKey(
-        "recipe_ingredient.id"), nullable=False)
     measurement_id = Column(Integer, ForeignKey(
         "measurement.id"), nullable=False)
     shopping_list_id = Column(Integer, ForeignKey(
@@ -73,11 +80,9 @@ class Recipe_ingredient_helper(base):
         "ingredient.id"), nullable=False)
     recipe_id = Column(Integer, ForeignKey("recipe.id"), nullable=False)
 
-    __table_args__ = (UniqueConstraint(recipe_ingredient_id,
-                      measurement_id, ingredient_id, recipe_id, shopping_list_id),)
+    __table_args__ = (UniqueConstraint(
+        measurement_id, ingredient_id, recipe_id, shopping_list_id),)
 
-    recipe_ingredient = relationship(
-        "Recipe_ingredient", back_populates="recipe_ingredient_helper")
     measurement = relationship(
         "Measurement", back_populates="recipe_ingredient_helper")
     shopping_list = relationship(
@@ -85,15 +90,6 @@ class Recipe_ingredient_helper(base):
     ingredient = relationship(
         "Ingredient", back_populates="recipe_ingredient_helper")
     recipe = relationship("Recipe", back_populates="recipe_ingredient_helper")
-
-
-class Recipe_ingredient(base):
-    __tablename__ = "recipe_ingredient"
-    id = Column(Integer, primary_key=True, index=True,
-                nullable=False, autoincrement=True)
-    amount = Column(Integer, nullable=False)
-    recipe_ingredient_helper = relationship(
-        "Recipe_ingredient_helper", back_populates="recipe_ingredient")
 
 
 class Shopping_list(base):
@@ -106,6 +102,9 @@ class Shopping_list(base):
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="shopping_list")
 
+    def __repr__(self):
+        return f"{self.date} - {self.price}"
+
 
 class Measurement(base):
     __tablename__ = "measurement"
@@ -114,6 +113,9 @@ class Measurement(base):
     amount = Column(String(10), nullable=False)
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="measurement")
+
+    def __repr__(self):
+        return f"{self.id} - {self.amount}"
 
 
 class Recipe(base):  # many
@@ -126,6 +128,9 @@ class Recipe(base):  # many
         "Recipe_ingredient_helper", back_populates="recipe")
     dinner_id = Column(Integer, ForeignKey("dinner.id"))
 
+    def __repr__(self):
+        return f"{self.id} - {self.approach}"
+
 
 class Ingredient(base):
     __tablename__ = "ingredient"
@@ -134,6 +139,9 @@ class Ingredient(base):
     name = Column(String(45), nullable=False)
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="ingredient")
+
+    def __repr__(self):
+        return f"{self.id} - {self.name}"
 
 
 class Dinner(base):
@@ -148,6 +156,9 @@ class Dinner(base):
     comment = relationship("Comment")
     meal = relationship("Meal")
 
+    def __repr__(self):
+        return f"{self.id} - {self.title}"
+
 
 class Meal(base):
     __tablename__ = "meal"
@@ -155,6 +166,9 @@ class Meal(base):
                 nullable=False, autoincrement=True)
     date = Column(DATE, nullable=False)
     dinner_id = Column(Integer, ForeignKey("dinner.id"))
+
+    def __repr__(self):
+        return f"{self.id} - {self.date}"
 
 
 class Comment(base):
@@ -166,6 +180,9 @@ class Comment(base):
     dinner_id = Column(Integer, ForeignKey("dinner.id"))
     comment = relationship("Edited_comment")
 
+    def __repr__(self):
+        return f"{self.id} - {self.text}"
+
 
 class Edited_comment(base):
     __tablename__ = "edited_comment"
@@ -173,6 +190,9 @@ class Edited_comment(base):
                 nullable=False, autoincrement=True)
     text = Column(String(100), nullable=False)
     comment_id = Column(Integer, ForeignKey("comment.id"))
+
+    def __repr__(self):
+        return f"{self.id} - {self.text}"
 
 
 base.metadata.create_all(engine)
