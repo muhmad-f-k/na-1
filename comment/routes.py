@@ -14,14 +14,12 @@ def postComment():
         comment_object = Comment(text=form.commentText.data, user_id=user_id, dinner_id=dinner_id)
         session.add(comment_object)
         session.commit()
+        session.close()
     return render_template('postComment.html', form=form)
 
 
 @comment.route('/edit_comment', methods=['GET', 'POST'])
-def editComment():
-    form = postCommentForm()
-    if form.validate():
-        user_id = 1
-        comment_id = 1
-        old_comment = select(Comment.text).where(comment_id == comment_id)
-        new_comment = Comment(text=form.commentText.data)
+def editComment(comment_id):
+    editComment=session.query(comment).filter(comment_id==comment_id).first()
+        session.delete(comment_id)
+        session.commit()
