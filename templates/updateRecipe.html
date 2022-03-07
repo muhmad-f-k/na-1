@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Oppskrift</title>
+</head>
+<body>
+    <h1>Oppdater oppskrift for ... -template</h1>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}<br>
+        {{ form.recipeApproach.label }}<br>
+        {{ form.recipeApproach }}<br>
+        {{ form.recipeVersion.label }}<br>
+        {{ form.recipeVersion }} <br>
+        {{ form.submit }}
+    </form>
+</body>
+</html>

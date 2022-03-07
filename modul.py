@@ -122,7 +122,8 @@ class Recipe(base):  # many
     __tablename__ = "recipe"
     id = Column(Integer, primary_key=True, index=True,
                 nullable=False, autoincrement=True)
-    approach = Column(String(20000), nullable=False)  # sjekk ut longtext
+    approach = Column(String(20000), nullable=False)
+    version = Column(Integer, nullable=False)# sjekk ut longtext
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="recipe")
     dinner_id = Column(Integer, ForeignKey("dinner.id"))
