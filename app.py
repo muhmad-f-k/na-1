@@ -1,11 +1,8 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from dinner.routes import dinner
 from groups.routes import groups
 from home.routes import home
-from recipe.routes import recipe
 from users.users_routes import users
-
 from recipe.routes import recipe
 from comment.routes import comment
 #

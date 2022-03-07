@@ -33,7 +33,7 @@ def edit_comment():
     if form.validate_on_submit():
         db_edit_comment(comment_id, form.commentText.data)
         flash(f'kommentar oppdatert!')
-    return render_template('edit_Comment.html', form=form)
+    return render_template('commentTemplates/edit_Comment.html', form=form)
 
 
 @comment.route('/delete_comment',  methods=['GET', 'POST'])
@@ -42,4 +42,4 @@ def delete_comment():
     if form.validate_on_submit():
         db_delete_comment(form.mp_comment_id.data)
         flash(f'Kommentar slettet!')
-    return render_template('deleteComment.html', form=form)
+    return render_template('commentTemplates/deleteComment.html', form=form)

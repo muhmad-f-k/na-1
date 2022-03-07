@@ -8,4 +8,4 @@ groups = Blueprint('groups', __name__)
 @groups.route('/groups')
 def index():
     form = groupsform()
-    return render_template('groups.html', form=form)
+    return render_template('loginTemplates/groups.html', form=form)
