@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Skriv kommentar til middag ...</h1>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}<br>
+        {{ form.commentText.label }}<br>
+        {{ form.commentText }}<br>
+        {{ form.submit }}
+    </form>
+{% endblock %}

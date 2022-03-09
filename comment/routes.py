@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, flash
 from comment.forms import *
+from comment import *
 from comment.queries import *
-from modul import *
 
-comment = Blueprint('comment', __name__)
+comment = Blueprint('comment', __name__, template_folder="templates")
 
 
 @comment.route('/post_comment', methods=['GET', 'POST'])
@@ -13,7 +13,7 @@ def post_comment():
         user_id = 1
         dinner_id = 1
         db_new_comment(form.commentText.data, user_id, dinner_id)
-    return render_template('postComment.html', form=form)
+    return render_template('commentTemplates/postComment.html', form=form)
 
 
 # @comment.route('/edit_comment', methods=['GET', 'POST'])

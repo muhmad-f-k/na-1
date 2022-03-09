@@ -1,5 +1,4 @@
-from modul import *
-
+from db import *
 
 # def db_edit_comment(mp_comment_id, mp_comment_text):
 #     incoming_comment = session.query(Comment).filter(Comment.id == mp_comment_id).first()
@@ -10,16 +9,20 @@ from modul import *
 #     session.commit()
 #     session.close()
 
+
 def db_new_comment(db_comment_text, db_user_id, db_dinner_id):
-    comment = Comment(text=db_comment_text, user_id=db_user_id, dinner_id=db_dinner_id)
+    comment = Comment(text=db_comment_text,
+                      user_id=db_user_id, dinner_id=db_dinner_id)
     session.add(comment)
     session.commit()
     session.close()
 
 
 def db_edit_comment(db_comment_id, db_comment_text):
-    incoming_comment = session.query(Comment).filter(db_comment_id == Comment.id).first()
-    to_mp_edited_comment = Edited_comment(comment_id=db_comment_id, text=incoming_comment.text)
+    incoming_comment = session.query(Comment).filter(
+        db_comment_id == Comment.id).first()
+    to_mp_edited_comment = Edited_comment(
+        comment_id=db_comment_id, text=incoming_comment.text)
     incoming_comment.text = db_comment_text
     session.add(to_mp_edited_comment)
     session.commit()

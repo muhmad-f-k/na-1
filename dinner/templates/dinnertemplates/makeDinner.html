@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Make a dinner</h1>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ form.mp_dinner_title.label }}<br>
+        {{ form.mp_dinner_title }}<br>
+        {{ form.mp_dinner_user_id.label }}<br>
+        {{ form.mp_dinner_user_id }}<br>
+        {{ form.mp_dinner_group_id.label }}<br>
+        {{ form.mp_dinner_group_id }}<br>
+        {{ form.mp_dinner_image.label }}<br>
+        {{ form.mp_dinner_image }}<br>
+        {{ form.submit }}
+    </form>
+    <div>
+        {% if form.mp_dinner_image.errors %}
+            {% for error in form.mp_dinner_image.errors %}
+                <span class="text-danger"> {{ error }} </span><br>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
