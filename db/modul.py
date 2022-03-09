@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import BLOB, Column, String, Integer, ForeignKey, create_engine, Table, DATE, DECIMAL, LargeBinary
+from sqlalchemy import BLOB, Column, String, Integer, ForeignKey, create_engine, Table, DATE, DECIMAL, LargeBinary, UniqueConstraint, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.schema import UniqueConstraint
@@ -14,13 +14,14 @@ base = declarative_base()
 class User_group_role(base):
     __tablename__ = "user_group_role"
 
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
     role_id = Column(Integer, ForeignKey("role.id"), nullable=False)
+    UniqueConstraint('user_id', 'group_id', name='user_group')
 
-    __table_args__ = (UniqueConstraint(user_id, group_id, role_id),)
+    __table_args__ = (UniqueConstraint(user_id, group_id),)
 
     user = relationship("User", back_populates="user_group_role")
     group = relationship("Group", back_populates="user_group_role")
@@ -29,25 +30,26 @@ class User_group_role(base):
 
 class User(base):
     __tablename__ = "user"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    email = Column(String(50))
-    password = Column(String(50))
-    first_name = Column(String(50))
-    last_name = Column(String(50))
+    email = Column(String(50), nullable=False, unique=True)
+    password = Column(String(50), nullable=False)
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
     user_group_role = relationship("User_group_role", back_populates="user")
     dinner = relationship("Dinner")
     user = relationship("Comment")
 
     def __repr__(self):
-        return f"{self.first_name} - {self.last_name} - {self.email} -  - {self.id}"
+        return f"{self.first_name} - {self.last_name} - {self.email} - {self.id}"
 
 
 class Role(base):
     __tablename__ = "role"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    name = Column(String(255))
+    name = Column(String(255), nullable=False)
+    make_shoppinglist = Column(Boolean, unique=False)
     user_group_role = relationship("User_group_role", back_populates="role")
 
     def __repr__(self):
@@ -56,9 +58,9 @@ class Role(base):
 
 class Group(base):
     __tablename__ = "group"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    name = Column(String(255))
+    name = Column(String(255), nullable=False, unique=True)
     user_group_role = relationship("User_group_role", back_populates="group")
     shopping_lists = relationship("Shopping_list")
     dinner = relationship("Dinner")
@@ -70,8 +72,9 @@ class Group(base):
 class Recipe_ingredient_helper(base):
     __tablename__ = "recipe_ingredient_helper"
 
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
+    amount = Column(Integer, nullable=False)
     measurement_id = Column(Integer, ForeignKey(
         "measurement.id"), nullable=False)
     shopping_list_id = Column(Integer, ForeignKey(
@@ -79,6 +82,7 @@ class Recipe_ingredient_helper(base):
     ingredient_id = Column(Integer, ForeignKey(
         "ingredient.id"), nullable=False)
     recipe_id = Column(Integer, ForeignKey("recipe.id"), nullable=False)
+    UniqueConstraint('ingredient_id', 'recipe_id', name='ingredient_recipe')
 
     __table_args__ = (UniqueConstraint(
         measurement_id, ingredient_id, recipe_id, shopping_list_id),)
@@ -94,10 +98,10 @@ class Recipe_ingredient_helper(base):
 
 class Shopping_list(base):
     __tablename__ = "shopping_list"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    date = Column(DATE, nullable=False)
-    price = Column(DECIMAL(8, 2), nullable=False)
+    date = Column(DATE, nullable=False)  # sjekk date er ok
+    price = Column(DECIMAL(8, 2))
     group_id = Column(Integer, ForeignKey("group.id"))
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="shopping_list")
@@ -108,22 +112,23 @@ class Shopping_list(base):
 
 class Measurement(base):
     __tablename__ = "measurement"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    amount = Column(String(10), nullable=False)
+    name = Column(String(10), nullable=False, unique=True)
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="measurement")
 
     def __repr__(self):
-        return f"{self.id} - {self.amount}"
+        return f"{self.id} - {self.name}"
 
 
-class Recipe(base):  # many
+class Recipe(base):
     __tablename__ = "recipe"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    approach = Column(String(20000), nullable=False)
-    version = Column(Integer, nullable=False)# sjekk ut longtext
+    approach = Column(String(20000))
+    version = Column(Integer, nullable=False)
+    UniqueConstraint('id', 'version', name='id_version')
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="recipe")
     dinner_id = Column(Integer, ForeignKey("dinner.id"))
@@ -134,9 +139,9 @@ class Recipe(base):  # many
 
 class Ingredient(base):
     __tablename__ = "ingredient"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    name = Column(String(45), nullable=False)
+    name = Column(String(45), nullable=False, unique=True)
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="ingredient")
 
@@ -146,7 +151,7 @@ class Ingredient(base):
 
 class Dinner(base):
     __tablename__ = "dinner"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     title = Column(String(255), nullable=False)
     image = Column(LargeBinary(length=(2**32)-1))
@@ -162,7 +167,7 @@ class Dinner(base):
 
 class Meal(base):
     __tablename__ = "meal"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     date = Column(DATE, nullable=False)
     dinner_id = Column(Integer, ForeignKey("dinner.id"))
@@ -173,7 +178,7 @@ class Meal(base):
 
 class Comment(base):
     __tablename__ = "comment"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     text = Column(String(100), nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"))
@@ -186,7 +191,7 @@ class Comment(base):
 
 class Edited_comment(base):
     __tablename__ = "edited_comment"
-    id = Column(Integer, primary_key=True, index=True,
+    id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     text = Column(String(100), nullable=False)
     comment_id = Column(Integer, ForeignKey("comment.id"))

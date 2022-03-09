@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template
 from jinja2 import TemplateNotFound
-from users.forms import RegistrationForm
-
-users = Blueprint('users', __name__)
+from users import *
+users = Blueprint('users', __name__, template_folder="templates")
 
 
 @users.route('/user')
