@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:sqlite:C:\Users\magnu\OneDrive\Datateknikk\Databaser og webapplikasjoner 1\na-1\finaldata.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="finaldata [2]" uuid="f822c989-7bfb-4d70-9405-73ee315233c5">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\magnu\OneDrive\Datateknikk\Databaser og webapplikasjoner 1\na-1\finaldata.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

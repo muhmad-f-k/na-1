@@ -1,15 +1,6 @@
 from modul import *
 
 
-# def db_edit_comment(mp_comment_id, mp_comment_text):
-#     incoming_comment = session.query(Comment).filter(Comment.id == mp_comment_id).first()
-#     incoming_dinner.title = mp_dinner_title
-#     incoming_dinner.user_id = mp_dinner_user_id
-#     incoming_dinner.group_id = mp_dinner_group_id
-#     incoming_dinner.image = mp_dinner_image
-#     session.commit()
-#     session.close()
-
 def db_new_comment(db_comment_text, db_user_id, db_dinner_id):
     comment = Comment(text=db_comment_text, user_id=db_user_id, dinner_id=db_dinner_id)
     session.add(comment)
