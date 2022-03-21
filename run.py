@@ -17,7 +17,7 @@ app.register_blueprint(grouproute)
 app.register_blueprint(recipe_route)
 app.register_blueprint(edituserroute)
 login_manager = LoginManager()
-login_manager.login_view = 'users.login'
+login_manager.login_view = 'usersroute.login'
 login_manager.init_app(app)
 
 
