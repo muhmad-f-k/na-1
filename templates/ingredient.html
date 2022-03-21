@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="title">Velkommen, {{ name }}!</h1>
+<table class="ingredient">
+  <thead>
+    <tr>
+      <th class="ingredient__table">Navn</th>
+    </tr>
+  </thead>
+  <tbody class="ingredient__table">
+    {% for ingredient in ingredients %}
+    <tr>
+      <td class="ingredient__cell">{{ ingredient.name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<form method="POST">
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <div
+    class="notification-is-danger-register"
+    id="notification-is-danger-register"
+  >
+    {{ messages[0] }}
+  </div>
+  {% endif %} {% endwith %}
+  <input
+    class="ingredient__register"
+    type="text"
+    name="ingredient__name"
+    placeholder="Skrive inn ingrediens navn"
+    required
+  />
+  <input class="ingredient__submit" type="submit" name="" value="Register" />
+</form>
+{% endblock %}

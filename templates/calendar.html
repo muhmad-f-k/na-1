@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="calendar__h1">Kalender</h1>
+<h2 class="calendar__h2">{{ month_name }} {{ year }}</h2>
+<h2 class="calendar__h2">
+  <form class="calendar__form" method="POST">
+    <button
+      class="calendar__button"
+      type="submit"
+      name="prev_month"
+      value="{{  [year, month - 1]  }}"
+    >
+      Forrige måned
+    </button>
+    <button
+      class="calendar__button"
+      type="submit"
+      name="next_month"
+      value="{{  [year, month + 1]  }}"
+    >
+      Neste måned
+    </button>
+  </form>
+</h2>
+<div class="calendar__day__container">
+  {% for day in full_month %}
+  <div class="calendar__day">
+    {{ day.day }}<br />{{ days_of_week.get(day.strftime("%A")) }}<br />Legg til
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
