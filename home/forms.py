@@ -1,2 +1,0 @@
-def homeform():
-    return None

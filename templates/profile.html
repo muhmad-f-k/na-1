@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="title">Velkommen, {{ name }}!</h1>
+
+<div id="grouploop">
+  {% for group in groups %}
+  <div>{{group.name}}</div>
+  {% endfor %}
+</div>
+
+<div id="roleloop">
+  {% for group in roles %}
+  <div>{{group.name}}</div>
+  {% endfor %}
+</div>
+
+{% endblock %}

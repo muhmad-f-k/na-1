@@ -1,0 +1,54 @@
+{% extends "/base.html" %} {% block title %} Oppdater bruker {% endblock %} {%
+block content %}
+<form
+  class="update"
+  action="{{ url_for('edituserroute.update_user_post') }}"
+  method="POST"
+>
+  <h1>Oppdater bruker</h1>
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <div
+    class="notification-is-danger-register"
+    id="notification-is-danger-register"
+  >
+    {{ messages[0] }}
+  </div>
+  {% endif %} {% endwith %}
+  <input
+    type="text"
+    name="email"
+    placeholder="Email"
+    value="{{ email }}"
+    required
+  />
+  <input
+    type="text"
+    name="first_name"
+    placeholder="Fornavn"
+    value="{{ name }}"
+    required
+  />
+  <input
+    type="text"
+    name="last_name"
+    placeholder="Etternavn"
+    value="{{ name }}"
+    required
+  />
+  <input
+    type="password"
+    name="password"
+    placeholder="Passord"
+    id="password"
+    required
+  />
+  <input
+    type="password"
+    name="confirm_password"
+    placeholder="Bekreft passord"
+    id="confirm_password"
+    required
+  />
+  <input type="submit" name="" value="Oppdater bruker" />
+</form>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block content %}
+<h1 align="center">{{ group.name }}</h1>
+<div class="btn-group">
+  <a
+    class="btn btn-info"
+    href="{{ url_for('grouproute.member_list', group_id = group.id) }}"
+    ><button>Medlemmer</button></a
+  >
+  <a
+    class="btn btn-info"
+    href="{{ url_for('grouproute.update_group', group_id=group.id) }}"
+    ><button>Rediger gruppe</button></a
+  >
+  <a
+    class="btn btn-info"
+    href="{{ url_for('grouproute.delete_group', group_id=group.id) }}"
+    ><button>Slett gruppe</button></a
+  >
+</div>
+{% endblock %}

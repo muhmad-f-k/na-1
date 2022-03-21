@@ -1,0 +1,16 @@
+{% extends "/base.html" %} {% block title %} Oppdater gruppe {% endblock %} {%
+block content %}
+<form class="update" action="{{ url_for('group.update_group_post', group_id=group.id) }}" method="POST">
+  <h1>Oppdater gruppe</h1>
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <div
+    class="notification-is-danger-register"
+    id="notification-is-danger-register"
+  >
+    {{ messages[0] }}
+  </div>
+  {% endif %} {% endwith %}
+  <input type="text" name="new_group_name" placeholder="Ny gruppenavn" value="{{ group.name }}" required />
+  <input type="submit" name="" value="Oppdater gruppe" />
+</form>
+{% endblock %}

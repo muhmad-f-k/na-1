@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block content %}
+<div id="grouploop">
+  {% for group in groups %}
+  <div>
+    <a href="{{ url_for('grouproute.show_group', group_id=group.id) }}"
+      >{{ group.name }}</a
+    >
+  </div>
+  {% endfor %}
+</div>
+{% endblock %} {#
+<div id="grouploop">
+  #} {# {% for group in groups %}#} {#
+  <div>{{group.name}}</div>
+  #} {# {% endfor %}#} {#
+</div>
+#} {##} {#
+<div id="roleloop">
+  #} {# {% for group in roles %}#} {#
+  <div>{{group.name}}</div>
+  #} {# {% endfor %}#} {#
+</div>
+#} {##} {#{% endblock %}#}

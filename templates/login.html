@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block title %} Logg inn {% endblock %} {% block
+content %}
+<form class="login" method="POST">
+  <h1>Logg inn</h1>
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <div class="notification-is-danger-login" id="notification-is-danger-login">
+    {{ messages[0] }}
+  </div>
+  {% endif %} {% endwith %}
+  <input type="text" name="email" placeholder="Email" required />
+  <input type="password" name="password" placeholder="Passord" required />
+  <input type="submit" name="" value="Logg inn" />
+</form>
+{% endblock %}

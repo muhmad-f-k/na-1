@@ -1,12 +1,14 @@
 import os
-from sqlalchemy import BLOB, Column, String, Integer, ForeignKey, create_engine, Table, DATE, DECIMAL, LargeBinary, UniqueConstraint, Boolean
+from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, DATE, LargeBinary, UniqueConstraint, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.schema import UniqueConstraint
+from flask_login import UserMixin
 
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-connection_str = 'sqlite:///'+os.path.join(BASE_DIR, 'finaldata.db')
+connection_str = 'sqlite:///' + \
+    os.path.join(BASE_DIR, 'finaldata.db?check_same_thread=False')
 engine = create_engine(connection_str)
 base = declarative_base()
 
@@ -28,12 +30,12 @@ class User_group_role(base):
     role = relationship("Role", back_populates="user_group_role")
 
 
-class User(base):
+class User(base, UserMixin):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     email = Column(String(50), nullable=False, unique=True)
-    password = Column(String(50), nullable=False)
+    password = Column(String(200), nullable=False)
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
     user_group_role = relationship("User_group_role", back_populates="user")
@@ -74,9 +76,10 @@ class Recipe_ingredient_helper(base):
 
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    amount = Column(Integer, nullable=False)
+   # amount = Column(Integer, nullable=False)
     measurement_id = Column(Integer, ForeignKey(
         "measurement.id"), nullable=False)
+    amount_id = Column(Integer, ForeignKey("amount.id"), nullable=False)
     shopping_list_id = Column(Integer, ForeignKey(
         "shopping_list.id"), nullable=False)
     ingredient_id = Column(Integer, ForeignKey(
@@ -85,7 +88,7 @@ class Recipe_ingredient_helper(base):
     UniqueConstraint('ingredient_id', 'recipe_id', name='ingredient_recipe')
 
     __table_args__ = (UniqueConstraint(
-        measurement_id, ingredient_id, recipe_id, shopping_list_id),)
+        measurement_id, ingredient_id, recipe_id, shopping_list_id, amount_id),)
 
     measurement = relationship(
         "Measurement", back_populates="recipe_ingredient_helper")
@@ -94,6 +97,7 @@ class Recipe_ingredient_helper(base):
     ingredient = relationship(
         "Ingredient", back_populates="recipe_ingredient_helper")
     recipe = relationship("Recipe", back_populates="recipe_ingredient_helper")
+    amount = relationship("Amount", back_populates="recipe_ingredient_helper")
 
 
 class Shopping_list(base):
@@ -101,7 +105,7 @@ class Shopping_list(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     date = Column(DATE, nullable=False)  # sjekk date er ok
-    price = Column(DECIMAL(8, 2))
+    price = Column(String(10), nullable=True)
     group_id = Column(Integer, ForeignKey("group.id"))
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="shopping_list")
@@ -198,6 +202,18 @@ class Edited_comment(base):
 
     def __repr__(self):
         return f"{self.id} - {self.text}"
+
+
+class Amount(base):
+    __tablename__ = "amount"
+    id = Column(Integer, primary_key=True, unique=True,
+                nullable=False, autoincrement=True)
+    amount = Column(Integer, nullable=False)
+    recipe_ingredient_helper = relationship(
+        "Recipe_ingredient_helper", back_populates="amount")
+
+    def __repr__(self):
+        return f"{self.id} - {self.amount}"
 
 
 base.metadata.create_all(engine)

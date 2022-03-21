@@ -1,2 +1,0 @@
-def groupsform():
-    return None
