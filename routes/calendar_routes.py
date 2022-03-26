@@ -54,6 +54,11 @@ def show_calendar():
             new_year -= 1
             new_month = 12
     elif "add_dinner" in request.form:
+        incoming_date = request.form.get("add_dinner")
+        converted_date = incoming_date.strip('][').split(', ')
+        inc_year = int(converted_date[0])
+        inc_month = int(converted_date[1])
+        inc_day = int(converted_date[2])
         return render_template('dinner.html')
 
     current_date_time = None
