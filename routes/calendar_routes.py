@@ -53,6 +53,8 @@ def show_calendar():
         if new_month < 1:
             new_year -= 1
             new_month = 12
+    elif "add_dinner" in request.form:
+        return render_template('dinner.html')
 
     current_date_time = None
     if new_year is not None and new_month is not None:

@@ -24,7 +24,18 @@
 <div class="calendar__day__container">
   {% for day in full_month %}
   <div class="calendar__day">
-    {{ day.day }}<br />{{ days_of_week.get(day.strftime("%A")) }}<br />Legg til
+    {{ day.day }}<br />{{ days_of_week.get(day.strftime("%A")) }}<br />
+    <form class="calendar__form" method="POST">
+    <button
+      class="calendar__button"
+      type="submit"
+      name="add_dinner"
+      value="{{ day.day }}"
+    >
+      Legg til
+    </button>
+    </button>
+  </form>
   </div>
   {% endfor %}
 </div>
