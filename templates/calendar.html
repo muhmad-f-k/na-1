@@ -25,7 +25,7 @@
   {% for day in full_month %}
   <div class="calendar__day">
     {{ day.day }}<br />{{ days_of_week.get(day.strftime("%A")) }}<br />
-    <form class="calendar__form" method="POST">
+    <form class="calendar__form" action="{{ url_for('calendarroute.create_meal') }}" method="POST">
     <button
       class="calendar__button"
       type="submit"

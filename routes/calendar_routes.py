@@ -81,3 +81,8 @@ def show_calendar():
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
                            month_name=month_name)
+
+
+@calendarroute.route('/createMeal', methods=['GET', 'POST'])
+def create_meal():
+    return render_template('createMeal.html')
