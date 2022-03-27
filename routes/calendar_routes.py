@@ -53,13 +53,6 @@ def show_calendar():
         if new_month < 1:
             new_year -= 1
             new_month = 12
-    elif "add_dinner" in request.form:
-        incoming_date = request.form.get("add_dinner")
-        converted_date = incoming_date.strip('][').split(', ')
-        inc_year = int(converted_date[0])
-        inc_month = int(converted_date[1])
-        inc_day = int(converted_date[2])
-        return render_template('dinner.html')
 
     current_date_time = None
     if new_year is not None and new_month is not None:
@@ -85,4 +78,31 @@ def show_calendar():
 
 @calendarroute.route('/createMeal', methods=['GET', 'POST'])
 def create_meal():
-    return render_template('createMeal.html')
+    import calendar as cd
+    import datetime
+
+    if "dinner_id" in request.form:
+        dinner_id = request.form.get('dinner_id')
+        incoming_date = request.form.get('date')
+
+        converted_date = incoming_date.strip('][').split(', ')
+        inc_year = int(converted_date[0])
+        inc_month = int(converted_date[1])
+        inc_day = int(converted_date[2])
+        meal_date = datetime.datetime(inc_year, inc_month, inc_day)
+
+        meal = Meal(date=meal_date, dinner_id=dinner_id)
+        session.add(meal)
+        session.commit()
+        session.close()
+        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)
+    else:
+        incoming_date = request.form.get("add_dinner")
+        converted_date = incoming_date.strip('][').split(', ')
+        inc_year = int(converted_date[0])
+        inc_month = int(converted_date[1])
+        inc_day = int(converted_date[2])
+        #current_date_time = datetime.datetime(inc_year, inc_month, inc_day)
+        # print(str(inc_year) + ' ' + str(inc_month) + ' ' + str(inc_day))
+        # print(current_date_time)
+        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)

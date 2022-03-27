@@ -2,5 +2,9 @@
 
 {% block content %}
   <h1>Velkommen til middagsdato-tildeling </h1>
-    Hei
+    {{ current_date_time }}
+    <form method="POST">
+    <input type="number" name="dinner_id" required>
+    <input type="submit" name="date" value="{{ [inc_year, inc_month, inc_day] }}">
+</form>
 {% endblock %}
