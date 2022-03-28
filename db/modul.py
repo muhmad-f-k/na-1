@@ -1,4 +1,5 @@
 import os
+import datetime
 from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, DATE, LargeBinary, UniqueConstraint, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
@@ -104,7 +105,8 @@ class Shopping_list(base):
     __tablename__ = "shopping_list"
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    date = Column(DATE, nullable=False)  # sjekk date er ok
+    # date = Column(DATE, nullable=False)  # sjekk date er ok
+    date = Column(DATE(), default=datetime.date.today())
     price = Column(String(10), nullable=True)
     group_id = Column(Integer, ForeignKey("group.id"))
     recipe_ingredient_helper = relationship(
@@ -173,7 +175,7 @@ class Meal(base):
     __tablename__ = "meal"
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    date = Column(DATE, nullable=False)
+    date = Column(DATE(), default=datetime.date.today())
     dinner_id = Column(Integer, ForeignKey("dinner.id"))
 
     def __repr__(self):
@@ -218,3 +220,4 @@ class Amount(base):
 
 base.metadata.create_all(engine)
 session = sessionmaker()(bind=engine)
+
