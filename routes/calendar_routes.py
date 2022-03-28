@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, url_for, redirect
+from sqlalchemy import desc
+
 from db.modul import *
 from flask_login import current_user
 
@@ -137,3 +139,35 @@ def delete_dinner():
         session.query(Dinner).filter_by(id=request.form.get('dinner_id')).delete()
         session.commit()
     return render_template("deleteDinner.html")
+
+@calendarroute.route('/show_group_dinners/<group_id>')
+def show_group_dinners(group_id):
+    dinners = session.query(Dinner).filter(Group.id == group_id).all()
+    session.close()
+    return render_template("dinners.html", dinners=dinners, group_id=group_id)
+
+@calendarroute.route('/show_dinner/<dinner_id>/<group_id>')
+def show_dinner(dinner_id, group_id):
+    current_user_role = session.query(User_group_role).filter(
+        User_group_role.user_id == current_user.id,
+        User_group_role.group_id == group_id).first()
+    dinner = session.query(Dinner).filter(Dinner.id == dinner_id).first()
+    recipe = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(desc(Recipe.version)).first()
+    ingredients_recipe = session.query(Ingredient.name).join(
+        Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe.id).all()
+    session.close()
+    amounts_recipe = session.query(Amount.amount).join(
+        Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe.id).all()
+    session.close()
+    measurements_recipe = session.query(Measurement.name).join(
+        Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe.id).all()
+    session.close()
+
+    return render_template("dinner.html", dinner=dinner,
+                           current_user_role=current_user_role,
+                           len=len(ingredients_recipe),
+                           recipe=recipe,
+                           ingredients=ingredients_recipe,
+                           amounts=amounts_recipe,
+                           measurements=measurements_recipe)
+

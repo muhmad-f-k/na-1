@@ -1,15 +1,24 @@
 {% extends "base.html" %} {% block content %}
-<div class="dinnerdiv">Middager</div>
-<div class="dinnerdiv">test</div>
-<div class="dinnerdiv">test</div>
-<div class="dinnerdiv">test</div>
-<div class="dinnerdiv">test</div>
-<div class="dinnerdiv">test</div>
+<div>
+<h1>{{ dinner.title }}</h1>
+{# vis bilde #}
 
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
+<div>
+<h2>{{ recipe.approach }}</h2>
+</div>
+
+<div>
+{% for i in range(0,(len)) %}
+  <tr>
+      <td>{{ amounts[i].amount}}</td>
+      <td>{{ measurements[i].name }}</td>
+      <td>{{ ingredients[i].name }}</td>
+  </tr>
+    <br>
+  {% endfor %}
+</div>
+
+
+</div>
+
 {% endblock %}

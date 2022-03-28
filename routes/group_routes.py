@@ -47,7 +47,7 @@ def create_group_post():
     session.commit()
     session.close()
 
-    return redirect(url_for("usersroute.profile"))
+    return redirect(url_for("grouproute.groups"))
 
 
 @grouproute.route('/group_members/<group_id>')

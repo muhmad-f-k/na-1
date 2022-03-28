@@ -22,6 +22,7 @@
     href="{{ url_for('calendarroute.create_dinner', group_id=group.id) }}"
     ><button>Opprett middag</button></a
   >
+    <a class="btn btn-info" href="{{ url_for('calendarroute.show_group_dinners', group_id=group.id) }}"><button>Våre middager</button></a>
     {% endif %}
 </div>
 {% endblock %}
