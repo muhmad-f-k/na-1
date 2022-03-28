@@ -53,14 +53,12 @@ def add_ingredients_post(recipe_id):
     amount = request.form.get("amount")
     unit = request.form.get("unit")
 
-    shopping_list = "13"
-    recipe = "apro"
+    recipe = session.query(Recipe).filter(
+        Recipe.id == recipe_id).first()
     ingredient_check = session.query(Ingredient).filter(
         Ingredient.name == ingredient).first()
-    session.close()
     amount_check = session.query(Amount).filter(
         Amount.amount == amount).first()
-    session.close()
     if ingredient_check and amount_check:
         print("det finnes ingrediens, og det finnes amount i generell tabell")
     if ingredient_check and not amount_check:
@@ -81,26 +79,15 @@ def add_ingredients_post(recipe_id):
         new_ingredient = Ingredient(name=ingredient)
         session.add_all([new_ingredient, new_amount])
         session.commit()
-        session.close()
 
     ingredients = session.query(Ingredient).filter(
         Ingredient.name == ingredient).first()
-    session.close()
     amounts = session.query(Amount).filter(Amount.amount == amount).first()
-    session.close()
-    shopping_lists = session.query(Shopping_list).filter(
-        Shopping_list.price == shopping_list).first()
-    session.close()
-    recipes = session.query(Recipe).filter(Recipe.approach == recipe).first()
-    session.close()
     units = session.query(Measurement).filter(Measurement.name == unit).first()
     session.close()
-    final = Recipe_ingredient_helper(ingredient=ingredients, recipe=recipes, amount=amounts,
-                                     shopping_list=shopping_lists,
-                                     measurement=units)
+    final = Recipe_ingredient_helper(ingredient=ingredients, recipe=recipe, amount=amounts, measurement=units)
     session.add(final)
     session.commit()
-    session.close()
 
     return redirect(url_for("recipe_route.add_ingredients", recipe_id=recipe_id))
 
