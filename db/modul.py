@@ -80,20 +80,16 @@ class Recipe_ingredient_helper(base):
     measurement_id = Column(Integer, ForeignKey(
         "measurement.id"), nullable=False)
     amount_id = Column(Integer, ForeignKey("amount.id"), nullable=False)
-    shopping_list_id = Column(Integer, ForeignKey(
-        "shopping_list.id"), nullable=False)
     ingredient_id = Column(Integer, ForeignKey(
         "ingredient.id"), nullable=False)
     recipe_id = Column(Integer, ForeignKey("recipe.id"), nullable=False)
     UniqueConstraint('ingredient_id', 'recipe_id', name='ingredient_recipe')
 
     __table_args__ = (UniqueConstraint(
-        measurement_id, ingredient_id, recipe_id, shopping_list_id, amount_id),)
+        measurement_id, ingredient_id, recipe_id, amount_id),)
 
     measurement = relationship(
         "Measurement", back_populates="recipe_ingredient_helper")
-    shopping_list = relationship(
-        "Shopping_list", back_populates="recipe_ingredient_helper")
     ingredient = relationship(
         "Ingredient", back_populates="recipe_ingredient_helper")
     recipe = relationship("Recipe", back_populates="recipe_ingredient_helper")
@@ -108,8 +104,6 @@ class Shopping_list(base):
     date = Column(DATE(), default=datetime.date.today(), nullable=False)
     price = Column(String(10), nullable=False)
     group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
-    recipe_ingredient_helper = relationship(
-        "Recipe_ingredient_helper", back_populates="shopping_list")
 
     def __repr__(self):
         return f"{self.date} - {self.price}"
