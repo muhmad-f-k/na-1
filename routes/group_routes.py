@@ -18,10 +18,13 @@ def groups():
 @grouproute.route('/group/<group_id>')
 @login_required
 def show_group(group_id):
+    current_user_role = session.query(User_group_role).filter(
+        User_group_role.user_id == current_user.id,
+        User_group_role.group_id == group_id).first()
     group = session.query(Group).filter(Group.id == group_id).first()
     session.close()
 
-    return render_template("group.html", group=group)
+    return render_template("group.html", group=group, current_user_role=current_user_role)
 
 
 @grouproute.route('/create_group')

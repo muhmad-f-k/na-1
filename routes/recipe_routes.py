@@ -1,25 +1,33 @@
 from flask import Blueprint, redirect, render_template, request, url_for, flash
 from db.modul import *
+from sqlalchemy import desc
+
 
 recipe_route = Blueprint('recipe_route', __name__)
 
 
-@recipe_route.route('/create_recipe')
-def createRecipe():
-    return render_template('createrecipe.html')
+@recipe_route.route('/create_recipe/<dinner_id>')
+def createRecipe(dinner_id):
+    return render_template('createrecipe.html', dinner_id=dinner_id)
 
 
-@recipe_route.route('/create_recipe', methods=['POST'])
-def createRecipe_post():
-    dinner_id = 1
-    version = 1
+@recipe_route.route('/create_recipe/<dinner_id>', methods=['POST'])
+def createRecipe_post(dinner_id):
+    highest_existing_version = session.query(Recipe.version).filter(Recipe.dinner_id == dinner_id).order_by(
+        desc(Recipe.version).limit(1))
+    if highest_existing_version:
+        recipe_version = highest_existing_version + 1
+
+    else:
+        recipe_version = 1
+
     approach = str(request.form.get("textareaApproach"))
     recipe_object = Recipe(
-        approach=approach, version=version, dinner_id=dinner_id)
+        approach=approach, version=recipe_version, dinner_id=dinner_id)
     session.add(recipe_object)
     session.commit()
     session.close()
-    return redirect(url_for("recipe_route.add_ingredients"))
+    return redirect(url_for("recipe_route.add_ingredients", dinner_id=dinner_id))
 
 
 @recipe_route.route("/add_ingredients")

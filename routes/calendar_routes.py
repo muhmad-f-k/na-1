@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, url_for
+from flask import Blueprint, render_template, request, url_for, redirect
 from db.modul import *
 from flask_login import current_user
 
@@ -108,12 +108,16 @@ def create_meal():
         return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)
 
 
-@calendarroute.route('/createDinner', methods=['GET', 'POST'])
-def create_dinner():
+@calendarroute.route('/createDinner/<group_id>')
+def create_dinner(group_id):
+
+    current_user_role = session.query(User_group_role).filter(
+        User_group_role.user_id == current_user.id,
+        User_group_role.group_id == group_id).first()
+
     if 'dinner_title' in request.form:
         dinner_title = request.form.get('dinner_title')
         user_id = current_user.id
-        group_id = request.form.get('group_id')
         dinner_image = request.files['dinner_image'].read()
         print(dinner_image)
 
@@ -121,9 +125,25 @@ def create_dinner():
         session.add(dinner)
         session.commit()
         session.close()
-        return render_template('createDinner.html')
-    else:
-        return render_template('createDinner.html')
+        return redirect(url_for(
+            "recipe_route.createRecipe", dinner_id=dinner.id))
+
+    return render_template('createDinner.html', current_user_role=current_user_role)
+
+
+@calendarroute.route('/createDinner/<group_id>', methods=['POST'])
+def create_dinner_post(group_id):
+    dinner_title = request.form.get('dinner_title')
+    user_id = current_user.id
+    dinner_image = request.files['dinner_image'].read()
+    print(dinner_image)
+
+    dinner = Dinner(title=dinner_title, image=dinner_image, user_id=user_id, group_id=group_id)
+    session.add(dinner)
+    session.commit()
+    session.close()
+    return redirect(url_for(
+        "recipe_route.createRecipe", dinner_id=dinner.id))
 
 
 @calendarroute.route('/deleteDinner', methods=['GET', 'POST'])
