@@ -3,7 +3,6 @@ from db.modul import *
 
 calendarroute = Blueprint('calendarroute', __name__)
 
-
 """ @calendarroute.route('/calendar')
 def calendar():
     return render_template("calendar.html") """
@@ -102,7 +101,35 @@ def create_meal():
         inc_year = int(converted_date[0])
         inc_month = int(converted_date[1])
         inc_day = int(converted_date[2])
-        #current_date_time = datetime.datetime(inc_year, inc_month, inc_day)
+        # current_date_time = datetime.datetime(inc_year, inc_month, inc_day)
         # print(str(inc_year) + ' ' + str(inc_month) + ' ' + str(inc_day))
         # print(current_date_time)
         return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)
+
+
+@calendarroute.route('/createDinner', methods=['GET', 'POST'])
+def create_dinner():
+    if 'dinner_title' in request.form:
+        dinner_title = request.form.get('dinner_title')
+        user_id = request.form.get('user_id')
+        group_id = request.form.get('group_id')
+        # dinner_image = request.form.get('dinner_image')
+        dinner_image = request.files['dinner_image'].read()
+        print(dinner_image)
+
+        dinner = Dinner(title=dinner_title, image=dinner_image, user_id=user_id, group_id=group_id)
+        session.add(dinner)
+        session.commit()
+        session.close()
+        return render_template('createDinner.html')
+    else:
+        return render_template('createDinner.html')
+
+
+@calendarroute.route('/deleteDinner', methods=['GET', 'POST'])
+def delete_dinner():
+    if 'dinner_id' in request.form:
+        session.query(Dinner).filter_by(id=request.form.get('dinner_id')).delete()
+        session.commit()
+        session.close()
+    return render_template("deleteDinner.html")
