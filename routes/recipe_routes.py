@@ -26,7 +26,6 @@ def createRecipe_post(dinner_id):
         approach=approach, version=recipe_version, dinner_id=dinner_id)
     session.add(recipe_object)
     session.commit()
-    session.close()
     return redirect(url_for("recipe_route.add_ingredients", dinner_id=dinner_id))
 
 

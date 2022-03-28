@@ -110,23 +110,9 @@ def create_meal():
 
 @calendarroute.route('/createDinner/<group_id>')
 def create_dinner(group_id):
-
     current_user_role = session.query(User_group_role).filter(
         User_group_role.user_id == current_user.id,
         User_group_role.group_id == group_id).first()
-
-    if 'dinner_title' in request.form:
-        dinner_title = request.form.get('dinner_title')
-        user_id = current_user.id
-        dinner_image = request.files['dinner_image'].read()
-        print(dinner_image)
-
-        dinner = Dinner(title=dinner_title, image=dinner_image, user_id=user_id, group_id=group_id)
-        session.add(dinner)
-        session.commit()
-        session.close()
-        return redirect(url_for(
-            "recipe_route.createRecipe", dinner_id=dinner.id))
 
     return render_template('createDinner.html', current_user_role=current_user_role)
 
@@ -141,7 +127,6 @@ def create_dinner_post(group_id):
     dinner = Dinner(title=dinner_title, image=dinner_image, user_id=user_id, group_id=group_id)
     session.add(dinner)
     session.commit()
-    session.close()
     return redirect(url_for(
         "recipe_route.createRecipe", dinner_id=dinner.id))
 
@@ -151,5 +136,4 @@ def delete_dinner():
     if 'dinner_id' in request.form:
         session.query(Dinner).filter_by(id=request.form.get('dinner_id')).delete()
         session.commit()
-        session.close()
     return render_template("deleteDinner.html")
