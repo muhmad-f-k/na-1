@@ -52,7 +52,6 @@ class Role(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     name = Column(String(255), nullable=False)
-    make_shoppinglist = Column(Boolean, unique=False)
     user_group_role = relationship("User_group_role", back_populates="role")
 
     def __repr__(self):
@@ -106,9 +105,9 @@ class Shopping_list(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     # date = Column(DATE, nullable=False)  # sjekk date er ok
-    date = Column(DATE(), default=datetime.date.today())
-    price = Column(String(10), nullable=True)
-    group_id = Column(Integer, ForeignKey("group.id"))
+    date = Column(DATE(), default=datetime.date.today(), nullable=False)
+    price = Column(String(10), nullable=False)
+    group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="shopping_list")
 
@@ -132,12 +131,12 @@ class Recipe(base):
     __tablename__ = "recipe"
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    approach = Column(String(20000))
+    approach = Column(String(20000), nullable=False)
     version = Column(Integer, nullable=False)
     UniqueConstraint('id', 'version', name='id_version')
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="recipe")
-    dinner_id = Column(Integer, ForeignKey("dinner.id"))
+    dinner_id = Column(Integer, ForeignKey("dinner.id"), nullable=False)
 
     def __repr__(self):
         return f"{self.id} - {self.approach}"
@@ -162,8 +161,8 @@ class Dinner(base):
     title = Column(String(255), nullable=False)
     image = Column(LargeBinary(length=(2**32)-1))
     recipe = relationship("Recipe")
-    group_id = Column(Integer, ForeignKey("group.id"))
-    user_id = Column(Integer, ForeignKey("user.id"))
+    group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     comment = relationship("Comment")
     meal = relationship("Meal")
 
@@ -175,8 +174,8 @@ class Meal(base):
     __tablename__ = "meal"
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    date = Column(DATE(), default=datetime.date.today())
-    dinner_id = Column(Integer, ForeignKey("dinner.id"))
+    date = Column(DATE(), default=datetime.date.today(), nullable=False)
+    dinner_id = Column(Integer, ForeignKey("dinner.id"), nullable=False)
 
     def __repr__(self):
         return f"{self.id} - {self.date}"
@@ -187,8 +186,8 @@ class Comment(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     text = Column(String(100), nullable=False)
-    user_id = Column(Integer, ForeignKey("user.id"))
-    dinner_id = Column(Integer, ForeignKey("dinner.id"))
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    dinner_id = Column(Integer, ForeignKey("dinner.id"), nullable=False)
     comment = relationship("Edited_comment")
 
     def __repr__(self):
@@ -200,7 +199,7 @@ class Edited_comment(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     text = Column(String(100), nullable=False)
-    comment_id = Column(Integer, ForeignKey("comment.id"))
+    comment_id = Column(Integer, ForeignKey("comment.id"), nullable=False)
 
     def __repr__(self):
         return f"{self.id} - {self.text}"
