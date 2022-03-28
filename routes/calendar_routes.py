@@ -63,16 +63,40 @@ def show_calendar():
     month = current_date_time.month
     month_name = months_of_year.get(current_date_time.strftime("%B"))
 
+    meals = []
     c = cd.Calendar(firstweekday=0)
     full_month = []
     for i in c.itermonthdates(year, month):
         if i.month != month:
             pass
         else:
+            # print('' + str(i) + ' ' + str(type(i)))
             full_month.append(i)
+            # print(i)
+
+            # get dinners for this month
+            #meals.append(session.query(Meal).filter(Meal.date == str(i)).first())
+            meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first())
+            session.close()
+
+    # meals.append(session.query(Meal).filter(Meal.dinner_id == 3).first())
+    # meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id and Meal.id == 1).first())
+    # meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id and Meal.date == '2022-03-06').first())
+    # session.close()
+    # print(meals)
+    # print(meals[0])
+    # print(meals[0][1])
+    # print(meals[0][1].image)
+
+    #meal = session.query(Dinner).first()
+    #session.close()
+    #print(meal.image)
+    # session.close()
+
+
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
-                           month_name=month_name)
+                           month_name=month_name, meals=meals)
 
 
 @calendarroute.route('/createMeal', methods=['GET', 'POST'])
@@ -115,7 +139,7 @@ def create_dinner():
         group_id = request.form.get('group_id')
         # dinner_image = request.form.get('dinner_image')
         dinner_image = request.files['dinner_image'].read()
-        print(dinner_image)
+        #print(dinner_image)
 
         dinner = Dinner(title=dinner_title, image=dinner_image, user_id=user_id, group_id=group_id)
         session.add(dinner)
@@ -133,3 +157,12 @@ def delete_dinner():
         session.commit()
         session.close()
     return render_template("deleteDinner.html")
+
+
+@calendarroute.route('/deleteMeal', methods=['GET', 'POST'])
+def delete_meal():
+    if 'meal_id' in request.form:
+        session.query(Meal).filter_by(id=request.form.get('meal_id')).delete()
+        session.commit()
+        session.close()
+    return render_template("deleteMeal.html")
