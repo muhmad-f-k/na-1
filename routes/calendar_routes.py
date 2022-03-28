@@ -1,3 +1,6 @@
+import base64
+import io
+
 from flask import Blueprint, render_template, request, url_for
 from db.modul import *
 
@@ -12,6 +15,8 @@ def calendar():
 def show_calendar():
     import calendar as cd
     import datetime
+    from base64 import b64encode
+    import matplotlib.pyplot as plt
 
     days_of_week = {"Monday": "Mandag",
                     "Tuesday": "Tirsdag",
@@ -75,24 +80,9 @@ def show_calendar():
             # print(i)
 
             # get dinners for this month
-            #meals.append(session.query(Meal).filter(Meal.date == str(i)).first())
+            # meals.append(session.query(Meal).filter(Meal.date == str(i)).first())
             meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first())
             session.close()
-
-    # meals.append(session.query(Meal).filter(Meal.dinner_id == 3).first())
-    # meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id and Meal.id == 1).first())
-    # meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id and Meal.date == '2022-03-06').first())
-    # session.close()
-    # print(meals)
-    # print(meals[0])
-    # print(meals[0][1])
-    # print(meals[0][1].image)
-
-    #meal = session.query(Dinner).first()
-    #session.close()
-    #print(meal.image)
-    # session.close()
-
 
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
@@ -139,7 +129,7 @@ def create_dinner():
         group_id = request.form.get('group_id')
         # dinner_image = request.form.get('dinner_image')
         dinner_image = request.files['dinner_image'].read()
-        #print(dinner_image)
+        # print(dinner_image)
 
         dinner = Dinner(title=dinner_title, image=dinner_image, user_id=user_id, group_id=group_id)
         session.add(dinner)
