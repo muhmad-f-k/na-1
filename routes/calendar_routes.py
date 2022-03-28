@@ -94,31 +94,37 @@ def create_meal():
     import calendar as cd
     import datetime
 
-    if "dinner_id" in request.form:
-        dinner_id = request.form.get('dinner_id')
-        incoming_date = request.form.get('date')
+    if "choose_dinner" in request.form:
+        dinner_id = request.form.get('choose_dinner')
+        #incoming_date = request.form.get('date')
 
-        converted_date = incoming_date.strip('][').split(', ')
-        inc_year = int(converted_date[0])
-        inc_month = int(converted_date[1])
-        inc_day = int(converted_date[2])
+        converted_date = dinner_id.strip('][').split(', ')
+        inc_dinner_id = int(converted_date[0])
+        inc_year = int(converted_date[1])
+        inc_month = int(converted_date[2])
+        inc_day = int(converted_date[3])
         meal_date = datetime.datetime(inc_year, inc_month, inc_day)
 
-        meal = Meal(date=meal_date, dinner_id=dinner_id)
+        meal = Meal(date=meal_date, dinner_id=inc_dinner_id)
         session.add(meal)
         session.commit()
         session.close()
-        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)
+        return render_template(url_for('calendarroute.show_calendar'))
     else:
         incoming_date = request.form.get("add_dinner")
         converted_date = incoming_date.strip('][').split(', ')
         inc_year = int(converted_date[0])
         inc_month = int(converted_date[1])
         inc_day = int(converted_date[2])
+        dinners = []
+        dinners.append(session.query(Dinner).all())
+        session.close()
+        print(dinners[0][1].title)
+        # print(dinners)
         # current_date_time = datetime.datetime(inc_year, inc_month, inc_day)
         # print(str(inc_year) + ' ' + str(inc_month) + ' ' + str(inc_day))
         # print(current_date_time)
-        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)
+        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day, dinners=dinners)
 
 
 @calendarroute.route('/createDinner', methods=['GET', 'POST'])

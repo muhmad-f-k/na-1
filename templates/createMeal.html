@@ -3,8 +3,20 @@
 {% block content %}
   <h1>Velkommen til middagsdato-tildeling </h1>
     {{ current_date_time }}
-    <form method="POST">
-    <input type="number" name="dinner_id" required>
-    <input type="submit" name="date" value="{{ [inc_year, inc_month, inc_day] }}">
-</form>
+    {% for dinner in dinners[0] %}
+    <div class="calendar__day">
+            <form class="calendar__form" method="POST">
+                <button
+                    class="calendar__button"
+                    type="submit"
+                    name="choose_dinner"
+                    value="{{ [dinner.id, inc_year, inc_month, inc_day] }}"
+                    >
+                    Velg
+                </button>
+            </form>
+        {{ dinner.title }}<br>
+        <img src={{ dinner.image }}><br>
+    </div>
+    {% endfor %}
 {% endblock %}
