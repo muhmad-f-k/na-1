@@ -8,9 +8,7 @@ ingredientroute = Blueprint('ingredient', __name__)
 @ingredientroute.route("/ingredient")
 def ingredient():
     ingredients = session.query(Ingredient)
-    session.close()
     name = current_user.first_name
-    session.close()
 
     return render_template('ingredient.html', name=name, ingredients=ingredients)
 
@@ -23,7 +21,6 @@ def ingredient_post():
 
     user = session.query(Ingredient).filter(Ingredient.name == name).first()
     print(user)
-    session.close()
     if user:
         flash("ingrediens finnes allerede.")
         return redirect(url_for("ingredient.ingredient"))
@@ -31,6 +28,5 @@ def ingredient_post():
     new_user = Ingredient(name=name)
     session.add(new_user)
     session.commit()
-    session.close()
 
     return redirect(url_for("ingredient.ingredient"))
