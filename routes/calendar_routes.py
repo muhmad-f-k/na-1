@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, url_for
 from db.modul import *
+from flask_login import current_user
 
 calendarroute = Blueprint('calendarroute', __name__)
-
 
 """ @calendarroute.route('/calendar')
 def calendar():
@@ -74,3 +74,62 @@ def show_calendar():
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
                            month_name=month_name)
+
+
+@calendarroute.route('/createMeal', methods=['GET', 'POST'])
+def create_meal():
+    import calendar as cd
+    import datetime
+
+    if "dinner_id" in request.form:
+        dinner_id = request.form.get('dinner_id')
+        incoming_date = request.form.get('date')
+
+        converted_date = incoming_date.strip('][').split(', ')
+        inc_year = int(converted_date[0])
+        inc_month = int(converted_date[1])
+        inc_day = int(converted_date[2])
+        meal_date = datetime.datetime(inc_year, inc_month, inc_day)
+
+        meal = Meal(date=meal_date, dinner_id=dinner_id)
+        session.add(meal)
+        session.commit()
+        session.close()
+        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)
+    else:
+        incoming_date = request.form.get("add_dinner")
+        converted_date = incoming_date.strip('][').split(', ')
+        inc_year = int(converted_date[0])
+        inc_month = int(converted_date[1])
+        inc_day = int(converted_date[2])
+        # current_date_time = datetime.datetime(inc_year, inc_month, inc_day)
+        # print(str(inc_year) + ' ' + str(inc_month) + ' ' + str(inc_day))
+        # print(current_date_time)
+        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)
+
+
+@calendarroute.route('/createDinner', methods=['GET', 'POST'])
+def create_dinner():
+    if 'dinner_title' in request.form:
+        dinner_title = request.form.get('dinner_title')
+        user_id = current_user.id
+        group_id = request.form.get('group_id')
+        dinner_image = request.files['dinner_image'].read()
+        print(dinner_image)
+
+        dinner = Dinner(title=dinner_title, image=dinner_image, user_id=user_id, group_id=group_id)
+        session.add(dinner)
+        session.commit()
+        session.close()
+        return render_template('createDinner.html')
+    else:
+        return render_template('createDinner.html')
+
+
+@calendarroute.route('/deleteDinner', methods=['GET', 'POST'])
+def delete_dinner():
+    if 'dinner_id' in request.form:
+        session.query(Dinner).filter_by(id=request.form.get('dinner_id')).delete()
+        session.commit()
+        session.close()
+    return render_template("deleteDinner.html")
