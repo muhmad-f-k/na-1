@@ -51,11 +51,16 @@ def create_group_post():
 @login_required
 def member_list(group_id):
     group = session.query(Group).filter(Group.id == group_id).first()
+
+    current_user_role = session.query(User_group_role).filter(
+        User_group_role.user_id == current_user.id,
+        User_group_role.group_id == group_id).first()
+
     members = session.query(User).join(
         User_group_role).join(Group).filter(Group.id == group_id).all()
     session.close()
 
-    return render_template("groupMembers.html", members=members, group=group)
+    return render_template("groupMembers.html", members=members, group=group, current_user_role=current_user_role)
 
 
 @grouproute.route("/group_members/<group_id>", methods=['POST'])

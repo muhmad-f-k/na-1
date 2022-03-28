@@ -10,7 +10,7 @@
                 </div>
             {% endif %} {% endwith %}
               <h1 class="test">{{ member.email }}</h1>
-              {% if (current_user.id == 1) %}
+              {% if (current_user_role.role_id == 1) %}
                   <input type="radio" name="member_role" value="1">Admin</input>
                   <input type="radio" name="member_role" value="2">Moderator</input>
                   <input type="radio" name="member_role" value="3">Kokk</input>
