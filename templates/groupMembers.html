@@ -10,12 +10,14 @@
                 </div>
             {% endif %} {% endwith %}
               <h1 class="test">{{ member.email }}</h1>
-              <input type="radio" name="member_role" value="1">Admin</input>
-              <input type="radio" name="member_role" value="2">Moderator</input>
-              <input type="radio" name="member_role" value="3">Kokk</input>
-              <input type="radio" name="member_role" value="4">Gjest</input>
-              <input type="hidden" name="member_id" value="{{ member.id }}">
-              <input type="submit" value="Lagre"/>
+              {% if (current_user.id == 1) %}
+                  <input type="radio" name="member_role" value="1">Admin</input>
+                  <input type="radio" name="member_role" value="2">Moderator</input>
+                  <input type="radio" name="member_role" value="3">Kokk</input>
+                  <input type="radio" name="member_role" value="4">Gjest</input>
+                  <input type="hidden" name="member_id" value="{{ member.id }}">
+                  <input type="submit" value="Lagre"/>
+              {% endif %}
           </form>
       {% endfor %}
         </div>
