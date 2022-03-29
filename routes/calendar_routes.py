@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, url_for, redirect
 from sqlalchemy import desc
-
+from base64 import b64encode
 from db.modul import *
 from flask_login import current_user
 
@@ -153,6 +153,9 @@ def show_dinner(dinner_id, group_id):
         User_group_role.group_id == group_id).first()
     dinner = session.query(Dinner).filter(Dinner.id == dinner_id).first()
     recipe = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(desc(Recipe.version)).first()
+
+    image = b64encode(dinner.image).decode("utf-8")
+
     ingredients_recipe = session.query(Ingredient.name).join(
         Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe.id).all()
     session.close()
@@ -166,7 +169,7 @@ def show_dinner(dinner_id, group_id):
     return render_template("dinner.html", dinner=dinner,
                            current_user_role=current_user_role,
                            len=len(ingredients_recipe),
-                           recipe=recipe,
+                           recipe=recipe, image=image,
                            ingredients=ingredients_recipe,
                            amounts=amounts_recipe,
                            measurements=measurements_recipe)
