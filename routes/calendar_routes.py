@@ -83,14 +83,32 @@ def show_calendar():
 
             # get dinners for this month
             # meals.append(session.query(Meal).filter(Meal.date == str(i)).first())
+            # meal = session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first()
+            #print(meal)
+            # if meal:
+            #     ndinner = meal[1]
+            #     nimage = base64.b64encode(ndinner.image).decode("utf-8")
+            #     ndinner.image = nimage
+            #    print(ndinner.image)
             meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first())
             session.close()
-    dinner = meals[2][1]
-    image = base64.b64encode(dinner.image).decode("utf-8")
+
+    dinners = []
+    for n in meals:
+        if n:
+            ddinner = n[1]
+            title = ddinner.title
+            dimage = base64.b64encode(ddinner.image).decode("utf-8")
+            dinners.append([title, dimage])
+        else:
+            dinners.append(n)
+
+    # dinner = meals[0][1]
+    # image = base64.b64encode(dinner.image).decode("utf-8")
 
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
-                           month_name=month_name, meals=meals, image=image)
+                           month_name=month_name, dinners=dinners)
 
 
 @calendarroute.route('/createMeal', methods=['GET', 'POST'])

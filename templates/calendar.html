@@ -28,9 +28,9 @@
   {% for day in full_month %}
   <div class="calendar__day">
     {{ day.day }}<br />{{ days_of_week.get(day.strftime("%A")) }}<br />
-      {% if meals[day.day - 1] %}
-          {{ meals[day.day - 1][1].title }}<br>
-              <img class="calendar__day__image" src="data:;base64,{{ image }}"/>
+      {% if dinners[day.day - 1] %}
+          {{ dinners[day.day - 1][0] }}<br>
+              <img class="calendar__day__image" src="data:;base64,{{ dinners[day.day - 1][1] }}"/>
       {% else %}
           <form class="calendar__form" action="{{ url_for('calendarroute.create_meal') }}" method="POST">
             <button
