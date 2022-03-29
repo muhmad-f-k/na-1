@@ -15,8 +15,10 @@ def calendar():
 def show_calendar():
     import calendar as cd
     import datetime
-    from base64 import b64encode
+    import base64
     import matplotlib.pyplot as plt
+    from PIL import Image
+    import io
 
     days_of_week = {"Monday": "Mandag",
                     "Tuesday": "Tirsdag",
@@ -83,10 +85,12 @@ def show_calendar():
             # meals.append(session.query(Meal).filter(Meal.date == str(i)).first())
             meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first())
             session.close()
+    dinner = meals[2][1]
+    image = base64.b64encode(dinner.image).decode("utf-8")
 
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
-                           month_name=month_name, meals=meals)
+                           month_name=month_name, meals=meals, image=image)
 
 
 @calendarroute.route('/createMeal', methods=['GET', 'POST'])
@@ -96,7 +100,7 @@ def create_meal():
 
     if "choose_dinner" in request.form:
         dinner_id = request.form.get('choose_dinner')
-        #incoming_date = request.form.get('date')
+        # incoming_date = request.form.get('date')
 
         converted_date = dinner_id.strip('][').split(', ')
         inc_dinner_id = int(converted_date[0])
@@ -124,7 +128,8 @@ def create_meal():
         # current_date_time = datetime.datetime(inc_year, inc_month, inc_day)
         # print(str(inc_year) + ' ' + str(inc_month) + ' ' + str(inc_day))
         # print(current_date_time)
-        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day, dinners=dinners)
+        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day,
+                               dinners=dinners)
 
 
 @calendarroute.route('/createDinner', methods=['GET', 'POST'])
