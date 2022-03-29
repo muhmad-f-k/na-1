@@ -352,6 +352,10 @@ div.dinnerdiv1:hover {
   height: 275px;
   border-style: solid;
 }
+.calendar__day__image {
+  width: 190px;
+  height: 210px;
+}
 
 .calendar__button[type="submit"] {
   color: white;
