@@ -1,7 +1,7 @@
 import base64
 import io
 
-from flask import Blueprint, render_template, request, url_for
+from flask import Blueprint, render_template, request, url_for, redirect
 from db.modul import *
 
 calendarroute = Blueprint('calendarroute', __name__)
@@ -60,6 +60,13 @@ def show_calendar():
             new_year -= 1
             new_month = 12
 
+    if 'delete_meal' in request.form:
+        print(request.form.get('delete_meal'))
+        session.query(Meal).filter_by(id=request.form.get('delete_meal')).delete()
+        session.commit()
+        session.close()
+
+
     current_date_time = None
     if new_year is not None and new_month is not None:
         current_date_time = datetime.datetime(new_year, new_month, 1)
@@ -108,7 +115,7 @@ def show_calendar():
 
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
-                           month_name=month_name, dinners=dinners)
+                           month_name=month_name, dinners=dinners, meals=meals)
 
 
 @calendarroute.route('/createMeal', methods=['GET', 'POST'])
@@ -131,7 +138,8 @@ def create_meal():
         session.add(meal)
         session.commit()
         session.close()
-        return render_template(url_for('calendarroute.show_calendar'))
+        #return render_template(url_for('calendarroute.show_calendar'))
+        return redirect(url_for('calendarroute.show_calendar'))
     else:
         incoming_date = request.form.get("add_dinner")
         converted_date = incoming_date.strip('][').split(', ')
@@ -142,10 +150,6 @@ def create_meal():
         dinners.append(session.query(Dinner).all())
         session.close()
         print(dinners[0][1].title)
-        # print(dinners)
-        # current_date_time = datetime.datetime(inc_year, inc_month, inc_day)
-        # print(str(inc_year) + ' ' + str(inc_month) + ' ' + str(inc_day))
-        # print(current_date_time)
         return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day,
                                dinners=dinners)
 
