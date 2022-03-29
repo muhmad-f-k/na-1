@@ -563,3 +563,11 @@ dropdownIngredientlabel {
   width: 280px;
   border-color: #2ecc71;
 }
+
+div.dinner img {
+  display: block;
+  max-width:500px;
+  max-height:500px;
+  width: auto;
+  height: auto;
+}
