@@ -35,7 +35,7 @@
                     class="calendar__button"
                     type="submit"
                     name="delete_meal"
-                    value="{{ meals[day.day - 1][0].id }}"
+                    value="{{ [meals[day.day - 1][0].id, year, month] }}"
                     >
                     Slett
                     </button>

@@ -61,8 +61,14 @@ def show_calendar():
             new_month = 12
 
     if 'delete_meal' in request.form:
-        print(request.form.get('delete_meal'))
-        session.query(Meal).filter_by(id=request.form.get('delete_meal')).delete()
+        # print(request.form.get('delete_meal'))
+        incoming_date = request.form.get("delete_meal")
+        converted_date = incoming_date.strip('][').split(', ')
+        meal_id = int(converted_date[0])
+        new_year = int(converted_date[1])
+        new_month = int(converted_date[2])
+
+        session.query(Meal).filter_by(id=meal_id).delete()
         session.commit()
         session.close()
 
@@ -84,19 +90,7 @@ def show_calendar():
         if i.month != month:
             pass
         else:
-            # print('' + str(i) + ' ' + str(type(i)))
             full_month.append(i)
-            # print(i)
-
-            # get dinners for this month
-            # meals.append(session.query(Meal).filter(Meal.date == str(i)).first())
-            # meal = session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first()
-            #print(meal)
-            # if meal:
-            #     ndinner = meal[1]
-            #     nimage = base64.b64encode(ndinner.image).decode("utf-8")
-            #     ndinner.image = nimage
-            #    print(ndinner.image)
             meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first())
             session.close()
 
