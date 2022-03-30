@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Velkommen til middagsdato-tildeling </h1>
-    {{ current_date_time }}
+  <h1>Velg middag for {{ inc_day }}.{{ inc_month }}.{{ inc_year }} </h1>
     {% for dinner in dinners %}
         <div class="calendar__day">
                 <form class="calendar__form" method="POST">
@@ -16,7 +15,7 @@
                     </button>
                 </form>
             {{ dinner[1] }}<br>
-            <img class="calendar__day__image" src="data:;base64,{{ dinner[2] }}"/><br>
+            <img class="calendar__day__image" src="data:;base64,{{ dinner[2] }}"/>
         </div>
     {% endfor %}
 {% endblock %}
