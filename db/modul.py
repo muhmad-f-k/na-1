@@ -66,6 +66,7 @@ class Group(base):
     user_group_role = relationship("User_group_role", back_populates="group")
     shopping_lists = relationship("Shopping_list")
     dinner = relationship("Dinner")
+    meal = relationship("Meal")
 
     def __repr__(self):
         return f"{self.name} - {self.id}"
@@ -169,6 +170,7 @@ class Meal(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     date = Column(DATE(), default=datetime.date.today(), nullable=False)
+    group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
     dinner_id = Column(Integer, ForeignKey("dinner.id"), nullable=False)
 
     def __repr__(self):

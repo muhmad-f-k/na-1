@@ -174,3 +174,11 @@ def show_dinner(dinner_id, group_id):
                            amounts=amounts_recipe,
                            measurements=measurements_recipe)
 
+
+@calendarroute.route('/shopping_list/<group_id>')
+def show_shopping_list(group_id):
+    ingredients_week = session.query(Ingredient.name).join(
+        Recipe_ingredient_helper).join(Recipe).join(Dinner).join(Meal).filter(Meal.group_id == group_id, Meal.date)
+
+    return render_template("shopping_list.html", group_id=group_id)
+
