@@ -76,7 +76,7 @@
             <h2>INGREDIENSER</h2><br>
             {# 4 #}
             {% for i in range(0,(len)) %}
-            <li class="section_dinner approach" id="ingredients_list">
+            <li class="section_dinner approach" id="ingredient-line-height">
             {{ amounts[i].amount}}
             {{ measurements[i].name }}
             {{ ingredients[i].name }}
@@ -87,10 +87,11 @@
         </div>
     </article>
 
-    <article class="testimonial flow bg-neutral-100 quote text-neutral-100">
-        <div class="flex">
-            <h3>LEGG TIL HANDLELISTE</h3><br>
-            <h3>ANTALL PORSJONER</h3>
+    <article class="testimonial flow bg-neutral-100 quote text-neutral-100" id="testimonial-test">
+        <div class="flex" id="flex-test">
+            <div class="main_title">
+            <h2>LEGG TIL HANDLELISTE</h2>
+            </div>
             {# 5 #}
         </div>
     </article>
