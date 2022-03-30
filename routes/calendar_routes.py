@@ -2,6 +2,7 @@ import base64
 import io
 
 from flask import Blueprint, render_template, request, url_for, redirect
+from flask_login import login_user, login_required, current_user, logout_user
 from db.modul import *
 
 calendarroute = Blueprint('calendarroute', __name__)
@@ -133,7 +134,7 @@ def create_meal():
         inc_day = int(converted_date[3])
         meal_date = datetime.datetime(inc_year, inc_month, inc_day)
 
-        meal = Meal(date=meal_date, dinner_id=inc_dinner_id)
+        meal = Meal(date=meal_date, dinner_id=inc_dinner_id, group_id=1)
         session.add(meal)
         session.commit()
         session.close()
@@ -168,13 +169,13 @@ def create_meal():
 def create_dinner():
     if 'dinner_title' in request.form:
         dinner_title = request.form.get('dinner_title')
-        user_id = request.form.get('user_id')
+        # user_id = request.form.get('user_id')
         group_id = request.form.get('group_id')
         # dinner_image = request.form.get('dinner_image')
         dinner_image = request.files['dinner_image'].read()
         # print(dinner_image)
 
-        dinner = Dinner(title=dinner_title, image=dinner_image, user_id=user_id, group_id=group_id)
+        dinner = Dinner(title=dinner_title, image=dinner_image, user_id=current_user.id, group_id=group_id)
         session.add(dinner)
         session.commit()
         session.close()
