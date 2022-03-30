@@ -143,8 +143,15 @@ def delete_dinner():
 @calendarroute.route('/show_group_dinners/<group_id>')
 def show_group_dinners(group_id):
     dinners = session.query(Dinner).filter(Dinner.group_id == group_id).all()
+
+    def decode_image(image):
+        picture = b64encode(image).decode("utf-8")
+        return picture
+
+    #image = b64encode(dinners.image).decode("utf-8")
+
     session.close()
-    return render_template("dinners.html", dinners=dinners, group_id=group_id)
+    return render_template("dinners.html", dinners=dinners, group_id=group_id, decode_image=decode_image)
 
 @calendarroute.route('/show_dinner/<dinner_id>/<group_id>')
 def show_dinner(dinner_id, group_id):
@@ -181,4 +188,6 @@ def show_shopping_list(group_id):
         Recipe_ingredient_helper).join(Recipe).join(Dinner).join(Meal).filter(Meal.group_id == group_id, Meal.date)
 
     return render_template("shopping_list.html", group_id=group_id)
+
+
 

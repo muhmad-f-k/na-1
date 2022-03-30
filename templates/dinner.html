@@ -55,7 +55,7 @@
     <article class="testimonial flow bg-neutral-100 quote text-neutral-100" id="testimonial-test">
         <div class="flex" id="flex-test">
             <div class="main_title">
-        <h1>{{ dinner.title }}</h1>
+        <h1 class="dinner-bg-color">{{ dinner.title }}</h1>
                 <a
                href="{{ url_for('usersroute.profile') }}">
                 <button class="button-three">Endre tittel</button>
@@ -67,9 +67,9 @@
     <article class="testimonial flow quote text-neutral-100" id="testimonial-test">
         <div class="flex">
         <div class="main_title">
-            <h2 class="headline">SLIK GJØR DU</h2><br>
+            <h2 class="headline dinner-bg-color">SLIK GJØR DU</h2><br>
             {# 3 #}
-        <p class="approach" style="white-space: pre-line">{{ recipe.approach }}</p>
+        <p class="approach dinner-bg-color" style="white-space: pre-line">{{ recipe.approach }}</p>
             <a
                href="{{ url_for('usersroute.profile') }}">
                 <button class="button-three">Endre fremgangsmåte</button>
@@ -81,10 +81,10 @@
     <article class="testimonial flow quote text-neutral-100" id="testimonial-test">
         <div class="flex">
         <div class="main_title">
-            <h2 class="headline">INGREDIENSER</h2><br>
+            <h2 class="headline dinner-bg-color">INGREDIENSER</h2><br>
             {# 4 #}
             {% for i in range(0,(len)) %}
-            <li class="section_dinner approach" id="ingredient-line-height">
+            <li class="section_dinner approach dinner-bg-color" id="ingredient-line-height">
             {{ amounts[i].amount}}
             {{ measurements[i].name }}
             {{ ingredients[i].name }}
@@ -101,9 +101,9 @@
 
     <article class="testimonial flow bg-neutral-100 quote text-neutral-100" id="testimonial-test">
         <div class="flex" id="flex-test">
-            <div class="main_title">
-            <h2>LEGG TIL HANDLELISTE</h2>
-                <h2>ANTALL PORSJONER</h2>
+            <div class="main_title dinner-bg-color">
+            <h2 class="dinner-bg-color">LEGG TIL HANDLELISTE</h2>
+                <h2 class="dinner-bg-color">ANTALL PORSJONER</h2>
 
             </div>
             {# 5 #}

@@ -731,7 +731,7 @@ h3 {
 }
 
 #testimonial-test {
-  background: #cce4e9;
+  background: #ecfbff;
   border: solid white;
 }
 
@@ -881,7 +881,11 @@ h2.headline {
   margin: 0 auto;
   padding: 15px;
   text-align: center;
+  background-color: #ecfbff;
+}
 
+.dinner-bg-color {
+  background-color: #ecfbff;
 }
 
 .left {
@@ -950,15 +954,15 @@ div.dinner img {
   border: none;
   font: inherit;
   color: inherit;
-  background-color: transparent;
+  background-color: #ecfbff;
   cursor: pointer;
 }
 
 .button-three:hover {
-  background-color: #22b676;
+  background-color: #cce4e9;
 }
 
 .button-three:active {
-  background-color: #15da84;
+  background-color: #bef5ff;
   color: black;
 }
