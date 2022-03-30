@@ -146,12 +146,23 @@ def create_meal():
         inc_year = int(converted_date[0])
         inc_month = int(converted_date[1])
         inc_day = int(converted_date[2])
-        dinners = []
-        dinners.append(session.query(Dinner).all())
+        # dinners = []
+        # dinners.append(session.query(Dinner).all())
+        dinners = session.query(Dinner).all()
         session.close()
-        print(dinners[0][1].title)
+        # print(dinners)
+
+        conv_dinners = []
+        for dinner in dinners:
+            # print(dinner)
+            did = dinner.id
+            title = dinner.title
+            dimage = base64.b64encode(dinner.image).decode("utf-8")
+            conv_dinners.append([did, title, dimage])
+
+        # return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day, dinners=dinners)
         return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day,
-                               dinners=dinners)
+                               dinners=conv_dinners)
 
 
 @calendarroute.route('/createDinner', methods=['GET', 'POST'])
