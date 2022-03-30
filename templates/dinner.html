@@ -52,28 +52,36 @@
         </div>
     </article>
 
-    <article class="testimonial flow bg-neutral-100 quote text-neutral-100">
-        <div class="flex">
+    <article class="testimonial flow bg-neutral-100 quote text-neutral-100" id="testimonial-test">
+        <div class="flex" id="flex-test">
             <div class="main_title">
         <h1>{{ dinner.title }}</h1>
+                <a
+               href="{{ url_for('usersroute.profile') }}">
+                <button class="button-three">Endre tittel</button>
+            </a>
         </div>
         </div>
     </article>
 
-    <article class="testimonial flow bg-neutral-100 quote text-neutral-100">
+    <article class="testimonial flow quote text-neutral-100" id="testimonial-test">
         <div class="flex">
+        <div class="main_title">
+            <h2 class="headline">SLIK GJØR DU</h2><br>
             {# 3 #}
-            <div>
-        <h2>SLIK GJØR DU</h2><br>
         <p class="approach" style="white-space: pre-line">{{ recipe.approach }}</p>
+            <a
+               href="{{ url_for('usersroute.profile') }}">
+                <button class="button-three">Endre fremgangsmåte</button>
+            </a>
         </div>
         </div>
     </article>
 
-    <article class="testimonial flow bg-neutral-100 quote text-neutral-100">
+    <article class="testimonial flow quote text-neutral-100" id="testimonial-test">
         <div class="flex">
-        <div>
-            <h2>INGREDIENSER</h2><br>
+        <div class="main_title">
+            <h2 class="headline">INGREDIENSER</h2><br>
             {# 4 #}
             {% for i in range(0,(len)) %}
             <li class="section_dinner approach" id="ingredient-line-height">
@@ -82,6 +90,10 @@
             {{ ingredients[i].name }}
             </li>
         {% endfor %}
+        <a
+               href="{{ url_for('usersroute.profile') }}">
+                <button class="button-three">Endre ingredienser</button>
+            </a>
 
         </div>
         </div>
@@ -91,6 +103,8 @@
         <div class="flex" id="flex-test">
             <div class="main_title">
             <h2>LEGG TIL HANDLELISTE</h2>
+                <h2>ANTALL PORSJONER</h2>
+
             </div>
             {# 5 #}
         </div>

@@ -726,11 +726,13 @@ h3 {
   font-size: var(--fs-400);
   padding: .1rem .1rem;
   border-radius: 0.5rem;
+  border: solid white;
   box-shadow: 1.5rem 2.75rem 2rem -2rem hsl(var(--clr-secondary-400) / 0.25);
 }
 
 #testimonial-test {
-  padding-top: .1rem;
+  background: #cce4e9;
+  border: solid white;
 }
 
 
@@ -836,12 +838,21 @@ div.inner img {
 }
 
 .approach {
-  line-height: 1.5;
-  font-size: medium;
+  line-height: 2.5;
+  font-size: large;
+  margin: 2rem 2rem;
+  text-align: left;
 }
 
 #ingredient-line-height {
-  line-height: 2.5;
+  line-height: 1.5;
+}
+
+h2.headline {
+    border-bottom:1px solid white;
+    float:left;
+    width:100%;
+    padding-bottom:1rem;
 }
 
 
@@ -896,7 +907,8 @@ div.inner img {
 }
 
 #approach {
-  margin-top: 15px;
+  margin-top: 2rem;
+  padding-top: 2rem;
 
 }
 
@@ -924,4 +936,29 @@ div.dinner img {
   max-width:1000px;
   width: auto;
   height: auto;
+}
+
+.fas,
+.far {
+  padding-right: 5px;
+
+}
+
+.button-three {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.button-three:hover {
+  background-color: #22b676;
+}
+
+.button-three:active {
+  background-color: #15da84;
+  color: black;
 }

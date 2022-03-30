@@ -142,7 +142,7 @@ def delete_dinner():
 
 @calendarroute.route('/show_group_dinners/<group_id>')
 def show_group_dinners(group_id):
-    dinners = session.query(Dinner).filter(Group.id == group_id).all()
+    dinners = session.query(Dinner).filter(Dinner.group_id == group_id).all()
     session.close()
     return render_template("dinners.html", dinners=dinners, group_id=group_id)
 
