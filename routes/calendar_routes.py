@@ -60,7 +60,7 @@ def show_calendar():
             new_year -= 1
             new_month = 12
 
-    if 'delete_meal' in request.form:
+    elif 'delete_meal' in request.form:
         # print(request.form.get('delete_meal'))
         incoming_date = request.form.get("delete_meal")
         converted_date = incoming_date.strip('][').split(', ')
@@ -72,6 +72,11 @@ def show_calendar():
         session.commit()
         session.close()
 
+    elif request.args.get('create_meal_year') and request.args.get('create_meal_month'):
+        incoming_date = [request.args.get('create_meal_year'), request.args.get('create_meal_month')]
+        # print(incoming_date)
+        new_year = int(incoming_date[0])
+        new_month = int(incoming_date[1])
 
     current_date_time = None
     if new_year is not None and new_month is not None:
@@ -133,7 +138,7 @@ def create_meal():
         session.commit()
         session.close()
         #return render_template(url_for('calendarroute.show_calendar'))
-        return redirect(url_for('calendarroute.show_calendar'))
+        return redirect(url_for('calendarroute.show_calendar', create_meal_year=inc_year, create_meal_month=inc_month))
     else:
         incoming_date = request.form.get("add_dinner")
         converted_date = incoming_date.strip('][').split(', ')
