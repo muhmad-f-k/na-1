@@ -1,22 +1,27 @@
 {% extends "base.html" %} {% block content %}
-    <div id="grouploop">
-  {% for dinner in dinners %}
-      </div>
 
 
 
-<a href="{{ url_for('calendarroute.show_dinner', dinner_id=dinner.id, group_id=group_id) }}">
-<div class="dinnerdiv outer">
-    <div class="inner">
-        <img class="inner" src="data:;base64,{{ decode_image(dinner.image) }}"/>
-    </div>
+
+
+<div class="grid-container">
+    {% for dinner in dinners %}
+        <a href="{{ url_for('calendarroute.show_dinner', dinner_id=dinner.id, group_id=group_id) }}">
+        <div class="grid-column">
     <div>
-        <h2 class="main_title">{{ dinner.title }}</h2>
+        <img src="data:;base64,{{ decode_image(dinner.image) }}"/>
     </div>
+            <div>
+    <div>
+        <h2 class="main_title" id="title-bg-white">{{ dinner.title }}</h2>
+    </div>
+            </div>
+            </div>
+        </a>
+{% endfor %}
 </div>
 
-</a>
-  {% endfor %}
+
 {% endblock %}
 
 
