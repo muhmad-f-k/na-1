@@ -629,3 +629,28 @@ dropdownIngredientlabel {
   font-weight: bold;
   color: #009879;
 }
+
+.heading_table{
+  border-collapse: collapse;
+  box-shadow: 0 5px 10px #f9fbff;
+  background-color: white;
+  text-align: left;
+  overflow: hidden;
+}
+.thead_table{
+  box-shadow: 0 5px 10px #f9fbff;
+}
+.th_table{
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+.td_table{
+  padding: 1rem 2rem ;
+}
+
+.tr_table:nth-child(even){
+  background-color: #f4f6fb;
+}

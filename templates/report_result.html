@@ -43,4 +43,23 @@
   </tr>
   {% endfor %}
 </table>
+
+<table class="heading_table">
+  <thead class="thead_table">
+    <tr class="tr_table">
+      {% for header in headings %}
+      <th class="th_table">{{header}}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+    <tr class="tr_table">
+      {% for cell in row %}
+      <td class="td_table">{{ cell }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
