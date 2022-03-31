@@ -1,0 +1,8 @@
+{% extends "base.html" %} {% block content %}
+<div id="grouploop">
+  {% for cell in cost %}
+  <div>Total Pris</div>
+  <div>{{cell [0]}}</div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -7,6 +7,7 @@ from routes.group_routes import grouproute
 from routes.recipe_routes import recipe_route
 from routes.auth_routes import usersroute
 from routes.edit_users_routes import edituserroute
+from routes.rapport_routes import rapportroute
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "TEST"
@@ -16,6 +17,7 @@ app.register_blueprint(calendarroute)
 app.register_blueprint(grouproute)
 app.register_blueprint(recipe_route)
 app.register_blueprint(edituserroute)
+app.register_blueprint(rapportroute)
 login_manager = LoginManager()
 login_manager.login_view = 'usersroute.login'
 login_manager.init_app(app)

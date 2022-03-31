@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block content %}
+<form class="login" method="POST">
+  <h1>Hent Rapport</h1>
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <div class="notification-is-danger-login" id="notification-is-danger-login">
+    {{ messages[0] }}
+  </div>
+  {% endif %} {% endwith %}
+  <input type="date" name="start_date" value="Today" />
+  <input type="date" name="end_date" data-value="7" value="After one week" />
+  <input type="submit" name="" value="Hent Rapport" />
+</form>
+{% endblock %}

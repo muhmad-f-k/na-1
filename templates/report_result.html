@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block content %}
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>Total Pris</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="active-row">
+      {% for cell in cost %}
+      <td>{{cell [0]}}</td>
+      {% endfor %}
+    </tr>
+  </tbody>
+</table>
+
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>Top 3 Middager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="active-row">
+      {% for word in top_3_dinner %}
+      <td>{{ word.0[0] }}</td>
+      {% endfor %}
+    </tr>
+  </tbody>
+</table>
+
+<table class="report-table">
+  <thead>
+    <tr class="active-row">
+      <th>ingredient</th>
+      <th>measurement</th>
+      <th>amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+    <tr class="active-row">
+      {% for cell in row %}
+      <td>{{cell}}</td>
+      {% endfor %} {% endfor %} {% for row1 in data1 %} {% for cell1 in row1 %}
+      <td>{{cell1}}</td>
+      {% endfor %} {% endfor %} {% for row2 in data2 %} {% for cell2 in row2 %}
+      <td>{{cell2}}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
