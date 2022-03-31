@@ -1,5 +1,9 @@
 {% extends "base.html" %} {% block content %}
-<h1 class="calendar__h1">Kalender</h1>
+    {% if group_id %}
+        <h1 class="calendar__h1">Gruppe {{ group_id }}'s Kalender</h1>
+        {% else %}
+        <h1 class="calendar__h1">Restauranten's Kalender</h1>
+    {% endif %}
 <h2 class="calendar__h2">{{ month_name }} {{ year }}</h2>
 <h2 class="calendar__h2">
 <!--<div>
@@ -47,7 +51,7 @@
             class="calendar__button"
             type="submit"
             name="add_dinner"
-            value="{{ [year, month, day.day] }}"
+            value="{{ [year, month, day.day, group_id] }}"
             >
             Legg til
             </button>

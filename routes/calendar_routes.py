@@ -21,6 +21,13 @@ def show_calendar():
     from PIL import Image
     import io
 
+    group_id = None
+    if request.args.get('group_id'):
+        group_id = int(request.args.get('group_id'))
+    else:
+        pass
+
+
     days_of_week = {"Monday": "Mandag",
                     "Tuesday": "Tirsdag",
                     "Wednesday": "Onsdag",
@@ -97,8 +104,14 @@ def show_calendar():
             pass
         else:
             full_month.append(i)
-            meals.append(session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first())
-            session.close()
+            if group_id:
+                meals.append(
+                    session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.group_id == group_id).filter(Meal.date == i).first())
+                session.close()
+            else:
+                meals.append(
+                    session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first())
+                session.close()
 
     dinners = []
     for n in meals:
@@ -115,7 +128,7 @@ def show_calendar():
 
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
-                           month_name=month_name, dinners=dinners, meals=meals)
+                           month_name=month_name, dinners=dinners, meals=meals, group_id=group_id)
 
 
 @calendarroute.route('/createMeal', methods=['GET', 'POST'])
@@ -132,23 +145,26 @@ def create_meal():
         inc_year = int(converted_date[1])
         inc_month = int(converted_date[2])
         inc_day = int(converted_date[3])
+        group_id = int(converted_date[4])
         meal_date = datetime.datetime(inc_year, inc_month, inc_day)
 
-        meal = Meal(date=meal_date, dinner_id=inc_dinner_id, group_id=1)
+        meal = Meal(date=meal_date, dinner_id=inc_dinner_id, group_id=group_id)
         session.add(meal)
         session.commit()
         session.close()
         #return render_template(url_for('calendarroute.show_calendar'))
-        return redirect(url_for('calendarroute.show_calendar', create_meal_year=inc_year, create_meal_month=inc_month))
+        return redirect(url_for('calendarroute.show_calendar',
+                                create_meal_year=inc_year, create_meal_month=inc_month, group_id=group_id))
     else:
         incoming_date = request.form.get("add_dinner")
         converted_date = incoming_date.strip('][').split(', ')
         inc_year = int(converted_date[0])
         inc_month = int(converted_date[1])
         inc_day = int(converted_date[2])
+        group_id = int(converted_date[3])
         # dinners = []
         # dinners.append(session.query(Dinner).all())
-        dinners = session.query(Dinner).all()
+        dinners = session.query(Dinner).filter_by(group_id=group_id).all()
         session.close()
         # print(dinners)
 
@@ -162,7 +178,7 @@ def create_meal():
 
         # return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day, dinners=dinners)
         return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day,
-                               dinners=conv_dinners)
+                               dinners=conv_dinners, group_id=group_id)
 
 
 @calendarroute.route('/createDinner', methods=['GET', 'POST'])
@@ -170,8 +186,11 @@ def create_dinner():
     if 'dinner_title' in request.form:
         dinner_title = request.form.get('dinner_title')
         # user_id = request.form.get('user_id')
-        group_id = request.form.get('group_id')
+
+        # group_id = request.form.get('group_id')
+        group_id = int(request.form.get('group_id'))
         # dinner_image = request.form.get('dinner_image')
+
         dinner_image = request.files['dinner_image'].read()
         # print(dinner_image)
 
@@ -181,7 +200,9 @@ def create_dinner():
         session.close()
         return render_template('createDinner.html')
     else:
-        return render_template('createDinner.html')
+        group_id = int(request.args.get('group_id'))
+        print(group_id)
+        return render_template('createDinner.html', group_id=group_id)
 
 
 @calendarroute.route('/deleteDinner', methods=['GET', 'POST'])
