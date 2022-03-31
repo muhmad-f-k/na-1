@@ -35,6 +35,6 @@ def report_post():
         Group).join(Dinner).join(Meal).filter(Meal.date.between(start_date, end_date)).all()
 
     count = Counter(top_3_dinner)
-    top_3_dinner_result = count.most_common(2)
+    top_3_dinner_result = count.most_common(3)
     list.append(top_3_dinner_result)
     return render_template("report_result.html", headings=headings, data=data, headings1=headings1, data1=total_price, headings2=headings2, data2=list)

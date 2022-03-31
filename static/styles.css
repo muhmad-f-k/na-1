@@ -611,7 +611,6 @@ dropdownIngredientlabel {
 .report-table th,
 .report-table td {
   padding: 12px 15px;
-  text-transform: uppercase;
 }
 
 .report-table tbody tr {
