@@ -13,4 +13,34 @@
   </tr>
   {% endfor %}
 </table>
+
+<table class="report-table">
+  <tr class="active-row">
+    {% for header in headings1 %}
+    <th>{{header}}</th>
+    {% endfor %}
+  </tr>
+  {% for row in data1 %}
+  <tr class="active-row">
+    {% for cell in row %}
+    <td>{{ cell }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+<table class="report-table">
+  <tr class="active-row">
+    {% for header in headings2 %}
+    <th>{{header}}</th>
+    {% endfor %}
+  </tr>
+  {% for row in data2 %}
+  <tr class="active-row">
+    {% for cell in row %}
+    <td>{{ cell [0] }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}

@@ -22,4 +22,18 @@ def report_post():
     headings = ("Ingredient", "measurement", "amount")
     data = session.query(Ingredient.name, Measurement.name, Amount.amount).select_from(
         Recipe).join(Recipe_ingredient_helper).join(Ingredient).join(Measurement).join(Amount).filter(Dinner.id == Recipe.dinner_id, Dinner.group_id == Meal.group_id, Meal.date.between(start_date, end_date)).all()
-    return render_template("report_result.html", headings=headings, data=data)
+    session.close()
+
+    headings1 = ("Total Pris", "")
+    total_price = session.query(func.sum(Shopping_list.price).label('Total Pris')).filter(
+        Shopping_list.date.between(start_date, end_date), Shopping_list.group_id == 1).all()
+    session.close()
+
+    headings2 = ("Top 3 Middag", "")
+    top_3_dinner = session.query(Dinner.title).select_from(
+        Group).join(Dinner).join(Meal).filter(Meal.date.between(start_date, end_date), Meal.group_id == 1).all()
+
+    count = Counter(top_3_dinner)
+    top_3_dinner_result = count.most_common(3)
+
+    return render_template("report_result.html", headings=headings, data=data, headings1=headings1, data1=total_price, headings2=headings2, data2=top_3_dinner_result)
