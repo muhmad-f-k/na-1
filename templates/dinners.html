@@ -1,26 +1,25 @@
 {% extends "base.html" %} {% block content %}
-<div id="grouploop">
+    <div id="grouploop">
   {% for dinner in dinners %}
-  <div>
-    <a href="{{ url_for('calendarroute.show_dinner', dinner_id=dinner.id, group_id=group_id) }}">
-       <main class="testimonial-grid">
-    <article class="testimonial">
-        <div class="flex outer">
-            <h2 class="main_title">{{ dinner.title }}</h2>
-            <div class="inner">
-                <img class="inner" src="data:;base64,{{ decode_image(dinner.image) }}"/>
-            </div>
-
-        </div>
-    </article>
-       </main>
+      </div>
 
 
-    </a>
-  </div>
-  {% endfor %}
+
+<a href="{{ url_for('calendarroute.show_dinner', dinner_id=dinner.id, group_id=group_id) }}">
+<div class="dinnerdiv outer">
+    <div class="inner">
+        <img class="inner" src="data:;base64,{{ decode_image(dinner.image) }}"/>
+    </div>
+    <div>
+        <h2 class="main_title">{{ dinner.title }}</h2>
+    </div>
 </div>
+
+</a>
+  {% endfor %}
 {% endblock %}
+
+
 
 {#<div class="dinnerdiv">test</div>
 <div class="dinnerdiv">test</div>

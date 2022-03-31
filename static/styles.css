@@ -243,6 +243,7 @@ div.dinnerdiv {
   left: 50px;
   top: 30px;
   flex: 1;
+  margin-right: 2rem;
 }
 
 div.dinnerdiv1 {
@@ -722,6 +723,10 @@ h3 {
   margin-inline: auto;
 }
 
+#testimonial-grid-dinners {
+  width: min(20%, 70rem);
+}
+
 .testimonial {
   font-size: var(--fs-400);
   padding: .1rem .1rem;
@@ -757,9 +762,9 @@ h3 {
   .testimonial-grid {
       grid-template-areas:
       "one one"
-      "two three"
-      "five five"
-      "four four";
+      "two two"
+      "four three"
+      "five five";
   }
 }
 
@@ -767,18 +772,18 @@ h3 {
   .testimonial-grid {
     grid-template-areas:
      'one one'
-     'two five'
-     'three five'
-     'four four';
+     'two two'
+     'four three'
+     'five five';
   }
 }
 
 @media screen and (min-width: 54em) {
   .testimonial-grid {
       grid-template-areas:
-      "one one two"
-      "five five five"
-      "three four four";
+      "one one one"
+      "five two two"
+      "four three three";
   }
 }
 
@@ -797,18 +802,18 @@ h3 {
 }
 
 div.outer {
-    margin: 0 auto;
     overflow: visible;
 }
 div.inner {
     display: inline-block;
     position:relative;
-    right: -50%;
+  margin-right: auto;
+  margin-left: auto;
 }
 div.inner img {
     position: relative;
     border-radius: 1%;
-    left:-50%;
+    /*left:-50%;*/
 }
 
 .testimonial .name {
@@ -875,6 +880,7 @@ h2.headline {
   height: auto;
   margin: 0 auto;
 }
+
 
 .main_title {
   width: 100%;
