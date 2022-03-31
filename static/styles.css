@@ -587,6 +587,7 @@ dropdownIngredientlabel {
 }
 
 .report-table {
+ 
   border-collapse: collapse;
   margin: 25px 0;
   font-size: 0.9em;
@@ -610,7 +611,7 @@ dropdownIngredientlabel {
 .report-table th,
 .report-table td {
   padding: 12px 15px;
-  
+  text-transform: uppercase;
 }
 
 .report-table tbody tr {
@@ -628,30 +629,4 @@ dropdownIngredientlabel {
 .report-table tbody tr.active-row {
   font-weight: bold;
   color: #009879;
-}
-
-/*Muhmad sin- Rapport test only*/
-.heading_table{
-  border-collapse: collapse;
-  box-shadow: 0 5px 10px #f9fbff;
-  background-color: white;
-  text-align: left;
-  overflow: hidden;
-}
-.thead_table{
-  box-shadow: 0 5px 10px #f9fbff;
-}
-.th_table{
-  padding: 1rem 2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
-  font-size: 0.7rem;
-  font-weight: 900;
-}
-.td_table{
-  padding: 1rem 2rem ;
-}
-
-.tr_table:nth-child(even){
-  background-color: #f4f6fb;
 }

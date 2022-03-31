@@ -37,29 +37,11 @@
   </tr>
   {% for row in data2 %}
   <tr class="active-row">
-    {% for cell in row %}
+    {% for key, cell in row %}
+    <td>{{key|join(' - ') }}</td>
     <td>{{ cell [0] }}</td>
     {% endfor %}
   </tr>
   {% endfor %}
-</table>
-
-<table class="heading_table">
-  <thead class="thead_table">
-    <tr class="tr_table">
-      {% for header in headings %}
-      <th class="th_table">{{header}}</th>
-      {% endfor %}
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in data %}
-    <tr class="tr_table">
-      {% for cell in row %}
-      <td class="td_table">{{ cell }}</td>
-      {% endfor %}
-    </tr>
-    {% endfor %}
-  </tbody>
 </table>
 {% endblock %}
