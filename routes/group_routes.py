@@ -18,10 +18,13 @@ def groups():
 @grouproute.route('/group/<group_id>')
 @login_required
 def show_group(group_id):
+    current_user_role = session.query(User_group_role).filter(
+        User_group_role.user_id == current_user.id,
+        User_group_role.group_id == group_id).first()
     group = session.query(Group).filter(Group.id == group_id).first()
     session.close()
 
-    return render_template("group.html", group=group)
+    return render_template("group.html", group=group, current_user_role=current_user_role)
 
 
 @grouproute.route('/create_group')
@@ -44,41 +47,37 @@ def create_group_post():
     session.commit()
     session.close()
 
-    return redirect(url_for("usersroute.profile"))
+    return redirect(url_for("grouproute.groups"))
 
 
 @grouproute.route('/group_members/<group_id>')
 @login_required
 def member_list(group_id):
     group = session.query(Group).filter(Group.id == group_id).first()
+
+    current_user_role = session.query(User_group_role).filter(
+        User_group_role.user_id == current_user.id,
+        User_group_role.group_id == group_id).first()
+
     members = session.query(User).join(
         User_group_role).join(Group).filter(Group.id == group_id).all()
     session.close()
 
-    return render_template("groupMembers.html", members=members, group=group)
+    return render_template("groupMembers.html", members=members, group=group, current_user_role=current_user_role)
 
 
 @grouproute.route("/group_members/<group_id>", methods=['POST'])
 @login_required
 def member_list_post(group_id):
     member_id = request.form.get("member_id")
-    group = session.query(Group).filter(Group.id == group_id).first()
     new_role_id = request.form.get("member_role")
 
-    current_user_role = session.query(User_group_role).filter(
-        User_group_role.user_id == current_user.id,
-        User_group_role.group_id == group_id).first()
+    user_group = session.query(User_group_role).filter(
+        User_group_role.user_id ==
+        member_id, User_group_role.group_id == group_id).first()
 
-    if current_user_role.role_id == 1:
-        user_group = session.query(User_group_role).filter(
-            User_group_role.user_id ==
-            member_id, User_group_role.group_id == group_id).first()
-
-        user_group.role_id = new_role_id
-        session.commit()
-    else:
-        flash("Du har ikke rettighetene til å endre roller")
-        return redirect(url_for("grouproute.member_list", group_id=group_id))
+    user_group.role_id = new_role_id
+    session.commit()
 
     return redirect(url_for("grouproute.member_list", group_id=group_id))
 

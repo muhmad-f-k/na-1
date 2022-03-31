@@ -24,8 +24,11 @@
 
 <div>
     <a class="btn btn-info" href="{{ url_for('edituserroute.update_user', id=id) }}"><button>Rediger bruker</button></a>
-    <a class="btn btn-info" href="{{ url_for('edituserroute.delete_user', id=id) }}"><button>Slett bruker</button></a>
-    <a class="btn-btn-info" href="{{ url_for('grouproute.create_group') }}"><button>Oprett gruppe</button></a>
+{#    <a class="btn btn-info" href="{{ url_for('edituserroute.delete_user_post') }}" onclick="return {{ url_for("edituserroute.delete_user_post") }}"><button>Slett bruker</button></a>#}
+    <a class="btn-btn-info" href="{{ url_for('grouproute.create_group') }}"><button>Opprett gruppe</button></a>
+<form class="register" method="POST">
+        <input type="submit" name="action_delete" value="slett_bruker" onclick="return confirm('Er du sikker på at du vil slette {{ current_user.first_name }} {{ current_user.last_name }}?')" />
+    </form>
 </div>
 
 {% endblock %}
