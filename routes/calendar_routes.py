@@ -22,9 +22,14 @@ def show_calendar():
     import io
 
     group_id = None
+    group_name = None
     if request.args.get('group_id'):
         group_id = int(request.args.get('group_id'))
+        group_name = session.query(Group).filter_by(id=group_id).first().name
+        print(group_name)
     else:
+        group_name = 'Restaurant'
+        print(group_name)
         pass
 
 
@@ -128,7 +133,7 @@ def show_calendar():
 
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
-                           month_name=month_name, dinners=dinners, meals=meals, group_id=group_id)
+                           month_name=month_name, dinners=dinners, meals=meals, group_id=group_id, group_name=group_name)
 
 
 @calendarroute.route('/createMeal', methods=['GET', 'POST'])

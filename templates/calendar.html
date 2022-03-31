@@ -1,9 +1,5 @@
 {% extends "base.html" %} {% block content %}
-    {% if group_id %}
-        <h1 class="calendar__h1">Gruppe {{ group_id }}'s Kalender</h1>
-        {% else %}
-        <h1 class="calendar__h1">Restauranten's Kalender</h1>
-    {% endif %}
+<h1 class="calendar__h1">{{ group_name }} Kalender</h1>
 <h2 class="calendar__h2">{{ month_name }} {{ year }}</h2>
 <h2 class="calendar__h2">
 <!--<div>
