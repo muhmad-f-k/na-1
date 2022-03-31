@@ -1,12 +1,7 @@
-{% extends "/base.html" %} {% block title %} Oppdater bruker {% endblock %} {%
-block content %}
-<form
-  class="update"
-  action="{{ url_for('edituserroute.update_user_post') }}"
-  method="POST"
->
-  <h1>Oppdater bruker</h1>
-  {% with messages = get_flashed_messages() %} {% if messages %}
+{% extends "/base.html" %} {% block title %} Oppdater bruker {% endblock %}
+{% block content %}
+
+      {% with messages = get_flashed_messages() %} {% if messages %}
   <div
     class="notification-is-danger-register"
     id="notification-is-danger-register"
@@ -14,6 +9,13 @@ block content %}
     {{ messages[0] }}
   </div>
   {% endif %} {% endwith %}
+
+<form
+  class="update"
+  action="{{ url_for('edituserroute.update_user_post') }}"
+  method="POST"
+>
+  <h1>Oppdater bruker</h1>
   <input
     type="text"
     name="email"
@@ -25,14 +27,14 @@ block content %}
     type="text"
     name="first_name"
     placeholder="Fornavn"
-    value="{{ name }}"
+    value="{{ first_name }}"
     required
   />
   <input
     type="text"
     name="last_name"
     placeholder="Etternavn"
-    value="{{ name }}"
+    value="{{ last_name }}"
     required
   />
   <input

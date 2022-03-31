@@ -26,7 +26,7 @@ def profile():
         User_group_role).join(User).filter(User.id == current_user.id).all()
     session.close()
 
-    return render_template('profile.html', name=name, groups=groups, roles=roles)
+    return render_template('profile.html', name=name, groups=groups, roles=roles, id=current_user.id)
 
 
 @usersroute.route("/login")
@@ -61,6 +61,7 @@ def register_post():
     first_name = request.form.get("first_name")
     last_name = request.form.get("last_name")
     password = request.form.get("password")
+    confirm_password = request.form.get("confirm_password")
 
     user = session.query(User).filter(User.email == email).first()
     session.close()
@@ -68,11 +69,16 @@ def register_post():
         flash("Email er allerede registrert. Gå til logg inn.")
         return redirect(url_for("usersroute.login"))
 
-    new_user = User(email=email, first_name=first_name,
-                    last_name=last_name, password=generate_password_hash(password, method="sha256"))
-    session.add(new_user)
-    session.commit()
-    session.close()
+    elif password != confirm_password:
+        flash("Passordene stemmer ikke overens. Prøv igjen.")
+        return redirect(url_for("usersroute.register"))
+
+    else:
+        new_user = User(email=email, first_name=first_name,
+                        last_name=last_name, password=generate_password_hash(password, method="sha256"))
+        session.add(new_user)
+        session.commit()
+        session.close()
 
     return redirect(url_for("usersroute.login"))
 

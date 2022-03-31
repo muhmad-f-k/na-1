@@ -1,6 +1,15 @@
 {% extends "base.html" %} {% block content %}
 <h1 class="title">Velkommen, {{ name }}!</h1>
 
+      {% with messages = get_flashed_messages() %} {% if messages %}
+  <div
+    class="notification-is-danger-register"
+    id="notification-is-danger-register"
+  >
+    {{ messages[0] }}
+  </div>
+  {% endif %} {% endwith %}
+
 <div id="grouploop">
   {% for group in groups %}
   <div>{{group.name}}</div>
@@ -11,6 +20,12 @@
   {% for group in roles %}
   <div>{{group.name}}</div>
   {% endfor %}
+</div>
+
+<div>
+    <a class="btn btn-info" href="{{ url_for('edituserroute.update_user', id=id) }}"><button>Rediger bruker</button></a>
+    <a class="btn btn-info" href="{{ url_for('edituserroute.delete_user', id=id) }}"><button>Slett bruker</button></a>
+    <a class="btn-btn-info" href="{{ url_for('grouproute.create_group') }}"><button>Oprett gruppe</button></a>
 </div>
 
 {% endblock %}

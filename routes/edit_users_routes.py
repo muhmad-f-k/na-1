@@ -60,5 +60,6 @@ def delete_user_post():
     deleted_user = session.query(User).get(current_user.id)
     session.delete(deleted_user)
     session.commit()
+    flash("Bruker slettet :/")
 
     return redirect(url_for("usersroute.home"))
