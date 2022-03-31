@@ -17,7 +17,9 @@ def report():
 
 @rapportroute.route("/report", methods=['POST'])
 def report_post():
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
     headings = ("Ingredient", "measurement", "amount")
     data = session.query(Ingredient.name, Measurement.name, Amount.amount).select_from(
-        Recipe).join(Recipe_ingredient_helper).join(Ingredient).join(Measurement).join(Amount).filter(Dinner.id == Recipe.dinner_id, Dinner.group_id == 1).all()
+        Recipe).join(Recipe_ingredient_helper).join(Ingredient).join(Measurement).join(Amount).filter(Dinner.id == Recipe.dinner_id, Dinner.group_id == Meal.group_id, Meal.date.between(start_date, end_date)).all()
     return render_template("report_result.html", headings=headings, data=data)
