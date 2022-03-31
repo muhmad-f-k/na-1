@@ -874,6 +874,7 @@ h2.headline {
 }
 
 .main_image {
+  border-radius: 10px;
   max-height:1000px;
   max-width:1200px;
   width: auto;
@@ -971,4 +972,70 @@ div.dinner img {
 .button-three:active {
   background-color: #bef5ff;
   color: black;
+}
+
+/*Muhmad sin- Rapport*/
+.login input[type="date"] {
+  border: 0;
+  background: none;
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+  border: 2px solid #3498db;
+  padding: 14px 10px;
+  width: 200px;
+  outline: none;
+  color: rgb(14, 13, 13);
+  border-radius: 24px;
+  transition: 0.25s;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.update input[type="date"]:hover {
+  background: #2ecc71;
+}
+
+.report-table {
+
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  min-width: 400px;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.report-table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.report-table th,
+.report-table td {
+  padding: 12px 15px;
+}
+
+.report-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.report-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.report-table tbody tr:last-of-type {
+  border-bottom: 2px solid #009879;
+}
+
+.report-table tbody tr.active-row {
+  font-weight: bold;
+  color: #009879;
 }

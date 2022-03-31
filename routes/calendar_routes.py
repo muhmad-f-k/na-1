@@ -3,6 +3,9 @@ from sqlalchemy import desc
 from base64 import b64encode
 from db.modul import *
 from flask_login import current_user
+from datetime import date, timedelta, datetime
+from collections import defaultdict
+
 
 calendarroute = Blueprint('calendarroute', __name__)
 
@@ -140,6 +143,7 @@ def delete_dinner():
         session.commit()
     return render_template("deleteDinner.html")
 
+
 @calendarroute.route('/show_group_dinners/<group_id>')
 def show_group_dinners(group_id):
     dinners = session.query(Dinner).filter(Dinner.group_id == group_id).all()
@@ -152,6 +156,7 @@ def show_group_dinners(group_id):
 
     session.close()
     return render_template("dinners.html", dinners=dinners, group_id=group_id, decode_image=decode_image)
+
 
 @calendarroute.route('/show_dinner/<dinner_id>/<group_id>')
 def show_dinner(dinner_id, group_id):
@@ -182,12 +187,92 @@ def show_dinner(dinner_id, group_id):
                            measurements=measurements_recipe)
 
 
-@calendarroute.route('/shopping_list/<group_id>')
+@calendarroute.route('/shopping_list/<group_id>', methods=['GET', 'POST'])
 def show_shopping_list(group_id):
-    ingredients_week = session.query(Ingredient.name).join(
-        Recipe_ingredient_helper).join(Recipe).join(Dinner).join(Meal).filter(Meal.group_id == group_id, Meal.date)
+    today = date.today()
 
-    return render_template("shopping_list.html", group_id=group_id)
+    def add_days(date):
+        date += timedelta(days=7)
+        return date
+
+    def subtract_days(date):
+        date -= timedelta(days=7)
+        return date
+
+    if "next_week" in request.form:
+        incoming_date = request.form.get("next_week")
+        new_date = date.fromisoformat(incoming_date)
+
+    elif "prev_week" in request.form:
+        incoming_date = request.form.get("prev_week")
+        new_date = date.fromisoformat(incoming_date)
+
+    else:
+        new_date = today
+
+    weekday = new_date.weekday()
+    monday = new_date - timedelta(days=weekday)
+    sunday = new_date + timedelta(6 - weekday)
+
+    week_number = datetime(new_date.year, new_date.month, new_date.day).isocalendar()[1]
+    list = []
+    headings = ("Ingrediens", "mengde", "Enhet")
+    data = session.query(Ingredient.name, Measurement.name, Amount.amount).select_from(
+        Recipe).join(Recipe_ingredient_helper).join(Ingredient).join(Measurement).join(Amount).filter(Dinner.id == Recipe.dinner_id, Dinner.group_id == Meal.group_id, Meal.date.between(monday, sunday)).all()
+    for lists in data:
+        list.append(lists)
+    # my_list = defaultdict(list)
+    # print(my_list)
+    print(list)
+
+    session.close()
+
+    return render_template("shopping_list.html", headings=headings, data=data, group_id=group_id,
+                           week_number=week_number, add_days=add_days, subtract_days=subtract_days,
+                           new_date=new_date)
+    # ingredients_week = session.query(Ingredient.name).join(
+    #     Recipe_ingredient_helper).join(Recipe).join(Dinner).join(Meal).filter(
+    #     Meal.date.between(monday, sunday), Meal.group_id == group_id).all()
+    #
+    # amounts_week = session.query(Amount.amount).join(
+    #     Recipe_ingredient_helper).join(Recipe).join(Dinner).join(Meal).filter(
+    #     Meal.date.between(monday, sunday), Meal.group_id == group_id).all()
+    #
+    # measurements_week = session.query(Measurement.name).join(
+    #     Recipe_ingredient_helper).join(Recipe).join(Dinner).join(Meal).filter(
+    #     Meal.date.between(monday, sunday), Meal.group_id == group_id).all()
+
+    # return render_template("shopping_list.html", group_id=group_id, ingredients=ingredients_week,
+    #                        measurements=measurements_week, amounts=amounts_week, week_number=week_number,
+    #                        len=len(ingredients_week), add_days=add_days, subtract_days=subtract_days,
+    #                        new_date=new_date)
+
+    # if "next_month" in request.form:
+    #     incoming_date = request.form.get("next_month")
+    #     converted_date = incoming_date.strip('][').split(', ')
+    #     new_year = int(converted_date[0])
+    #     new_month = int(converted_date[1])
+    #     if new_month > 12:
+    #         new_year += 1
+    #         new_month = 1
+    # elif "prev_month" in request.form:
+    #     incoming_date = request.form.get("prev_month")
+    #     converted_date = incoming_date.strip('][').split(', ')
+    #     new_year = int(converted_date[0])
+    #     new_month = int(converted_date[1])
+    #     if new_month < 1:
+    #         new_year -= 1
+    #         new_month = 12
+    #
+    # current_date_time = None
+    # if new_year is not None and new_month is not None:
+    #     current_date_time = datetime.datetime(new_year, new_month, 1)
+    # else:
+    #     current_date_time = datetime.datetime.now()
+    #
+    # year = current_date_time.year
+    # month = current_date_time.month
+    # month_name = months_of_year.get(current_date_time.strftime("%B"))
 
 
 
