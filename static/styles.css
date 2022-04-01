@@ -365,6 +365,7 @@ div.dinnerdiv1:hover {
 
 .calendar__button[type="submit"] {
   color: black;
+  background: white;
 }
 
 /*Magnus Sin*/
