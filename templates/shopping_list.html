@@ -33,47 +33,8 @@
   </tr>
   {% endfor %}
 </table>
-{#
-<table id="customers">
-  #} {#
-  <tr>
-    #} {#
-    <th>Ingredienser å handle</th>
-    #} {#
-    <th>Mengde</th>
-    #} {#
-    <th>Enhet</th>
-    #} {#
-  </tr>
-  #} {# {% for i in range(0,(len)) %}#} {#
-  <tr>
-    #} {#
-    <td>{{ ingredients[i].name }}</td>
-    #} {#
-    <td>{{ amounts[i].amount}}</td>
-    #} {#
-    <td>{{ measurements[i].name }}</td>
-    #} {#
-  </tr>
-  #} {##} {# {% endfor %}#} {#
-</table>
-#} {% endblock %} {#
-<form class="calendar__form" method="POST">
-  <button
-    class="calendar__button"
-    type="submit"
-    name="prev_month"
-    value="{{  [year, month - 1]  }}"
-  >
-    Forrige måned
-  </button>
-  <button
-    class="calendar__button"
-    type="submit"
-    name="next_month"
-    value="{{  [year, month + 1]  }}"
-  >
-    Neste måned
-  </button>
+<form method="POST">
+    <input type="number" name="price" placeholder="pris" required>
+    <input type="submit" name="complete" value="complete" />
 </form>
-#}
+{% endblock %}
