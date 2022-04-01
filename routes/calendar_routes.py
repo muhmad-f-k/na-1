@@ -1,6 +1,4 @@
 import base64
-import io
-
 from flask import Blueprint, render_template, request, url_for, redirect
 from flask_login import login_user, login_required, current_user, logout_user
 from db.modul import *
@@ -17,21 +15,14 @@ def show_calendar():
     import calendar as cd
     import datetime
     import base64
-    import matplotlib.pyplot as plt
-    from PIL import Image
-    import io
 
     group_id = 1
     group_name = None
     if request.args.get('group_id'):
         group_id = int(request.args.get('group_id'))
         group_name = session.query(Group).filter_by(id=group_id).first().name
-        # print(group_name)
     else:
         group_name = group_name = session.query(Group).filter_by(id=group_id).first().name
-        # print(group_name)
-        pass
-
 
     days_of_week = {"Monday": "Mandag",
                     "Tuesday": "Tirsdag",
@@ -74,7 +65,6 @@ def show_calendar():
             new_month = 12
 
     elif 'delete_meal' in request.form:
-        # print(request.form.get('delete_meal'))
         incoming_date = request.form.get("delete_meal")
         converted_date = incoming_date.strip('][').split(', ')
         meal_id = int(converted_date[0])
@@ -128,9 +118,6 @@ def show_calendar():
         else:
             dinners.append(n)
 
-    # dinner = meals[0][1]
-    # image = base64.b64encode(dinner.image).decode("utf-8")
-
     return render_template('calendar.html',
                            days_of_week=days_of_week, full_month=full_month, year=year, month=month,
                            month_name=month_name, dinners=dinners, meals=meals, group_id=group_id, group_name=group_name)
@@ -138,12 +125,10 @@ def show_calendar():
 
 @calendarroute.route('/createMeal', methods=['GET', 'POST'])
 def create_meal():
-    import calendar as cd
     import datetime
 
     if "choose_dinner" in request.form:
         dinner_id = request.form.get('choose_dinner')
-        # incoming_date = request.form.get('date')
 
         converted_date = dinner_id.strip('][').split(', ')
         inc_dinner_id = int(converted_date[0])
@@ -157,7 +142,6 @@ def create_meal():
         session.add(meal)
         session.commit()
         session.close()
-        #return render_template(url_for('calendarroute.show_calendar'))
         return redirect(url_for('calendarroute.show_calendar',
                                 create_meal_year=inc_year, create_meal_month=inc_month, group_id=group_id))
     else:
@@ -167,11 +151,8 @@ def create_meal():
         inc_month = int(converted_date[1])
         inc_day = int(converted_date[2])
         group_id = int(converted_date[3])
-        # dinners = []
-        # dinners.append(session.query(Dinner).all())
         dinners = session.query(Dinner).filter_by(group_id=group_id).all()
         session.close()
-        # print(dinners)
 
         conv_dinners = []
         for dinner in dinners:
@@ -181,7 +162,6 @@ def create_meal():
             dimage = base64.b64encode(dinner.image).decode("utf-8")
             conv_dinners.append([did, title, dimage])
 
-        # return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day, dinners=dinners)
         return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day,
                                dinners=conv_dinners, group_id=group_id)
 
@@ -190,15 +170,8 @@ def create_meal():
 def create_dinner():
     if 'dinner_title' in request.form:
         dinner_title = request.form.get('dinner_title')
-        # user_id = request.form.get('user_id')
-
-        # group_id = request.form.get('group_id')
         group_id = int(request.form.get('group_id'))
-        # dinner_image = request.form.get('dinner_image')
-
         dinner_image = request.files['dinner_image'].read()
-        # print(dinner_image)
-
         dinner = Dinner(title=dinner_title, image=dinner_image, user_id=current_user.id, group_id=group_id)
         session.add(dinner)
         session.commit()
