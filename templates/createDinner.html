@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Make a dinner</h1>
-    <form method="POST" enctype="multipart/form-data">
+  <h1 class="createDinner__content"> Opprett ny middag</h1>
+    <form class="createDinner__content" method="POST" enctype="multipart/form-data">
         Tittel:<br>
         <input type="text" name="dinner_title" required><br>
         <!--Gruppe ID:<br>-->
@@ -11,6 +11,9 @@
         <input type="file" name="dinner_image" accept="image/*"><br>
         <br>
         <br>
-        <input type="submit">
+        <button
+            class="calendar__button"
+            type="submit">Legg til
+        </button>
     </form>
 {% endblock %}

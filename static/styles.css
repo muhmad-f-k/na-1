@@ -345,6 +345,10 @@ div.dinnerdiv1:hover {
   text-align: center;
 }
 
+.createDinner__content {
+  text-align: center;
+}
+
 .calendar__day__container {
 }
 
@@ -480,7 +484,6 @@ dropdownIngredientlabel {
 /* Add a background color on hover */
 .btn-group button:hover {
   background-color: #3e8e41;
-  width: 10.5%;
 }
 
 /*Jonnis sin*/
