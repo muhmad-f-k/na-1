@@ -2,10 +2,9 @@
 <h1 class="calendar__h1">{{ group_name }} Kalender</h1>
 <h2 class="calendar__h2">{{ month_name }} {{ year }}</h2>
 <h2 class="calendar__h2">
-<div class="btn-group">
   <form class="calendar__form" method="POST">
     <button
-      class="btn btn-info"
+      class="calendar__button"
       type="submit"
       name="prev_month"
       value="{{  [year, month - 1]  }}"
@@ -13,7 +12,7 @@
       Forrige måned
     </button>
     <button
-      class="btn btn-info"
+      class="calendar__button"
       type="submit"
       name="next_month"
       value="{{  [year, month + 1]  }}"
