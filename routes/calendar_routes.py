@@ -21,15 +21,15 @@ def show_calendar():
     from PIL import Image
     import io
 
-    group_id = None
+    group_id = 1
     group_name = None
     if request.args.get('group_id'):
         group_id = int(request.args.get('group_id'))
         group_name = session.query(Group).filter_by(id=group_id).first().name
-        print(group_name)
+        # print(group_name)
     else:
-        group_name = 'Restaurant'
-        print(group_name)
+        group_name = group_name = session.query(Group).filter_by(id=group_id).first().name
+        # print(group_name)
         pass
 
 
@@ -203,7 +203,7 @@ def create_dinner():
         session.add(dinner)
         session.commit()
         session.close()
-        return render_template('createDinner.html')
+        return render_template('createDinner.html', group_id=group_id)
     else:
         group_id = int(request.args.get('group_id'))
         print(group_id)

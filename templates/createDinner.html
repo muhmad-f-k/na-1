@@ -5,8 +5,8 @@
     <form method="POST" enctype="multipart/form-data">
         Tittel:<br>
         <input type="text" name="dinner_title" required><br>
-        Gruppe ID:<br>
-        <input type="number" name="group_id" value="{{ group_id }}" readonly><br>
+        <!--Gruppe ID:<br>-->
+        <input type="hidden" name="group_id" value="{{ group_id }}" readonly><br>
         Bilde:<br>
         <input type="file" name="dinner_image" accept="image/*"><br>
         <br>
