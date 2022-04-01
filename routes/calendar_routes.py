@@ -4,7 +4,8 @@ from base64 import b64encode
 from db.modul import *
 from flask_login import current_user
 from datetime import date, timedelta, datetime
-from collections import defaultdict
+import pandas as pd
+from collections import namedtuple
 
 
 calendarroute = Blueprint('calendarroute', __name__)
@@ -129,7 +130,8 @@ def create_dinner_post(group_id):
     dinner_image = request.files['dinner_image'].read()
     print(dinner_image)
 
-    dinner = Dinner(title=dinner_title, image=dinner_image, user_id=user_id, group_id=group_id)
+    dinner = Dinner(title=dinner_title, image=dinner_image,
+                    user_id=user_id, group_id=group_id)
     session.add(dinner)
     session.commit()
     return redirect(url_for(
@@ -139,7 +141,8 @@ def create_dinner_post(group_id):
 @calendarroute.route('/deleteDinner', methods=['GET', 'POST'])
 def delete_dinner():
     if 'dinner_id' in request.form:
-        session.query(Dinner).filter_by(id=request.form.get('dinner_id')).delete()
+        session.query(Dinner).filter_by(
+            id=request.form.get('dinner_id')).delete()
         session.commit()
     return render_template("deleteDinner.html")
 
@@ -164,7 +167,8 @@ def show_dinner(dinner_id, group_id):
         User_group_role.user_id == current_user.id,
         User_group_role.group_id == group_id).first()
     dinner = session.query(Dinner).filter(Dinner.id == dinner_id).first()
-    recipe = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(desc(Recipe.version)).first()
+    recipe = session.query(Recipe).filter(
+        Recipe.dinner_id == dinner_id).order_by(desc(Recipe.version)).first()
 
     image = b64encode(dinner.image).decode("utf-8")
 
@@ -214,20 +218,27 @@ def show_shopping_list(group_id):
     monday = new_date - timedelta(days=weekday)
     sunday = new_date + timedelta(6 - weekday)
 
-    week_number = datetime(new_date.year, new_date.month, new_date.day).isocalendar()[1]
+    week_number = datetime(new_date.year, new_date.month,
+                           new_date.day).isocalendar()[1]
     list = []
     headings = ("Ingrediens", "mengde", "Enhet")
     data = session.query(Ingredient.name, Measurement.name, Amount.amount).select_from(
         Recipe).join(Recipe_ingredient_helper).join(Ingredient).join(Measurement).join(Amount).filter(Dinner.id == Recipe.dinner_id, Dinner.group_id == Meal.group_id, Meal.date.between(monday, sunday)).all()
-    for lists in data:
-        list.append(lists)
-    # my_list = defaultdict(list)
-    # print(my_list)
-    print(list)
+    print(data)
 
+    Personer = namedtuple('Personer', ['Ingredient', 'Measurement', 'Amount'])
+    for lists in data:
+        temp_list = lists
+        final_list = Personer._make(temp_list)
+        list.append(final_list)
+    df = pd.DataFrame(data=list)
+    df2 = df.groupby(['Ingredient', "Measurement"]).agg(
+        {'Amount': 'sum'})
+    print(df2)
+    print(list)
     session.close()
 
-    return render_template("shopping_list.html", headings=headings, data=data, group_id=group_id,
+    return render_template("shopping_list.html", headings=headings, data=df2, group_id=group_id,
                            week_number=week_number, add_days=add_days, subtract_days=subtract_days,
                            new_date=new_date)
     # ingredients_week = session.query(Ingredient.name).join(
@@ -273,6 +284,3 @@ def show_shopping_list(group_id):
     # year = current_date_time.year
     # month = current_date_time.month
     # month_name = months_of_year.get(current_date_time.strftime("%B"))
-
-
-

@@ -2,14 +2,22 @@
 <h1 class="main_title">Handleliste</h1>
 <h2 class="main_title">Uke: {{ week_number }}</h2>
 <form class="calendar__form" method="POST">
-    <button class="button-three"
-            type="submit"
-            name="prev_week"
-            value="{{ subtract_days(new_date) }}">Forrige uke</button>
-    <button class="button-three"
-            type="submit"
-            name="next_week"
-            value="{{ add_days(new_date) }}">Neste uke</button>
+  <button
+    class="button-three"
+    type="submit"
+    name="prev_week"
+    value="{{ subtract_days(new_date) }}"
+  >
+    Forrige uke
+  </button>
+  <button
+    class="button-three"
+    type="submit"
+    name="next_week"
+    value="{{ add_days(new_date) }}"
+  >
+    Neste uke
+  </button>
 </form>
 <table class="report-table">
   <tr class="active-row">
@@ -25,39 +33,47 @@
   </tr>
   {% endfor %}
 </table>
-{#<table id="customers">#}
-{#    <tr>#}
-{#    <th>Ingredienser å handle</th>#}
-{#    <th>Mengde</th>#}
-{#    <th>Enhet</th>#}
-{#  </tr>#}
-{#     {% for i in range(0,(len)) %}#}
-{#  <tr>#}
-{#    <td>{{ ingredients[i].name }}</td>#}
-{#    <td>{{ amounts[i].amount}}</td>#}
-{#    <td>{{ measurements[i].name }}</td>#}
-{#  </tr>#}
-{##}
-{#  {% endfor %}#}
-{#</table>#}
-{% endblock %}
-
 {#
+<table id="customers">
+  #} {#
+  <tr>
+    #} {#
+    <th>Ingredienser å handle</th>
+    #} {#
+    <th>Mengde</th>
+    #} {#
+    <th>Enhet</th>
+    #} {#
+  </tr>
+  #} {# {% for i in range(0,(len)) %}#} {#
+  <tr>
+    #} {#
+    <td>{{ ingredients[i].name }}</td>
+    #} {#
+    <td>{{ amounts[i].amount}}</td>
+    #} {#
+    <td>{{ measurements[i].name }}</td>
+    #} {#
+  </tr>
+  #} {##} {# {% endfor %}#} {#
+</table>
+#} {% endblock %} {#
 <form class="calendar__form" method="POST">
-    <button
-      class="calendar__button"
-      type="submit"
-      name="prev_month"
-      value="{{  [year, month - 1]  }}"
-    >
-      Forrige måned
-    </button>
-    <button
-      class="calendar__button"
-      type="submit"
-      name="next_month"
-      value="{{  [year, month + 1]  }}"
-    >
-      Neste måned
-    </button>
-  </form>#}
+  <button
+    class="calendar__button"
+    type="submit"
+    name="prev_month"
+    value="{{  [year, month - 1]  }}"
+  >
+    Forrige måned
+  </button>
+  <button
+    class="calendar__button"
+    type="submit"
+    name="next_month"
+    value="{{  [year, month + 1]  }}"
+  >
+    Neste måned
+  </button>
+</form>
+#}
