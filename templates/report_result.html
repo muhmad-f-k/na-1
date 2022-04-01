@@ -1,54 +1,48 @@
 {% extends "base.html" %} {% block content %}
 <table class="report-table">
-  <thead>
-    <tr>
-      <th>Total Pris</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="active-row">
-      {% for cell in cost %}
-      <td>{{cell [0]}}</td>
-      {% endfor %}
-    </tr>
-  </tbody>
-</table>
-
-<table class="report-table">
-  <thead>
-    <tr>
-      <th>Top 3 Middager</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="active-row">
-      {% for word in top_3_dinner %}
-      <td>{{ word.0[0] }}</td>
-      {% endfor %}
-    </tr>
-  </tbody>
-</table>
-
-<table class="report-table">
-  <thead>
-    <tr class="active-row">
-      <th>ingredient</th>
-      <th>measurement</th>
-      <th>amount</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in data %}
-    <tr class="active-row">
-      {% for cell in row %}
-      <td>{{cell}}</td>
-      {% endfor %} {% endfor %} {% for row1 in data1 %} {% for cell1 in row1 %}
-      <td>{{cell1}}</td>
-      {% endfor %} {% endfor %} {% for row2 in data2 %} {% for cell2 in row2 %}
-      <td>{{cell2}}</td>
-      {% endfor %}
-    </tr>
+  <tr class="active-row">
+    {% for header in headings %}
+    <th>{{header}}</th>
     {% endfor %}
-  </tbody>
+  </tr>
+  {% for row in data %}
+  <tr class="active-row">
+    {% for cell in row %}
+    <td>{{ cell }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+<table class="report-table">
+  <tr class="active-row">
+    {% for header in headings1 %}
+    <th>{{header}}</th>
+    {% endfor %}
+  </tr>
+  {% for row in data1 %}
+  <tr class="active-row">
+    {% for cell in row %}
+    <td>KR: {{ cell }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+<table class="report-table">
+  <tr class="active-row">
+    {% for header in headings2 %}
+    <th>{{header}}</th>
+    {% endfor %}
+  </tr>
+  {% for row in data2 %}
+  <tr class="active-row">
+    {% for key, cell in row %}
+    <td>{{key|join(' - ') }}</td>
+    <td>{{ cell [0] }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
 </table>
 {% endblock %}
+
