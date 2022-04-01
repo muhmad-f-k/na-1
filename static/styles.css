@@ -349,13 +349,15 @@ div.dinnerdiv1:hover {
 }
 
 .calendar__day {
+  color: white;
   text-align: center;
   /*display: inline-grid;*/
   display: inline-grid;
-  background: cadetblue;
+  background-color: #04aa6d;
   width: 200px;
-  height: 275px;
+  height: 300px;
   border-style: solid;
+  border-color: black;
   margin: 2px;
 }
 .calendar__day__image {
@@ -364,8 +366,17 @@ div.dinnerdiv1:hover {
 }
 
 .calendar__button[type="submit"] {
+  /*
   color: black;
   background: white;
+   */
+  background-color: #04aa6d; /* Green background */
+  border: 1px solid green; /* Green border */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  margin: 1px auto;
+  border-radius: 24px;
 }
 
 /*Magnus Sin*/
