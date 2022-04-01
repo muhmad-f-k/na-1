@@ -1,30 +1,36 @@
 from flask import Blueprint, redirect, render_template, request, url_for, flash
 from db.modul import *
+from sqlalchemy import desc
+
 
 recipe_route = Blueprint('recipe_route', __name__)
 
 
-@recipe_route.route('/create_recipe')
-def createRecipe():
-    return render_template('createrecipe.html')
+@recipe_route.route('/create_recipe/<dinner_id>')
+def createRecipe(dinner_id):
+    return render_template('createrecipe.html', dinner_id=dinner_id)
 
 
-@recipe_route.route('/create_recipe', methods=['POST'])
-def createRecipe_post():
-    dinner_id = 1
-    version = 1
+@recipe_route.route('/create_recipe/<dinner_id>', methods=['POST'])
+def createRecipe_post(dinner_id):
+    highest_existing_version = session.query(Recipe.version).filter(Recipe.dinner_id == dinner_id).order_by(
+        desc(Recipe.version)).first()
+    if highest_existing_version:
+        recipe_version = int(highest_existing_version) + 1
+
+    else:
+        recipe_version = 1
+
     approach = str(request.form.get("textareaApproach"))
     recipe_object = Recipe(
-        approach=approach, version=version, dinner_id=dinner_id)
+        approach=approach, version=recipe_version, dinner_id=dinner_id)
     session.add(recipe_object)
     session.commit()
-    session.close()
-    return redirect(url_for("recipe_route.add_ingredients"))
+    return redirect(url_for("recipe_route.add_ingredients", recipe_id=recipe_object.id, dinner_id=dinner_id))
 
 
-@recipe_route.route("/add_ingredients")
-def add_ingredients():
-    recipe_id = 1
+@recipe_route.route("/add_ingredients/<recipe_id>")
+def add_ingredients(recipe_id):
     measurements = session.query(Measurement).all()
     session.close()
     ingredients_recipe = session.query(Ingredient.name).join(
@@ -41,20 +47,18 @@ def add_ingredients():
                            measurements_recipe=measurements_recipe)
 
 
-@recipe_route.route('/add_ingredients', methods=['POST'])
-def add_ingredients_post():
+@recipe_route.route('/add_ingredients/<recipe_id>', methods=['POST'])
+def add_ingredients_post(recipe_id):
     ingredient = request.form.get("ingredient")
     amount = request.form.get("amount")
     unit = request.form.get("unit")
 
-    shopping_list = "13"
-    recipe = "apro"
+    recipe = session.query(Recipe).filter(
+        Recipe.id == recipe_id).first()
     ingredient_check = session.query(Ingredient).filter(
         Ingredient.name == ingredient).first()
-    session.close()
     amount_check = session.query(Amount).filter(
         Amount.amount == amount).first()
-    session.close()
     if ingredient_check and amount_check:
         print("det finnes ingrediens, og det finnes amount i generell tabell")
     if ingredient_check and not amount_check:
@@ -75,28 +79,17 @@ def add_ingredients_post():
         new_ingredient = Ingredient(name=ingredient)
         session.add_all([new_ingredient, new_amount])
         session.commit()
-        session.close()
 
     ingredients = session.query(Ingredient).filter(
         Ingredient.name == ingredient).first()
-    session.close()
     amounts = session.query(Amount).filter(Amount.amount == amount).first()
-    session.close()
-    shopping_lists = session.query(Shopping_list).filter(
-        Shopping_list.price == shopping_list).first()
-    session.close()
-    recipes = session.query(Recipe).filter(Recipe.approach == recipe).first()
-    session.close()
     units = session.query(Measurement).filter(Measurement.name == unit).first()
     session.close()
-    final = Recipe_ingredient_helper(ingredient=ingredients, recipe=recipes, amount=amounts,
-                                     shopping_list=shopping_lists,
-                                     measurement=units)
+    final = Recipe_ingredient_helper(ingredient=ingredients, recipe=recipe, amount=amounts, measurement=units)
     session.add(final)
     session.commit()
-    session.close()
 
-    return redirect(url_for("recipe_route.add_ingredients"))
+    return redirect(url_for("recipe_route.add_ingredients", recipe_id=recipe_id))
 
 
 @recipe_route.route('/remove_ingredient/<ingredient_name>', methods=['POST'])

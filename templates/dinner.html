@@ -1,15 +1,117 @@
-{% extends "base.html" %} {% block content %}
-<div class="dinnerdiv">Middager</div>
-<div class="dinnerdiv">test</div>
-<div class="dinnerdiv">test</div>
-<div class="dinnerdiv">test</div>
-<div class="dinnerdiv">test</div>
-<div class="dinnerdiv">test</div>
+{% extends "base.html" %}
+{% block content %}
 
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
-<div class="dinnerdiv1">test</div>
+
+{#<div class="center_div">
+#}{# Vis bilde #}{#
+    <div class="main_image">
+    <img class="main_image" src="data:;base64,{{ image }}"/>
+    </div>
+        #}{# Vis tittel #}{#
+        <div class="main_title">
+        <h1>{{ dinner.title }}</h1>
+        </div>
+#}{# Vis fremgangsmåte #}{#
+        <div class="right" id="approach">
+        <h2>SLIK GJØR DU</h2>
+        <p style="white-space: pre-line">{{ recipe.approach }}</p>
+        </div>
+
+
+
+
+
+<div class="left" id="buttons">
+    <nav>Legg til i handlelisten</nav>
+</div>
+
+<div class="left" id="ingredients_list">
+        <h2>Ingredienser:</h2>
+    <h2>- <button class="portion_button">PORSJONER</button>+</h2>
+        #}{# Vis ingredienser #}{#
+        {% for i in range(0,(len)) %}
+            <li class="section_dinner" id="ingredients_list">
+            {{ amounts[i].amount}}
+            {{ measurements[i].name }}
+            {{ ingredients[i].name }}
+            </li>
+            <br>
+        {% endfor %}
+        </div>
+
+</div>#}
+
+
+<main class="testimonial-grid">
+    <article class="testimonial">
+        <div class="flex outer">
+            <div class="inner">
+                {# 1 #}
+                <img class="inner" src="data:;base64,{{ image }}"/>
+            </div>
+        </div>
+    </article>
+
+    <article class="testimonial flow bg-neutral-100 quote text-neutral-100" id="testimonial-test">
+        <div class="flex" id="flex-test">
+            <div class="main_title">
+        <h1 class="dinner-bg-color">{{ dinner.title }}</h1>
+                <a
+               href="{{ url_for('usersroute.profile') }}">
+                <button class="button-three">Endre tittel</button>
+            </a>
+        </div>
+        </div>
+    </article>
+
+    <article class="testimonial flow quote text-neutral-100" id="testimonial-test">
+        <div class="flex">
+        <div class="main_title">
+            <h2 class="headline dinner-bg-color">SLIK GJØR DU</h2><br>
+            {# 3 #}
+        <p class="approach dinner-bg-color" style="white-space: pre-line">{{ recipe.approach }}</p>
+            <a
+               href="{{ url_for('usersroute.profile') }}">
+                <button class="button-three">Endre fremgangsmåte</button>
+            </a>
+        </div>
+        </div>
+    </article>
+
+    <article class="testimonial flow quote text-neutral-100" id="testimonial-test">
+        <div class="flex">
+        <div class="main_title">
+            <h2 class="headline dinner-bg-color">INGREDIENSER</h2><br>
+            {# 4 #}
+            {% for i in range(0,(len)) %}
+            <li class="section_dinner approach dinner-bg-color" id="ingredient-line-height">
+            {{ amounts[i].amount}}
+            {{ measurements[i].name }}
+            {{ ingredients[i].name }}
+            </li>
+        {% endfor %}
+        <a
+               href="{{ url_for('usersroute.profile') }}">
+                <button class="button-three">Endre ingredienser</button>
+            </a>
+
+        </div>
+        </div>
+    </article>
+
+    <article class="testimonial flow bg-neutral-100 quote text-neutral-100" id="testimonial-test">
+        <div class="flex" id="flex-test">
+            <div class="main_title dinner-bg-color">
+            <h2 class="dinner-bg-color">LEGG TIL HANDLELISTE</h2>
+                <h2 class="dinner-bg-color">ANTALL PORSJONER</h2>
+
+            </div>
+            {# 5 #}
+        </div>
+    </article>
+</main>
+
+
+
+
 {% endblock %}

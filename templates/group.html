@@ -16,5 +16,14 @@
     href="{{ url_for('grouproute.delete_group', group_id=group.id) }}"
     ><button>Slett gruppe</button></a
   >
+    {% if(current_user_role.role_id != 4) %}
+<a
+    class="btn btn-info"
+    href="{{ url_for('calendarroute.create_dinner', group_id=group.id) }}"
+    ><button>Opprett middag</button></a
+  >
+    <a class="btn btn-info" href="{{ url_for('calendarroute.show_group_dinners', group_id=group.id) }}"><button>Våre middager</button></a>
+    {% endif %}
+    <a class="btn btn-info" href="{{ url_for('calendarroute.show_shopping_list', group_id=group.id) }}"><button>Handleliste</button></a>
 </div>
 {% endblock %}
