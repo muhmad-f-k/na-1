@@ -1,8 +1,0 @@
-{% extends "base.html" %} {% block content %}
-<div id="grouploop">
-  <div>Top 3 Middager</div>
-  {% for word in top_10_words %}
-  <p>Middag: {{ word.0[0] }}</p>
-  {% endfor %}
-</div>
-{% endblock %}
