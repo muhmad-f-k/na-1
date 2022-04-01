@@ -4,6 +4,9 @@ __pycache__/
 *$py.class
 #test py
 test.py
+
+#insert data
+insert_statements.py
 # databasen
 finaldata.db
 

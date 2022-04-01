@@ -50,16 +50,16 @@ def update_user_post():
             return redirect(url_for("usersroute.profile"))
 
 
-@edituserroute.route("/delete_user")
-def delete_user():
-    return render_template("delete_user.html", first_name=current_user.first_name, last_name=current_user.last_name)
+#@edituserroute.route("/delete_user")
+#def delete_user():
+#    return render_template("delete_user.html", first_name=current_user.first_name, last_name=current_user.last_name)
 
 
-@edituserroute.route("/delete_user", methods=['POST'])
+@edituserroute.route("/profile", methods=['POST'])
 def delete_user_post():
-    deleted_user = session.query(User).get(current_user.id)
-    session.delete(deleted_user)
-    session.commit()
-    flash("Bruker slettet :/")
-
-    return redirect(url_for("usersroute.home"))
+    if request.form.get("action_delete") == "slett_bruker":
+        deleted_user = session.query(User).get(current_user.id)
+        session.delete(deleted_user)
+        session.commit()
+        flash("Bruker slettet :/")
+        return redirect(url_for("usersroute.home"))
