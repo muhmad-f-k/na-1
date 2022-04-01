@@ -1,5 +1,6 @@
 {% extends "/base.html" %} {% block title %} Oppdater gruppe {% endblock %} {%
 block content %}
+
 <form
   class="update"
   action="{{ url_for('grouproute.update_group_post', group_id=group.id) }}"

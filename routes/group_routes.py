@@ -88,13 +88,47 @@ def update_group(group_id):
     return render_template("update_group.html", group=group_to_update)
 
 
+# @grouproute.route('/update_group/<group_id>', methods=['POST'])
+# def update_group_post(group_id):
+#     group = session.query(Group).get(group_id)
+#
+#     if group.name == request.form.get("new_group_name"):
+#         session.commit()
+#         session.close()
+#         return redirect(url_for("grouproute.groups", group_id=group_id))
+#
+#     if group is None:
+#         session.commit()
+#         session.close()
+#         return redirect(url_for("grouproute.groups", group_id=group_id))
+#
+#     else:
+#         print(group)
+#         group.name = request.form.get("new_group_name")
+#         print(group)
+#         flash("Gruppen finnes allerede")
+#         return redirect(url_for("grouproute.update_group", group_id=group_id))
+
 @grouproute.route('/update_group/<group_id>', methods=['POST'])
 def update_group_post(group_id):
     group = session.query(Group).get(group_id)
-    group.name = request.form.get("new_group_name")
-    session.commit()
+    groups = request.form.get("new_group_name")
+    session.close()
 
-    return redirect(url_for("grouproute.groups", group_id=group_id))
+
+    if group == groups:
+        return redirect(url_for("grouproute.groups"))
+
+    elif group != groups:
+        student = session.query(Group).filter(Group.name == group.name).first()
+        print(student)
+        student.name = groups
+        session.commit()
+        session.close()
+
+        return redirect(url_for("grouproute.groups", group_id=group_id))
+
+    return redirect(url_for("grouproute.groups"))
 
 
 @grouproute.route('/delete_group/<group_id>/')

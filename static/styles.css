@@ -999,13 +999,14 @@ div.dinner img {
 }
 
 .grid-column {
+  color: black;
   overflow: hidden;
   font-size: .6vw;
   border-radius: 0.5rem;
-  border: solid #ffffff;
   background-color: #ffffff;
   box-shadow: 1.5rem 2.75rem 2rem -2rem hsl(var(--clr-secondary-400) / 0.25);
 }
+
 
 /*Muhmad sin- Rapport*/
 .login input[type="date"] {
