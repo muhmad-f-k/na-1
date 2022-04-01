@@ -796,11 +796,6 @@ h3 {
   }
 }
 
-
-.testimonial.quote {
-
-}
-
 div.outer {
     overflow: visible;
 }
@@ -865,9 +860,6 @@ h2.headline {
 
 
 
-#ingredients_list {
-
-}
 
 .center_div {
   margin: 30px;
@@ -979,9 +971,6 @@ div.dinner img {
   color: black;
 }
 
-.section {
-
-}
 
 .grid-container {
   display: grid;
@@ -1026,10 +1015,6 @@ div.dinner img {
 }
 
 .report-table {
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/august
   border-collapse: collapse;
   margin: 25px 0;
   font-size: 0.9em;
@@ -1046,11 +1031,8 @@ div.dinner img {
   color: #ffffff;
   text-align: left;
   font-weight: bold;
-<<<<<<< HEAD
-=======
   margin-left: auto;
   margin-right: auto;
->>>>>>> origin/august
 }
 
 .report-table th,
