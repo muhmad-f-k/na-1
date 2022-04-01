@@ -173,22 +173,6 @@ def create_meal():
                                dinners=conv_dinners, group_id=group_id)
 
 
-@calendarroute.route('/createDinner', methods=['GET', 'POST'])
-def create_dinner():
-    if 'dinner_title' in request.form:
-        dinner_title = request.form.get('dinner_title')
-        group_id = int(request.form.get('group_id'))
-        dinner_image = request.files['dinner_image'].read()
-        dinner = Dinner(title=dinner_title, image=dinner_image, user_id=current_user.id, group_id=group_id)
-        session.add(dinner)
-        session.commit()
-        session.close()
-        return render_template('createDinner.html', group_id=group_id)
-    else:
-        group_id = int(request.args.get('group_id'))
-        print(group_id)
-        return render_template('createDinner.html', group_id=group_id)
-
 
 @calendarroute.route('/deleteDinner', methods=['GET', 'POST'])
 def delete_dinner():
@@ -206,38 +190,6 @@ def delete_meal():
         session.commit()
         session.close()
     return render_template("deleteMeal.html")
-
-
-@calendarroute.route('/createMeal', methods=['GET', 'POST'])
-def create_meal():
-    import calendar as cd
-    import datetime
-
-    if "dinner_id" in request.form:
-        dinner_id = request.form.get('dinner_id')
-        incoming_date = request.form.get('date')
-
-        converted_date = incoming_date.strip('][').split(', ')
-        inc_year = int(converted_date[0])
-        inc_month = int(converted_date[1])
-        inc_day = int(converted_date[2])
-        meal_date = datetime.datetime(inc_year, inc_month, inc_day)
-
-        meal = Meal(date=meal_date, dinner_id=dinner_id)
-        session.add(meal)
-        session.commit()
-        session.close()
-        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)
-    else:
-        incoming_date = request.form.get("add_dinner")
-        converted_date = incoming_date.strip('][').split(', ')
-        inc_year = int(converted_date[0])
-        inc_month = int(converted_date[1])
-        inc_day = int(converted_date[2])
-        # current_date_time = datetime.datetime(inc_year, inc_month, inc_day)
-        # print(str(inc_year) + ' ' + str(inc_month) + ' ' + str(inc_day))
-        # print(current_date_time)
-        return render_template('createMeal.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day)
 
 
 @calendarroute.route('/createDinner/<group_id>')
@@ -261,14 +213,6 @@ def create_dinner_post(group_id):
     session.commit()
     return redirect(url_for(
         "recipe_route.createRecipe", dinner_id=dinner.id))
-
-
-@calendarroute.route('/deleteDinner', methods=['GET', 'POST'])
-def delete_dinner():
-    if 'dinner_id' in request.form:
-        session.query(Dinner).filter_by(id=request.form.get('dinner_id')).delete()
-        session.commit()
-    return render_template("deleteDinner.html")
 
 
 @calendarroute.route('/show_group_dinners/<group_id>')
