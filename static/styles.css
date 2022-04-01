@@ -468,7 +468,6 @@ dropdownIngredientlabel {
   color: white; /* White text */
   padding: 10px 24px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
-  width: 10%;
   display: block; /* Make the buttons appear below each other */
   margin: 20px auto;
   border-radius: 24px;
