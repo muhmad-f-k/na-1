@@ -352,6 +352,12 @@ div.dinnerdiv1:hover {
 }
 
 .calendar__day__container {
+  display: grid;
+  grid-template-columns: repeat(7, 200px);
+  padding-block: 4rem;
+  width: min(95%, 95rem);
+  gap: 1.5rem;
+  margin-inline: auto;
 }
 
 .calendar__day {

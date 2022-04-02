@@ -2,7 +2,7 @@ import base64
 from flask import Blueprint, render_template, request, url_for, redirect
 from flask_login import login_user, login_required, current_user, logout_user
 from flask import Blueprint, render_template, request, url_for, redirect
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 from base64 import b64encode
 from db.modul import *
 from flask_login import current_user
@@ -23,13 +23,12 @@ def show_calendar():
     import datetime
     import base64
 
-    group_id = 1
     group_name = None
-    if request.args.get('group_id'):
-        group_id = int(request.args.get('group_id'))
-        group_name = session.query(Group).filter_by(id=group_id).first().name
-    else:
-        group_name = group_name = session.query(Group).filter_by(id=group_id).first().name
+    request.args.get('group_id')
+    group_id = int(request.args.get('group_id'))
+    group_name = session.query(Group).filter_by(id=group_id).first().name
+    #else:
+        #group_name = group_name = session.query(Group).filter_by(id=group_id).first().name
 
     days_of_week = {"Monday": "Mandag",
                     "Tuesday": "Tirsdag",
@@ -281,20 +280,24 @@ def show_shopping_list(group_id):
     else:
         new_date = today
 
+    if "complete" in request.form:
+        price = request.form.get("price")
+        shopping_list = Shopping_list(date=new_date, price=price, group_id=group_id)
+        session.add(shopping_list)
+        session.commit()
+        session.close()
+
     weekday = new_date.weekday()
     monday = new_date - timedelta(days=weekday)
     sunday = new_date + timedelta(6 - weekday)
 
-    week_number = datetime(new_date.year, new_date.month, new_date.day).isocalendar()[1]
-    list = []
+    week_number = datetime(new_date.year, new_date.month,
+                           new_date.day).isocalendar()[1]
     headings = ("Ingrediens", "mengde", "Enhet")
-    data = session.query(Ingredient.name, Measurement.name, Amount.amount).select_from(
-        Recipe).join(Recipe_ingredient_helper).join(Ingredient).join(Measurement).join(Amount).filter(Dinner.id == Recipe.dinner_id, Dinner.group_id == Meal.group_id, Meal.date.between(monday, sunday)).all()
-    for lists in data:
-        list.append(lists)
-    # my_list = defaultdict(list)
-    # print(my_list)
-    print(list)
+    data = session.query(Ingredient.name, func.sum(Amount.amount), Measurement.name).select_from(
+        Recipe).join(Recipe_ingredient_helper).join(Ingredient).join(Measurement).join(Amount).filter(
+        Dinner.id == Recipe.dinner_id, Dinner.id == Meal.dinner_id, Meal.group_id == group_id, Meal.date.between(monday, sunday)).group_by(
+        Ingredient.name, Measurement.name).all()
 
     session.close()
 

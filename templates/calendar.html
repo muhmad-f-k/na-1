@@ -2,6 +2,7 @@
 <h1 class="calendar__h1">{{ group_name }} Kalender</h1>
 <h2 class="calendar__h2">{{ month_name }} {{ year }}</h2>
 <h2 class="calendar__h2">
+<a class="btn btn-info" href="{{ url_for('calendarroute.show_shopping_list', group_id=group_id) }}"><button>Handleliste</button></a>
   <form class="calendar__form" method="POST">
     <button
       class="calendar__button"
