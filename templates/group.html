@@ -11,6 +11,16 @@
     href="{{ url_for('grouproute.update_group', group_id=group.id) }}"
     ><button>Rediger gruppe</button></a
   >
+    <a
+    class="btn btn-info"
+    href="{{ url_for('calendarroute.create_dinner', group_id=group.id) }}"
+    ><button>Opprett middag</button></a
+  >
+    <a
+    class="btn btn-info"
+    href="{{ url_for('calendarroute.show_calendar', group_id=group.id) }}"
+    ><button>Gruppen's kalender</button></a
+  >
   <a
     class="btn btn-info"
     href="{{ url_for('grouproute.delete_group', group_id=group.id) }}"
