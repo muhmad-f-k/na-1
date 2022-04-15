@@ -39,6 +39,7 @@ class User(base, UserMixin):
     password = Column(String(200), nullable=False)
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
+    image = Column(LargeBinary(length=(2**32)-1))
     user_group_role = relationship("User_group_role", back_populates="user")
     dinner = relationship("Dinner")
     user = relationship("Comment")
