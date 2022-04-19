@@ -217,9 +217,9 @@ class Deleted_comment(base):
     __tablename__ = "deleted_comment"
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    text = Column(String(100), nullable=False))
-    dinner_id = Column(Integer)
-    user_id = Column(Integer)
+    text = Column(String(100), nullable=False)
+    dinner_id = Column(Integer, nullable=False)
+    user_id = Column(Integer, nullable=False)
 
     def __repr__(self):
         return f"{self.id} - {self.text} - {self.dinner_id} - {self.user_id}"
