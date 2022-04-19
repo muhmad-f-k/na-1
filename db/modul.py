@@ -212,7 +212,17 @@ class Edited_comment(base):
 
     def __repr__(self):
         return f"{self.id} - {self.text}"
+ 
+class Deleted_comment(base):
+    __tablename__ = "deleted_comment"
+    id = Column(Integer, primary_key=True, unique=True,
+                nullable=False, autoincrement=True)
+    text = Column(String(100), nullable=False))
+    dinner_id = Column(Integer)
+    user_id = Column(Integer)
 
+    def __repr__(self):
+        return f"{self.id} - {self.text} - {self.dinner_id} - {self.user_id}"
 
 class Amount(base):
     __tablename__ = "amount"
