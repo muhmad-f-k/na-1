@@ -5,6 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.schema import UniqueConstraint
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -36,13 +37,24 @@ class User(base, UserMixin):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     email = Column(String(50), nullable=False, unique=True)
-    password = Column(String(200), nullable=False)
+    password_hash = Column(String(200), nullable=False)
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
     image = Column(LargeBinary(length=(2**32)-1))
     user_group_role = relationship("User_group_role", back_populates="user")
     dinner = relationship("Dinner")
     user = relationship("Comment")
+
+    @property
+    def password (self):
+        raise AttributeError ( 'password is unreadable by humans ' ) 
+
+    @password.setter
+    def set_password (self, password): 
+        self.password_hash = generate_password_hash (password) 
+    
+    def verify_password (self, password):
+        return check_password_hash (self.password_hash, password)
 
     def __repr__(self):
         return f"{self.first_name} - {self.last_name} - {self.email} - {self.id}"
@@ -78,7 +90,6 @@ class Recipe_ingredient_helper(base):
 
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-   # amount = Column(Integer, nullable=False)
     measurement_id = Column(Integer, ForeignKey(
         "measurement.id"), nullable=False)
     amount_id = Column(Integer, ForeignKey("amount.id"), nullable=False)
@@ -102,13 +113,14 @@ class Shopping_list(base):
     __tablename__ = "shopping_list"
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    # date = Column(DATE, nullable=False)  # sjekk date er ok
     date = Column(DATE(), default=datetime.date.today(), nullable=False)
     price = Column(String(10), nullable=False)
     group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
+    week_number = Column(Integer, nullable=False)
+    year = Column(Integer, nullable=False)
 
     def __repr__(self):
-        return f"{self.date} - {self.price}"
+        return f"{self.date} - {self.price} - {self.week_number} - {self.year}"
 
 
 class Measurement(base):
