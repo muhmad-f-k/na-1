@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Grupper{% endblock %}
+
+
+{% block content %}
+{% for category, message in get_flashed_messages(with_categories=True) %}
+<div class="alert alert-{{category}} show" id="flash-msg">
+  <span class="flash-msg">{{ message }}</span>
+  <span class="close-btn" onclick="removeFlashMsg()"><i class="uil uil-multiply"></i></span>
+</div>
+{% endfor %}
+
+
+<div class="group-title">
+  <div class="empty-left"></div>
+  <h1 class="group-header-title">{{ group.name }}</h1>
+  <span class="edit-group-btn" onclick="showGroupModal()"><i class="uil uil-pen"></i></span>
+</div>
+
+
+<div class="member-modal hide" id="member-modal">
+
+  <div class="form-container center-modal">
+      <span class="top-right" onclick="hideMemberModal()"><i class="uil uil-multiply"></i></span>
+      <form class="member-list" method="POST">
+          <div class="control">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <label for="member_email">Legg til medlem</label>
+          <input type="email" name="member_email" id="member_email" placeholder="E-postadresse">
+      </div>
+      <div class="control">
+          <input type="submit" name="action_add_member" id="add-member-btn" value="legg til">
+      </div>
+      </form>
+  </div>
+</div>
+<div class="group-modal hide" id="group-modal">
+
+    <div class="form-container center-modal">
+        <span class="top-right" onclick="hideGroupModal()"><i class="uil uil-multiply"></i></span>
+
+        <form method="POST">
+            <div class="control">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <label for="group_name">Endre gruppenavn</label>
+            <input type="text" name="group_name" placeholder="Gruppenavn" required>
+        </div>
+        <div class="control">
+            <input type="submit" name="action_change_group_title" id="group-btn" value="Endre">
+        </div>
+        </form>
+    </div>
+  </div>
+<article class="group-grid">
+  
+  <main class="main-content">
+
+
+    <div class="main-container">
+      {% for dinner in dinners %}
+      
+      <a class="dinner" href="{{ url_for('calendarroute.show_dinner', dinner_id=dinner.id, group_id=group.id) }}">
+        <div class="main-column">
+
+          <div class="img-container">
+            <img src="data:;base64,{{ decode_image(dinner.image) }} " onerror="this.onerror=null; this.src='/static/img/generic.png'"/>
+          </div>
+          <div class="dinner-title">
+            <h3>{{ dinner.title}}</h3>
+          </div>
+        </div>
+      </a>
+
+      {% endfor %}
+    </div>
+
+
+  </main>
+
+  <section class="btn-group">
+    
+    <div class="group-header flex">
+      <ul class="group-nav flex">
+        <li>
+          <a href="{{ url_for('calendarroute.show_calendar', group_id = group.id) }}">
+            <span><i class="uil uil-calender"></i>Kalender</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('calendarroute.show_shopping_list', group_id=group.id) }}">
+            <span><i class="uil uil-shopping-cart"></i>Handleliste</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('rapportroute.report_post', group_id=group.id) }}">
+            <span><i class="uil uil-graph-bar"></i></i>Rapport</span>
+          </a>
+          </li>
+        <li>
+          <a href="{{ url_for('calendarroute.create_dinner', group_id=group.id) }}">
+            <span><i class="uil uil-pizza-slice"></i>Opprett middag</span>
+          </a>
+          </li>
+          <li>
+              <span onclick="showMemberModal()"><i class="uil uil-user-plus"></i>Legg til medlemmer</span>
+          </li>
+      </ul>
+    </div>
+    <section class="sidebar">
+
+        
+        
+      <h2 class="member-title">medlemmer</h2>
+      {% for member in members %}
+
+          <div class="flex members">
+            <div class="comment-image">
+              <img class="" src="data:;base64,{{ decode_image2(member.user.image) }}" onerror="this.onerror=null; this.src='/static/img/kenny.jpg'"/>
+            </div>
+            
+            <div class="member-name">
+            <p>{{ member.user.first_name }} {{ member.user.last_name }}</p>
+          </div>
+          <form method="POST">
+          
+             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            
+            {% if (current_user_role.role_id == admin_role.id) %}
+              <label for="rolle"></label>
+              <select id="rolle" name="rolle">
+                <option value="{{ member.role_id }}" selected disabled hidden>{{ member.role.name }}</option>
+                <option value=1>Admin</option>
+                <option value=2>Moderator</option>
+                <option value=3>Kokk</option>
+                <option value=4>Gjest</option>
+              </select>
+              <input type="hidden" name="member_id" value="{{ member.user_id }}">
+              <input type="submit" name="action_change_role" value="Lagre"/>
+          </form>
+          <form method="post">
+            {% endif %}
+            {% if (current_user_role.role_id == admin_role.id or current_user_role.user_id == member.user_id) %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="member_id" value="{{ member.user_id }}">
+            <button type="submit" name="action_remove_member" value="fjern_medlem" onclick="return confirm('Er du sikker på at du vil fjerne {{ member.user.first_name }} {{ member.user.last_name }}')">
+                <span><i class="uil uil-times"></i></span></button>
+          {% endif %}
+          </div>
+          </form>
+          
+        {% endfor %}
+  
+        
+    </section>
+  </section>
+
+</article>
+
+
+
+
+
+
+
+
+
+{% endblock %}

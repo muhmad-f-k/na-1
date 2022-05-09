@@ -7,10 +7,9 @@ from sqlalchemy.schema import UniqueConstraint
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 connection_str = 'sqlite:///' + \
-    os.path.join(BASE_DIR, 'finaldata.db?check_same_thread=False')
+                 os.path.join(BASE_DIR, 'finaldata.db?check_same_thread=False')
 engine = create_engine(connection_str)
 base = declarative_base()
 
@@ -40,21 +39,21 @@ class User(base, UserMixin):
     password_hash = Column(String(200), nullable=False)
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
-    image = Column(LargeBinary(length=(2**32)-1))
+    image = Column(LargeBinary(length=(2 ** 32) - 1))
     user_group_role = relationship("User_group_role", back_populates="user")
     dinner = relationship("Dinner")
     user = relationship("Comment")
 
     @property
-    def password (self):
-        raise AttributeError ( 'password is unreadable by humans ' ) 
+    def password(self):
+        raise AttributeError('password is unreadable by humans ')
 
     @password.setter
-    def set_password (self, password): 
-        self.password_hash = generate_password_hash (password) 
-    
-    def verify_password (self, password):
-        return check_password_hash (self.password_hash, password)
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return f"{self.first_name} - {self.last_name} - {self.email} - {self.id}"
@@ -141,13 +140,14 @@ class Recipe(base):
                 nullable=False, autoincrement=True)
     approach = Column(String(20000), nullable=False)
     version = Column(Integer, nullable=False)
+    portions = Column(Integer, nullable=True)
     UniqueConstraint('id', 'version', name='id_version')
     recipe_ingredient_helper = relationship(
         "Recipe_ingredient_helper", back_populates="recipe")
     dinner_id = Column(Integer, ForeignKey("dinner.id"), nullable=False)
 
     def __repr__(self):
-        return f"{self.id} - {self.approach}"
+        return f"{self.id} - {self.approach} - {self.portions}"
 
 
 class Ingredient(base):
@@ -167,7 +167,7 @@ class Dinner(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     title = Column(String(255), nullable=False)
-    image = Column(LargeBinary(length=(2**32)-1))
+    image = Column(LargeBinary(length=(2 ** 32) - 1))
     recipe = relationship("Recipe")
     group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
@@ -183,11 +183,12 @@ class Meal(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     date = Column(DATE(), default=datetime.date.today(), nullable=False)
+    portions = Column(Integer, nullable=False)
     group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
     dinner_id = Column(Integer, ForeignKey("dinner.id"), nullable=False)
 
     def __repr__(self):
-        return f"{self.id} - {self.date}"
+        return f"{self.id} - {self.date} - {self.portions}"
 
 
 class Comment(base):
@@ -212,7 +213,8 @@ class Edited_comment(base):
 
     def __repr__(self):
         return f"{self.id} - {self.text}"
- 
+
+
 class Deleted_comment(base):
     __tablename__ = "deleted_comment"
     id = Column(Integer, primary_key=True, unique=True,
@@ -223,6 +225,7 @@ class Deleted_comment(base):
 
     def __repr__(self):
         return f"{self.id} - {self.text} - {self.dinner_id} - {self.user_id}"
+
 
 class Amount(base):
     __tablename__ = "amount"

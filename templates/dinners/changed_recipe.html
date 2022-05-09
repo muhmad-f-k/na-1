@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% block content %}
+<main class="changed-dinner-grid">
+
+
+    <article class="testimonial changed">
+            <section class="approach-section flex">
+        <h1> Endringer for {{ dinner.title }}</h1>
+
+                {# 1 #}
+            </section>
+    </article>
+
+    <article class="testimonial changed">
+        <section class="approach-section flex">
+            <h2 class="headline">NÅVÆRENDE FREMGANGSMÅTE</h2>
+            {# 2 #}
+        <p class="approach" style="white-space: pre-line">{{ recipe.approach }}</p>
+
+        </section>
+    </article>
+    </article>
+        <article class="testimonial changed">
+            <section class="approach-section flex">
+            <h2 class="headline">TIDLIGERE FREMGANGSMÅTE</h2>
+            {# 3 #}
+        <p class="approach" style="white-space: pre-line">{{ status_approach }}</p>
+        <p class="approach" style="white-space: pre-line">{{ recipe_prev.approach }}</p>
+
+
+            </section>
+    </article>
+    <article class="testimonial changed">
+        <section class="approach-section flex">
+            <h2 class="headline"> NÅVÆRENDE INGREDIENSER</h2>
+            {# 4 #}
+            {% for i in range(0,(len)) %}
+            <li class="section_dinner approach" id="ingredient-line-height">
+            {{ amounts[i].amount}}
+            {{ measurements[i].name }}
+            {{ ingredients[i].name }}
+            </li>
+        {% endfor %}
+        </section>
+        {# 4 #}
+    </article>
+
+    <article class="testimonial changed">
+        <section class="approach-section flex">
+            <h2 class="headline"> TIDLIGERE INGREDIENSER</h2>
+            {# 5 #}
+             <p class="approach" style="white-space: pre-line">{{ status_ingredient }}</p>
+            {% for i in range(0,(len_prev)) %}
+            <li class="section_dinner approach" id="ingredient-line-height">
+            {{ amounts_prev[i].amount}}
+            {{ measurements_prev[i].name }}
+            {{ ingredients_prev[i].name }}
+            </li>
+        {% endfor %}
+        </section>
+    </article>
+
+</main>
+
+{% endblock %}

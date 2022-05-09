@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="img-bg general-bg blur"></div>
+<div class="add-dinner-grid">
+  <h1>Velg middag for {{ inc_day }}.{{ inc_month }}.{{ inc_year }} </h1>
+
+  <div class="add-dinner-container">
+    {% for dinner in dinners %}
+        <div class="main-column">
+            <div class="add-dinner-img-container">
+            <img class="" src="data:;base64,{{ dinner[2] }}"/>
+        </div>
+        <div class="add-dinner-title">
+            <h3>{{ dinner[1] }}</h3>
+        </div>
+
+                <form class="" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button
+                        class="add-dinner-btn"
+                        type="submit"
+                        name="choose_dinner"
+                        value="{{ [dinner[0], inc_year, inc_month, inc_day, group_id] }}"
+                        >
+                        Velg
+                    </button>
+                </form>
+
+            
+        </div>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="img-bg general-bg"></div>
+<article class="shopping-container">
+  <section class="btn-group top-right">
+    
+    <div class="group-header flex">
+      <ul class="group-nav flex">
+        <li>
+          <a href="{{ url_for('calendarroute.show_calendar', group_id = group_id) }}">
+            <span><i class="uil uil-calender"></i>Kalender</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('calendarroute.show_shopping_list', group_id=group_id) }}">
+            <span><i class="uil uil-shopping-cart"></i>Handleliste</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('rapportroute.report_post', group_id=group_id) }}">
+            <span><i class="uil uil-graph-bar"></i></i>Rapport</span>
+          </a>
+          </li>
+        <li>
+          <a href="{{ url_for('calendarroute.create_dinner', group_id=group_id) }}">
+            <span><i class="uil uil-pizza-slice"></i>Opprett middag</span>
+          </a>
+          </li>
+      </ul>
+    </div>
+  </section>
+  <div class="back-btn">
+    <a href="{{ url_for('grouproute.show_group', group_id=group_id) }}">
+
+      <i class="uil uil-arrow-circle-left"></i>
+
+  </a>
+  </div>
+<h1 class="logo">Handleliste</h1>
+
+<div class="calendar-nav">
+
+<form class="" method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+  <button
+    class="week-btn"
+    type="submit"
+    name="prev_week"
+    value="{{ subtract_days(new_date) }}"
+  >
+  &#8249;
+  </button>
+
+  <span>Uke: {{ week_number }}</span>
+  
+  <button
+    class="week-btn"
+    type="submit"
+    name="next_week"
+    value="{{ add_days(new_date) }}"
+  >
+  &#8250;
+  </button>
+</form>
+</div>
+<table class="report-table">
+  <tr class="active-row">
+    {% for header in headings %}
+    <th>{{header}}</th>
+    {% endfor %}
+  </tr>
+  {% for row in data %}
+  <tr class="active-row">
+    {% for cell in row %}
+    <td>{{ cell | trim(",0") | trim(".")}}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+{% if shopping_list %}
+    <p>Handleliste fullført!</p>
+{% else %}
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="shopping-complete">
+      <div class="ingredient-control">
+        <input type="number" name="price" placeholder="pris" required>
+        <input type="hidden" name="week_number" value="{{ week_number }}">
+      </div>
+      <div class="ingredient-control">
+        <input type="hidden" name="year" value="{{ year }}">
+        <input type="hidden" name="shopping_list_date" value="{{ new_date }}">
+        <input type="submit" name="complete" value="Handlet" />
+      </div>
+    </div>
+    </form>
+{% endif %}
+</article>
+{% endblock %}

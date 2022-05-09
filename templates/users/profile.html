@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+ {% block title %}Index{% endblock %} {% block
+content%}
+
+<main class="profile-main">
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+    <div class="alert alert-{{category}} show" id="flash-msg">
+      <span class="flash-msg">{{ message }}</span>
+      <span class="close-btn" onclick="removeFlashMsg()"><i class="uil uil-multiply"></i></span>
+    </div>
+  {% endfor %}
+    <div class="img-bg general-bg blur"></div>
+<div class="container">
+    <div class="grid-7 element-animation">
+      <!--card-1-->
+      <div class="card">
+        <i class="uil uil-edit setting-icon" onclick="showSettingsModal()"></i>
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" name="action_delete" value="slett_bruker"><span class="delete-icon"><i class="uil uil-trash-alt"></i></span></button>
+        </form>
+        
+<div class="relative">
+        <img src="data:;base64,{{ image }}" onerror="this.onerror=null; this.src='/static/img/kenny.jpg'" class="center profile">
+    <button class="box" onclick="showProfileModal()"></button>
+    </div>
+    <h1 class="title">{{ user.first_name }} {{ user.last_name }}</h1>
+        <div class="top">
+        </div>
+        <button class="btn-grad top" onclick="showGroupModal()"><span> Opprett gruppe</span></button>
+    
+      </div>
+    </div>
+
+        <div class="grid-7 element-animation">
+            
+          <!--card-1-->
+          <div class="card">
+            <h2>Mine grupper</h2>
+            <hr>
+            <div class="group">
+              {% if groups|length < 1%}
+              <div class="group-content" onclick="showGroupModal()">
+                <h3>Du har ingen grupper.</h3>
+                <p>Opprett en for å lage middager, ukesmeny og se handleliste!</p>
+              </div>
+              {% else %}
+              {% for group in groups %}
+              
+              
+              <a href="{{ url_for('grouproute.show_group', group_id=group.id) }}">
+                <div class="group-content">
+                    <h3>{{ group.name }}</h3>
+                </div>
+            </a>
+            {% endfor %}
+            {% endif %}      
+              </div>
+          </div>
+          </div>
+</div>
+</main>
+<div class="group-modal hide" id="group-modal">
+    <div class="form-container center-modal">
+        <span class="top-right" onclick="hideGroupModal()"><i class="uil uil-multiply"></i></span>
+        <form method="post">
+            <div class="control">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="text" name="group-name" placeholder="Gruppenavn" required>
+        </div>
+        <div class="control">
+            <input type="submit" name="action_add_group" id="group-btn" value="opprett">
+        </div>
+        </form>
+    </div>
+  </div>
+
+
+<div class="settings-modal hide" id="settings-modal">
+    <div class="form-container center-modal">
+        <span class="top-right" onclick="hideSettingsModal()"><i class="uil uil-multiply"></i></span>
+        <form class="register-form" action="" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="display-row">
+              <div class="control">
+                <label for="name">Fornavn</label>
+                <input type="text" name="first_name" id="name" required value="{{ user.first_name }}"/>
+              </div>
+              <div class="control">
+                <label for="name">Etternavn</label>
+                <input type="text" name="last_name" id="name" required required value="{{ user.last_name }}"/>
+              </div>
+            </div>
+            <div class="control">
+              <label for="name">E-post</label>
+              <input type="email" name="email" id="email" required required value="{{ user.email }}"/>
+            </div>
+            <div class="display-row">
+              <div class="control">
+                <label for="password">Passord</label>
+                <input type="password" name="password" id="password" required/>
+              </div>
+              <div class="control">
+                <label for="password">Gjenta passord</label>
+                <input type="password" name="confirm_password" id="repeat_password" required required/>
+              </div>
+            </div>
+            <div class="control">
+              <input type="submit" name="action_update_user" value="oppdater" />
+            </div>
+          </form>
+    </div>
+</div>
+
+<div class="profile-modal hide" id="profile-modal">
+  <div class="form-container center-modal">
+      <span class="top-right" onclick="hideProfileModal()"><i class="uil uil-multiply"></i></span>
+      <form method="post" enctype="multipart/form-data">
+          <div class="control">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <input type="file" name="profile_image" accept="image/*">
+      </div>
+      <div class="control">
+          <input type="submit" name="action_add_img" id="profile-img-btn" value="endre">
+      </div>
+      </form>
+  </div>
+</div>
+
+
+{% endblock %}

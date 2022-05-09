@@ -1,0 +1,36 @@
+{% extends "base.html" %} {% block title %}Index{% endblock %} {% block content
+    %}
+    
+    <section class="login-section">
+      {% for category, message in get_flashed_messages(with_categories=True) %}
+      <div class="alert alert-{{category}} show" id="flash-msg">
+        <span class="flash-msg">{{ message }}</span>
+        <span class="close-btn" onclick="removeFlashMsg()"
+          ><i class="uil uil-multiply"></i
+        ></span>
+      </div>
+      {% endfor %}
+    
+      <div class="img-bg general-bg blur"></div>
+      <div class="approach-container">
+        <h1>Opprett fremgangsmåte</h1>
+        <p>Steg 2 av 3</p>
+        <p>Her legger du inn fremgangsmåten til middagen.</p>
+        <form action="" method="post" enctype="multipart/form-data">
+          <div class="control">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <textarea name="dinner-approach" id="dinner-approach" required></textarea>
+          </div>
+            <p>Her skriver du inn antall porsjoner.</p>
+            <div class="control">
+                <input type="number" name="portions" id="portions" required>
+            </div>
+          <div class="control">
+            <input type="submit" value="Neste" />
+          </div>
+        </form>
+      </div>
+    </section>
+    
+    {% endblock %}
+    

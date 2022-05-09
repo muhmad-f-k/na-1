@@ -1,0 +1,168 @@
+{% extends "base.html" %} {% block content %}
+<div class="img-bg general-bg blur"></div>
+<main class="calendar-main">
+  <section class="btn-group top-right">
+    
+    <div class="group-header flex">
+      <ul class="group-nav flex">
+        <li>
+          <a href="{{ url_for('calendarroute.show_calendar', group_id = group_id) }}">
+            <span><i class="uil uil-calender"></i>Kalender</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('calendarroute.show_shopping_list', group_id=group_id) }}">
+            <span><i class="uil uil-shopping-cart"></i>Handleliste</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('rapportroute.report_post', group_id=group_id) }}">
+            <span><i class="uil uil-graph-bar"></i></i>Rapport</span>
+          </a>
+          </li>
+        <li>
+          <a href="{{ url_for('calendarroute.create_dinner', group_id=group_id) }}">
+            <span><i class="uil uil-pizza-slice"></i>Opprett middag</span>
+          </a>
+          </li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="back-btn">
+    <a href="{{ url_for('grouproute.show_group', group_id=group_id) }}">
+      <i class="uil uil-arrow-circle-left"></i>
+  </a>
+  </div>
+
+  <div class="calendar-nav">
+<h1 class="calendar__h1">{{ group_name }} Kalender</h1>
+<div class="calendar-week-group">
+  <form class="" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <button
+      class="week-btn"
+      type="submit"
+      name="prev_week"
+      value="{{  [year_to_cal, week_number_to_cal - 1]  }}"
+    >
+    &#8249;
+    </button>
+
+
+<span>{{ year_to_cal }} Uke {{ week_number_to_cal }}</span>
+  
+    <button
+      class="week-btn"
+      type="submit"
+      name="next_week"
+      value="{{  [year_to_cal, week_number_to_cal + 1]  }}"
+    >
+    &#8250;
+    </button>
+  </form>
+</div>
+</div>
+
+<div class="calendar-grid">
+  {% for day in days_to_cal %}
+  <div class="calendar-content">
+
+  <div class="calendar-date">
+    {{ day.day }}. {{ days_of_week.get(day.strftime("%A")) }}
+    </div>
+
+
+    
+      {% if dinners[days_to_cal.index(day)] %}
+      <a href="{{ url_for('calendarroute.show_dinner', dinner_id=meals[days_to_cal.index(day)][0].dinner_id, group_id=group_id) }}">
+      <div class="dinner-planner-content">
+        <div class="calendar-img">
+      
+          
+          <img class="" src="data:;base64,{{ dinners[days_to_cal.index(day)][1] }}"/>
+        </div>
+        <div class="calendar-dinner-title">
+          <h3>{{ dinners[days_to_cal.index(day)][0] }}</h3>
+        </div>
+        </div>
+      </a>
+                {% if user_group_role %}
+                    <form class="" method="POST">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <button
+                            class=""
+                            type="submit"
+                            name="delete_meal"
+                            value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}"
+                            >
+                            <span class="remove-meal"><i class="uil uil-trash-alt"></i></span>
+                        </button>
+                    <div class="calendar-btn-group">
+                      <h3 class="">Porsjoner</h3>
+                        <div class="increment-container">
+                        <form class="" method="POST">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="mayGodGuideMeTowardTheLight" value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}">
+                          <button type="submit" name="remove_portion" id="remove_portion" value="{{ subtract_portions(meals[days_to_cal.index(day)][0].portions) }}">
+                              <i class="uil uil-minus-circle"></i>
+                          </button>
+                        </form>
+                          <form class="" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                            <input type="hidden" name="mayGodGuideMeTowardTheLight" value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}">
+                            <input type="number" class="num" name="set_portion" id="set_portion" value={{ meals[days_to_cal.index(day)][0].portions }}>
+                        </form>
+                        <form class="" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                            <input type="hidden" name="mayGodGuideMeTowardTheLight" value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}">
+                          <button type="submit" name="add_portion" id="add_portion" value="{{ add_portions(meals[days_to_cal.index(day)][0].portions) }}">
+                              <i class="uil uil-plus-circle"></i>
+                          </button>
+                        </form>
+                      </div>
+                  </div>
+                {% endif %}
+              
+            
+      {% else %}
+          {% if user_group_role %}
+        
+              <form class="" action="{{ url_for('calendarroute.create_meal') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <button
+                    class="add-dinner-btn translate-center"
+                    type="submit"
+                    name="add_dinner"
+                    value="{{ [day.year, day.month, day.day, group_id] }}"
+                    >
+                    Legg til
+                </button>
+            </form>
+          
+          {% endif %}
+        
+      {% endif %}
+      
+      
+    </div>
+  {% endfor %}
+</div>
+<section class="btn-group">
+  <div class="group-header flex">
+    <ul class="group-nav flex">
+
+      <li>
+        <a href="{{ url_for('calendarroute.show_shopping_list', group_id=group_id) }}">
+          <span><i class="uil uil-shopping-cart"></i>Handleliste</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</section>
+</main>
+
+
+
+{% endblock %}

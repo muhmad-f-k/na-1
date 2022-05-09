@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% block title %}Index{% endblock %} {% block content
+%}
+
+
+
+
+
+<section class="login-section">
+  {% for category, message in get_flashed_messages(with_categories=True) %}
+  <div class="alert alert-{{category}} show" id="flash-msg">
+    <span class="flash-msg">{{ message }}</span>
+    <span class="close-btn" onclick="removeFlashMsg()"><i class="uil uil-multiply"></i></span>
+  </div>
+{% endfor %}
+
+
+  <div class="form-container">
+    
+    <h1>velkommen</h1>
+
+
+    <form action="" method="post">
+      <div class="control">
+        <label for="email">Email</label>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="email" name="email" id="email" data-error="Invalid Email Address" required>
+      </div>
+      <div class="control">
+        <label for="password">Passord</label>
+        <input type="password" name="password" id="password" />
+      </div>
+      <div class="control">
+        <input type="submit" value="Logg inn" />
+      </div>
+    </form>
+    <div class="link"><p>Har du ikke konto?
+        <a href="{{ url_for('usersroute.register') }}">Registrer deg her!</a></p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
