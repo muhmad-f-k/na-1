@@ -7,10 +7,9 @@ from sqlalchemy.schema import UniqueConstraint
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 connection_str = 'sqlite:///' + \
-    os.path.join(BASE_DIR, 'finaldata.db?check_same_thread=False')
+                 os.path.join(BASE_DIR, 'finaldata.db?check_same_thread=False')
 engine = create_engine(connection_str)
 base = declarative_base()
 
@@ -20,9 +19,12 @@ class User_group_role(base):
 
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
-    role_id = Column(Integer, ForeignKey("role.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey(
+        'user.id', ondelete="CASCADE"), nullable=False)
+    group_id = Column(Integer, ForeignKey(
+        "group.id", ondelete="CASCADE"), nullable=False)
+    role_id = Column(Integer, ForeignKey(
+        "role.id", ondelete="CASCADE"), nullable=False)
     UniqueConstraint('user_id', 'group_id', name='user_group')
 
     __table_args__ = (UniqueConstraint(user_id, group_id),)
@@ -40,21 +42,22 @@ class User(base, UserMixin):
     password_hash = Column(String(200), nullable=False)
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
-    image = Column(LargeBinary(length=(2**32)-1))
-    user_group_role = relationship("User_group_role", back_populates="user")
+    image = Column(LargeBinary(length=(2 ** 32) - 1))
+    user_group_role = relationship(
+        "User_group_role", back_populates="user", cascade="all, delete")
     dinner = relationship("Dinner")
     user = relationship("Comment")
 
     @property
-    def password (self):
-        raise AttributeError ( 'password is unreadable by humans ' ) 
+    def password(self):
+        raise AttributeError('password is unreadable by humans ')
 
     @password.setter
-    def set_password (self, password): 
-        self.password_hash = generate_password_hash (password) 
-    
-    def verify_password (self, password):
-        return check_password_hash (self.password_hash, password)
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return f"{self.first_name} - {self.last_name} - {self.email} - {self.id}"
@@ -65,7 +68,8 @@ class Role(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     name = Column(String(255), nullable=False)
-    user_group_role = relationship("User_group_role", back_populates="role")
+    user_group_role = relationship(
+        "User_group_role", back_populates="role", cascade="all, delete")
 
     def __repr__(self):
         return f"{self.name} - {self.id}"
@@ -76,7 +80,8 @@ class Group(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     name = Column(String(255), nullable=False, unique=True)
-    user_group_role = relationship("User_group_role", back_populates="group")
+    user_group_role = relationship(
+        "User_group_role", back_populates="group", cascade="all, delete")
     shopping_lists = relationship("Shopping_list")
     dinner = relationship("Dinner")
     meal = relationship("Meal")
@@ -91,11 +96,13 @@ class Recipe_ingredient_helper(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     measurement_id = Column(Integer, ForeignKey(
-        "measurement.id"), nullable=False)
-    amount_id = Column(Integer, ForeignKey("amount.id"), nullable=False)
+        "measurement.id", ondelete="CASCADE"), nullable=False)
+    amount_id = Column(Integer, ForeignKey(
+        "amount.id", ondelete="CASCADE"), nullable=False)
     ingredient_id = Column(Integer, ForeignKey(
-        "ingredient.id"), nullable=False)
-    recipe_id = Column(Integer, ForeignKey("recipe.id"), nullable=False)
+        "ingredient.id", ondelete="CASCADE"), nullable=False)
+    recipe_id = Column(Integer, ForeignKey(
+        "recipe.id", ondelete="CASCADE"), nullable=False)
     UniqueConstraint('ingredient_id', 'recipe_id', name='ingredient_recipe')
 
     __table_args__ = (UniqueConstraint(
@@ -129,7 +136,7 @@ class Measurement(base):
                 nullable=False, autoincrement=True)
     name = Column(String(10), nullable=False, unique=True)
     recipe_ingredient_helper = relationship(
-        "Recipe_ingredient_helper", back_populates="measurement")
+        "Recipe_ingredient_helper", back_populates="measurement", cascade="all, delete")
 
     def __repr__(self):
         return f"{self.id} - {self.name}"
@@ -141,13 +148,15 @@ class Recipe(base):
                 nullable=False, autoincrement=True)
     approach = Column(String(20000), nullable=False)
     version = Column(Integer, nullable=False)
+    portions = Column(Integer, nullable=True)
     UniqueConstraint('id', 'version', name='id_version')
     recipe_ingredient_helper = relationship(
-        "Recipe_ingredient_helper", back_populates="recipe")
-    dinner_id = Column(Integer, ForeignKey("dinner.id"), nullable=False)
+        "Recipe_ingredient_helper", back_populates="recipe", cascade="all, delete")
+    dinner_id = Column(Integer, ForeignKey(
+        "dinner.id", ondelete="CASCADE"), nullable=False)
 
     def __repr__(self):
-        return f"{self.id} - {self.approach}"
+        return f"{self.id} - {self.approach} - {self.portions}"
 
 
 class Ingredient(base):
@@ -156,7 +165,7 @@ class Ingredient(base):
                 nullable=False, autoincrement=True)
     name = Column(String(45), nullable=False, unique=True)
     recipe_ingredient_helper = relationship(
-        "Recipe_ingredient_helper", back_populates="ingredient")
+        "Recipe_ingredient_helper", back_populates="ingredient", cascade="all, delete")
 
     def __repr__(self):
         return f"{self.id} - {self.name}"
@@ -167,8 +176,8 @@ class Dinner(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     title = Column(String(255), nullable=False)
-    image = Column(LargeBinary(length=(2**32)-1))
-    recipe = relationship("Recipe")
+    image = Column(LargeBinary(length=(2 ** 32) - 1))
+    recipe = relationship("Recipe", cascade="all, delete")
     group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     comment = relationship("Comment")
@@ -183,11 +192,12 @@ class Meal(base):
     id = Column(Integer, primary_key=True, unique=True,
                 nullable=False, autoincrement=True)
     date = Column(DATE(), default=datetime.date.today(), nullable=False)
+    portions = Column(Integer, nullable=False)
     group_id = Column(Integer, ForeignKey("group.id"), nullable=False)
     dinner_id = Column(Integer, ForeignKey("dinner.id"), nullable=False)
 
     def __repr__(self):
-        return f"{self.id} - {self.date}"
+        return f"{self.id} - {self.date} - {self.portions}"
 
 
 class Comment(base):
@@ -212,7 +222,8 @@ class Edited_comment(base):
 
     def __repr__(self):
         return f"{self.id} - {self.text}"
- 
+
+
 class Deleted_comment(base):
     __tablename__ = "deleted_comment"
     id = Column(Integer, primary_key=True, unique=True,
@@ -223,6 +234,7 @@ class Deleted_comment(base):
 
     def __repr__(self):
         return f"{self.id} - {self.text} - {self.dinner_id} - {self.user_id}"
+
 
 class Amount(base):
     __tablename__ = "amount"
@@ -238,3 +250,4 @@ class Amount(base):
 
 base.metadata.create_all(engine)
 session = sessionmaker()(bind=engine)
+
