@@ -119,9 +119,12 @@
 
    Gå videre
 
-      <a href="{{ url_for('grouproute.show_group', group_id=group_id) }}"
-        ><button class="button button5">Videre</button></a
-      >
+    <div class="ingredient-control">
+        <form method="post" name="videreForm">
+        <input class = "button button5" type="submit" name="btnVidere" value="Videre">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        </form>
+    </div>
 
 
 
