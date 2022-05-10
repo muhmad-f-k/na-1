@@ -3,6 +3,7 @@ from base64 import b64encode
 from flask import Blueprint, redirect, render_template, request, url_for, flash
 from flask_login import current_user
 
+from queries import recipe_queries as rq
 from db.modul import *
 from sqlalchemy import desc
 
@@ -229,38 +230,26 @@ def change_recipe(dinner_id, group_id):
 
 @recipe_route.route('/change_Recipe/<dinner_id>/<group_id>', methods=['POST'])
 def change_recipe_post(dinner_id, group_id):
-    get_highest_recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
-        desc(Recipe.version)).first()
+    highest_recipe_version = rq.get_highest_recipe_version_with_dinner_id(dinner_id)
+    approach = request.form.get("textareaApproach")
     if "textareaApproach" in request.form:
-        add_new_version_to_recipe = Recipe(approach=request.form.get("textareaApproach"),
-                                           version=get_highest_recipe_version.version + 1,
-                                           dinner_id=dinner_id,
-                                           portions=get_highest_recipe_version.portions)
-        session.add(add_new_version_to_recipe)
-        session.flush()
-        get_new_recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
-            desc(Recipe.version)).first()
+        rq.add_new_version_to_recipe(approach, dinner_id)
+        new_highest_version = rq.get_highest_recipe_version_with_dinner_id(dinner_id)
+        original_ingredients = rq.get_ingredients_with_highest_recipe_version(highest_recipe_version)
+        original_amounts = rq.get_amounts_with_highest_recipe_version(highest_recipe_version)
+        original_measurements = rq.get_measurement_with_highest_recipe_version(highest_recipe_version)
 
-        get_ingredient_with_highest_recipe_version_id = session.query(Ingredient.id).join(
-            Recipe_ingredient_helper).filter(
-            Recipe_ingredient_helper.recipe_id == get_highest_recipe_version.id).all()
-
-        get_amount_with_highest_recipe_version_id = session.query(Amount.id).join(Recipe_ingredient_helper).filter(
-            Recipe_ingredient_helper.recipe_id == get_highest_recipe_version.id).all()
-
-        get_measurement_with_highest_recipe_version_id = session.query(Measurement.id).join(
-            Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == get_highest_recipe_version.id).all()
-
-        for i in range(0, len(get_ingredient_with_highest_recipe_version_id)):
+        for i in range(0, len(original_ingredients)):
             helper_object = Recipe_ingredient_helper(
-                measurement_id=get_measurement_with_highest_recipe_version_id[i].id,
-                amount_id=get_amount_with_highest_recipe_version_id[i].id,
-                ingredient_id=get_ingredient_with_highest_recipe_version_id[i].id,
-                recipe_id=get_new_recipe_version.id)
+                measurement_id=original_measurements[i].id,
+                amount_id=original_amounts[i].id,
+                ingredient_id=original_ingredients[i].id,
+                recipe_id=new_highest_version.id)
             session.add(helper_object)
             session.commit()
+
     if "ingredient" in request.form:
-        get_id_ingredient = session.query(Ingredient).filter(Ingredient.name == request.form.get("ingredient")).first()
+        get_id_ingredient = rq.get_ingredient(request.form.get("ingredient"))
         get_id_amount = session.query(Amount).filter(Amount.amount == request.form.get("amount")).first()
         get_new_recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
             desc(Recipe.version)).first()
@@ -282,10 +271,9 @@ def change_recipe_post(dinner_id, group_id):
             get_old_amount = session.query(Amount).filter(
                 Amount.id == measurement_and_ingredient_check.amount_id).first()
 
-            get_new_amount = session.query(Amount).filter(
-                Amount.id == get_id_amount.id).first()
+            get_new_amount = int(request.form.get("amount"))
 
-            sum_amount = get_old_amount.amount + get_new_amount.amount
+            sum_amount = get_old_amount.amount + get_new_amount
             check_new_amount = session.query(Amount).filter(
                 Amount.amount == sum_amount).first()
             if not check_new_amount:
@@ -295,7 +283,8 @@ def change_recipe_post(dinner_id, group_id):
             new_amount_id = session.query(Recipe_ingredient_helper).filter(
                 Recipe_ingredient_helper.recipe_id == get_new_recipe_version.id,
                 Recipe_ingredient_helper.ingredient_id == ingredient_id.id).first()
-            new_amount_id.amount_id = session.query(Amount.id).filter(Amount.amount == sum_amount)
+            tullekoppen = session.query(Amount).filter(Amount.amount == sum_amount).first()
+            new_amount_id.amount_id = tullekoppen.id
             session.add(new_amount_id)
             session.commit()
         else:
