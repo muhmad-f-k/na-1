@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block title %}Index{% endblock %} {% block content
+    %} {% for category, message in get_flashed_messages(with_categories=True) %}
+    <div class="alert alert-{{category}} show" id="flash-msg">
+      <span class="flash-msg">{{ message }}</span>
+      <span class="close-btn" onclick="removeFlashMsg()"
+        ><i class="uil uil-multiply"></i
+      ></span>
+    </div>
+    {% endfor %}
+    
+    <article class="error-grid">
+      <div class="error-area">
+        <div class="error-content">
+          <div class="error-text">
+            <h1 class="error-title">500</h1>
+            <div class="error-paragraph">
+              <h2>Oops...</h2>
+              <div class="flex">
+                <p>Dette skjer alt for ofte.</p>
+                <a href="{{ url_for('usersroute.home') }}">
+                  <button class="home-btn2 black">Hjem</button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+    {% endblock %}
+    

@@ -1,0 +1,104 @@
+{% extends "base.html" %} {% block content %}
+
+<article class="shopping-container">
+  <section class="btn-group top-right">
+    
+    <div class="group-header flex">
+      <ul class="group-nav flex">
+        <li>
+          <a href="{{ url_for('calendarroute.show_calendar', group_id = group_id) }}">
+            <span><i class="uil uil-calender"></i>Kalender</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('calendarroute.show_shopping_list', group_id=group_id) }}">
+            <span><i class="uil uil-shopping-cart"></i>Handleliste</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('rapportroute.report_post', group_id=group_id) }}">
+            <span><i class="uil uil-graph-bar"></i></i>Rapport</span>
+          </a>
+          </li>
+        <li>
+          <a href="{{ url_for('calendarroute.create_dinner', group_id=group_id) }}">
+            <span><i class="uil uil-pizza-slice"></i>Opprett middag</span>
+          </a>
+          </li>
+      </ul>
+    </div>
+  </section>
+    <div class="back-btn">
+        <a href="{{ url_for('grouproute.show_group', group_id=group_id) }}">
+
+          <i class="uil uil-arrow-circle-left"></i>
+
+      </a>
+      </div>
+    <div class="img-bg general-bg"></div>
+    <h1>Hent Rapport</h1>
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="ingredient-control">
+      <label for="start_date">Fra:</label>
+      <input type="date" name="start_date" value="Today" />
+    </div>
+    <div class="ingredient-control">
+      <label for="end_date">Til:</label>
+      <input type="date" name="end_date" data-value="7" value="After one week" />
+    </div>
+    
+    <div class="ingredient-control">
+      <input type="submit" name="" value="Hent Rapport" />
+    </div>
+    
+    </form>
+
+    <h2>Rapport for perioden {{ start_date }} - {{ end_date }}</h2>
+<table class="report-table">
+  <tr class="active-row">
+    {% for header in headings %}
+    <th>{{header}}</th>
+    {% endfor %}
+  </tr>
+  {% for row in data %}
+  <tr class="active-row">
+    {% for cell in row %}
+    <td>{{ cell }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+<table class="report-table">
+  <tr class="active-row">
+    {% for header in headings1 %}
+    <th>{{header}}</th>
+    {% endfor %}
+  </tr>
+  {% for row in data1 %}
+  <tr class="active-row">
+    {% for cell in row %}
+    <td>KR: {{ cell }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+<table class="report-table">
+  <tr class="active-row">
+    {% for header in headings2 %}
+    <th>{{header}}</th>
+    {% endfor %}
+  </tr>
+  {% for row in data2 %}
+  <tr class="active-row">
+    {% for key, cell in row %}
+    <td>{{key|join(' - ') }}</td>
+    <td>{{ cell [0] }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+</article>
+{% endblock %}

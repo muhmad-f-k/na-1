@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="img-bg general-bg blur"></div>
+<main class="dinner-grid">
+    <article class="testimonial">
+        <div class="flex">
+            <div class="">
+                {# 1 #}
+                <img class="" src="data:;base64,{{ image }}" onerror="this.onerror=null; this.src='/static/img/generic.png'"/>
+            </div>
+        </div>
+    </article>
+
+    <article class="testimonial">
+        <section class="approach-section flex">
+        <h1>{{ dinner.title }}</h1>
+        </section>
+    </article>
+
+    <article class="testimonial">
+        <section class="approach-section">
+            <h2>SLIK GJØR DU</h2>
+            {# 3 #}
+        <p style="white-space: pre-line;">{{ recipe.approach }}</p>
+        </section>
+    </article>
+
+    <article class="testimonial">
+        <section class="approach-section">
+            <h2 class="">INGREDIENSER</h2><br>
+            {# 4 #}
+            {% for i in range(0,(len)) %}
+        <div class="ingredients-list">
+            <i class="uil uil-compact-disc"></i>
+            <p>{{ amounts[i].amount}}
+            {{ measurements[i].name }}
+            {{ ingredients[i].name }}</p>
+        </div>
+        {% endfor %}
+        </section>
+    </article>
+
+    <article class="testimonial">
+
+        <div class="dinner-btn-group">
+            <a
+            href="{{ url_for('recipe_route.showChangesRecipe', dinner_id=dinner_id) }}">
+             <button class="button-three">Vis endringer i oppskrift</button>
+         </a>
+
+         <a
+               href="{{ url_for('recipe_route.changeRecipe', dinner_id=dinner_id, group_id=group_id) }}">
+                <button class="button-three">Endre oppskrift</button>
+            </a>
+            </div>
+
+            {# 5 #}
+    </article>
+    <article class="testimonial">
+        <div class="flex">
+            <div class="main_title">
+
+            <h1>Kommentarer</h1>
+            </div>
+            {# 6 #}
+        </div>
+    </article>
+    <article class="testimonial">
+
+            <div class="add-comment">
+                <div class="comment-image">
+                <img class="" src="data:;base64,{{ image2 }}" onerror="this.onerror=null; this.src='/static/img/kenny.jpg'"/>
+            </div>
+                
+                <div class="dinner-control">
+
+                    <form method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+                        <textarea name="comment" placeholder="Legg igjen kommentar"></textarea>
+                        <input type="hidden" name="group_id" value="{{ group_id }}">
+                        <input type="hidden" name="dinner_id" value="{{ dinner_id }}">
+                        <input type="submit" name=""value="kommenter">
+                    </form>
+                </div>
+
+            </div>
+            {# 7 #}
+
+    </article>
+    <article class="testimonial">
+        <div class="flex">
+        <div class="comment-section">
+            {% for i in range(0,c_len) %}
+            <div class="comment">
+                <div class="column">
+                    <div class="flex">
+                    <div class="comment-image corner">
+                        <img class="" src="data:;base64,{{ decode_image(comments_users[i].image) }}" onerror="this.onerror=null; this.src='/static/img/kenny.jpg'"/>
+                    </div>
+            <h3>{{ comments_users[i].first_name }} {{ comments_users[i].last_name }}</h3>
+        </div>
+                
+                <p>{{ comments[i].text}}</p>
+            </div>
+                {% if current_user_role.role_id == 1 %}
+            </form>
+            <div class="btn-group">
+            <div>
+             <button type="submit" class=button-three name="show-edit-comment"value="Rediger kommentar" onclick="showEditComment()"><i class="uil uil-comment-alt-edit"></i></button>
+            </div>
+    
+                    <form method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="group_id2" value="{{ group_id }}">
+                        <input type="hidden" name="dinner_id2" value="{{ dinner_id }}">
+                        <input type="hidden" name="comment_id" value="{{ comments[i].id }}">
+                        <button type="submit" class=button-three name="delBtn"value="Slett kommentar"><i class="uil uil-trash-alt"></i></button>
+                    </form>
+                    <div class="dinner-control hide" id="comment-form">
+                        <form method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            
+                            <textarea name="updated_text" placeholder="Endre kommentar"></textarea>
+                            <input type="hidden" name="group_id2" value="{{ group_id }}">
+                            <input type="hidden" name="dinner_id2" value="{{ dinner_id }}">
+                            <input type="hidden" name="comment_id" value="{{ comments[i].id }}">
+                            <input type="submit" name="editBtn" value="rediger-kommentar">
+                        </form>
+                    </div>
+                     </div>
+                {% endif %}
+        </div>
+            {% endfor%}
+        </div>
+        </div>
+    </article>
+
+</main>
+
+
+
+<script src="/static/js/portions.js"></script>
+
+
+
+
+{% endblock %}

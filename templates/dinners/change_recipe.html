@@ -1,0 +1,134 @@
+{% extends "base.html" %} {% block content %}
+<div class="img-bg general-bg"></div>
+<main class="change-dinner-grid">
+
+
+
+    <article class="testimonial changed">
+
+            <section class="approach-section flex">
+        <h1> Endringer for {{ dinner.title }}</h1>
+                {# 1 #}
+
+            </section>
+    </article>
+
+   
+    </article>
+        <article class="testimonial changed">
+            <section class="approach-section flex">
+            <h2 class="headline">ENDRE FREMGANGSMÅTE</h2><br>
+            {# 3 #}
+
+
+
+            {% if current_user_role.role_id == 1 %}
+            <form name="approachForm" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+                <textarea name="textareaApproach" style="white-space: pre-line"
+                          class="recipeArea2">{{ recipe.approach }}</textarea>
+                <input type="hidden" name="group_id" value="{{ group_id }}">
+                <input type="hidden" name="dinner_id2" value="{{ dinner_id }}">
+                <input
+                        class="button button5"
+                        type="submit"
+                        value="Oppdater"
+                />
+            </form>
+            {% endif %}
+            </section>
+    </article>
+    
+
+    <article class="testimonial changed">
+        <section class="approach-section flex">
+            <div class="add-ingredient-section">
+            
+            <h2 class="headline"> Endre INGREDIENSER</h2>
+            {# 5 #}
+
+
+
+
+      Ingredienser i denne oppskriften
+
+  {% for i in range(0,(len)) %}
+
+<div class="ingredient-list-content">
+    {{ amounts[i].amount}}
+    {{ measurements_recipe[i].name }}
+    {{ ingredients[i].name }}
+
+      <form
+        method="post"
+      ><input type="hidden" name="group_id" value="{{ group_id }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+        <input type="hidden" name="dinner_id" value="{{ dinner_id }}">
+          <input type="hidden" name="ingredient_name" value="{{ ingredients[i].name }}">
+          <input type="hidden" name="measurement_name" value="{{ measurement_recipe_helper[i].name }}">
+        <input type="submit" value="Delete" />
+      </form>
+    </div>
+
+
+  {% endfor %}
+</div>
+
+
+    Legg til en til ingrediens
+<div class="ingredient-container">
+  <form method="post" name="IngredientForm">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+<div class="ingredient-row change-ingredient">
+    <div class="ingredient-control">
+
+        <input
+          type="text"
+          name="ingredient"
+          class="dropdownIngredient"
+          placeholder="Ingrediens-navn"
+        />
+    </div>
+    <div class="ingredient-control">
+
+        <input
+          type="number"
+          name="amount"
+          class="dropdownIngredient"
+          placeholder="mengde"
+        />
+    </div>
+    <div class="ingredient-control">
+
+        <select class="dropdownIngredient" name="unit">
+          {% for measurement in measurements %}
+          <option>{{ measurement.name }}</option>
+          {% endfor %}
+        </select>
+    </div>
+    <div class="ingredient-control">
+
+        <input class="button button5" type="submit" name="" value="Legg til" />
+    </div>
+    </div>
+  </form>
+</div>
+
+
+   Gå videre
+
+      <a href="{{ url_for('grouproute.show_group', group_id=group_id) }}"
+        ><button class="button button5">Videre</button></a
+      >
+
+
+
+
+        </section>
+    </article>
+
+</main>
+
+{% endblock %}

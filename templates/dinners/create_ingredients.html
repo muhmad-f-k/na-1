@@ -1,0 +1,101 @@
+{% extends "base.html" %} {% block head %} {% endblock %} {% block title %}
+Recipe {% endblock %} {% block content %}
+
+
+
+<article class="ingredient-layout">
+    <div class="img-bg general-bg"></div>
+<section class="ingredient-title-section">
+
+    <h1>Legg til ingredienser til oppskriften steg 2/2</h1>
+    </section>
+<article class="ingredient-article">
+
+
+    
+
+
+  <section class="">
+    
+    <div class="ingredient-container">
+      <div>
+      <h2 class="logo">Legg til en til ingrediens</h2>
+    </div>
+      <form class="" method="POST" name="formIngredients">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="ingredient-row">
+          <div class="ingredient-control">
+            <input
+              type="number"
+              name="amount"
+              class="dropdownIngredient"
+              placeholder="mengde"
+            />
+          </div>
+          <div class="ingredient-control">
+            <select class="dropdownIngredient" name="unit">
+              {% for measurement in measurements %}
+              <option>{{ measurement.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="ingredient-control">
+            <input
+              type="text"
+              name="ingredient"
+              class="dropdownIngredient"
+              placeholder="Ingrediens-navn"
+            />
+          </div>
+        
+        <div class="ingredient-control">
+          <input
+            class="ingredient-add-btn"
+            type="submit"
+            name=""
+            value="Legg til"
+          />
+        </div>
+      </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="add-ingredient-section">
+    <h2>Ingredienser i denne oppskriften</h2>
+    {% for i in range(0,(len)) %}
+
+    <div class="ingredient-list-content">
+
+        {{ amount[i].amount}} {{ measurements_recipe[i].name }} {{ ingredients[i].name }}
+
+
+      <form
+      method="post" name="formDelete"
+      
+    >
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="ingredient_name" value="{{ ingredients[i].name }}">
+        <input type="hidden" name="measurement_name" value="{{ measurements_recipe[i].name }}">
+        <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+      <button type="submit" name="delIngredient"value="fjern">
+        <i class="uil uil-multiply"></i>
+      </button>
+    </form>
+    </div>
+
+    {% endfor %}
+  </section>
+
+</article>
+<a href="{{ url_for('usersroute.profile')}}" class="control">
+    <div class="control">
+      <input type="submit" value="ferdig" />
+    </div></a>
+</article>
+
+
+
+
+{% endblock %}

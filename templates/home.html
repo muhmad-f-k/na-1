@@ -1,11 +1,33 @@
-{% extends "base.html" %} {% block title %} Hjem {% endblock %}
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+
+
 {% block content %}
-      {% with messages = get_flashed_messages() %} {% if messages %}
-  <div
-    class="notification-is-danger-register"
-    id="notification-is-danger-register"
-  >
-    {{ messages[0] }}
+{% for category, message in get_flashed_messages(with_categories=True) %}
+<div class="alert alert-{{category}} show" id="flash-msg">
+  <span class="flash-msg">{{ message }}</span>
+  <span class="close-btn" onclick="removeFlashMsg()"><i class="uil uil-multiply"></i></span>
+</div>
+{% endfor %}
+
+<article class="home-grid">
+  <div class="home-area">
+    <div class="home-content">
+    <div class="home-text">
+      <a href="{{ url_for('calendarroute.show_calendar', group_id = 1) }}">
+      <button class="home-btn2">Ukemeny</button>
+    </a>
+  <h1 class="home-title">Mat Mons</h1>
+  <div class="home-paragraph">
+    <p>Restaurant brukes ofte om større og finere spisesteder med et bredt utvalg av varme og kalde matretter og drikkevarer hvor gjestene betjenes av kelnere/servitører.</p>
   </div>
-  {% endif %} {% endwith %}
+</div>
+<div class="flex">
+<a href="{{ url_for('grouproute.show_group', group_id = 1) }}">
+  <button class="home-btn">Våre oppskrifter</button>
+</a>
+</div>
+</div>
+</div>
+</article>
 {% endblock %}
