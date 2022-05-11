@@ -118,6 +118,11 @@ def privacy():
     return render_template("/info/privacy.html")
 
 
+@usersroute.route('/terms_of_use')
+def terms_of_use():
+    return render_template("/info/terms_of_use")
+
+
 @usersroute.route('/logout')
 @login_required
 def logout():
