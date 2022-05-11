@@ -20,6 +20,23 @@ def add_new_version_to_recipe(approach, dinner_id):
     return
 
 
+def add_amount_to_table(amount):
+    add_amount = Amount(amount=amount)
+    session.add(add_amount)
+    session.commit()
+
+
+def check_amount_in_table_and_get_object(amount):
+    check_amount = session.query(Amount).filter(
+        Amount.amount == amount).first()
+    if check_amount:
+        return check_amount
+    else:
+        add_amount_to_table(amount)
+        return session.query(Amount).filter(
+            Amount.amount == amount).first()
+
+
 def get_ingredients_with_highest_recipe_version(highest_recipe_version):
     return session.query(Ingredient.id).join(
         Recipe_ingredient_helper).filter(
@@ -31,10 +48,20 @@ def get_amounts_with_highest_recipe_version(highest_recipe_version):
         Recipe_ingredient_helper.recipe_id == highest_recipe_version.id).all()
 
 
-def get_measurement_with_highest_recipe_version(highest_recipe_version):
+def get_measurements_with_highest_recipe_version(highest_recipe_version):
     return session.query(Measurement.id).join(
         Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == highest_recipe_version.id).all()
 
 
 def get_ingredient_with_name(ingredient):
-    session.query(Ingredient).filter(Ingredient.name == ingredient).first()
+    return session.query(Ingredient).filter(Ingredient.name == ingredient).first()
+
+
+def get_amount_with_name(ingredient):
+    return session.query(Ingredient).filter(Ingredient.name == ingredient).first()
+
+
+def sum_up_amounts_and_get_object(prev_amount, new_amount):
+    sum_amount = prev_amount + new_amount
+    amount_obj = check_amount_in_table_and_get_object(sum_amount)
+    return amount_obj

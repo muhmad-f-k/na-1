@@ -237,7 +237,7 @@ def change_recipe_post(dinner_id, group_id):
         new_highest_version = rq.get_highest_recipe_version_with_dinner_id(dinner_id)
         original_ingredients = rq.get_ingredients_with_highest_recipe_version(highest_recipe_version)
         original_amounts = rq.get_amounts_with_highest_recipe_version(highest_recipe_version)
-        original_measurements = rq.get_measurement_with_highest_recipe_version(highest_recipe_version)
+        original_measurements = rq.get_measurements_with_highest_recipe_version(highest_recipe_version)
 
         for i in range(0, len(original_ingredients)):
             helper_object = Recipe_ingredient_helper(
@@ -249,7 +249,7 @@ def change_recipe_post(dinner_id, group_id):
             session.commit()
 
     if "ingredient" in request.form:
-        get_id_ingredient = rq.get_ingredient(request.form.get("ingredient"))
+        get_id_ingredient = rq.get_amount_with_name(request.form.get("ingredient"))
         get_id_amount = session.query(Amount).filter(Amount.amount == request.form.get("amount")).first()
         get_new_recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
             desc(Recipe.version)).first()
