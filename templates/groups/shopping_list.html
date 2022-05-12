@@ -79,6 +79,17 @@
 </table>
 {% if shopping_list %}
     <p>Handleliste fullført!</p>
+    {% if current_user_role.role.name != "guest" %}
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <div class="ingredient-control">
+              <input type="hidden" name="year" value="{{ year }}">
+              <input type="hidden" name="week_number" value="{{ week_number }}">
+              <input type="hidden" name="shopping_list_date" value="{{ new_date }}">
+              <input type="submit" name="undo_purchase" value="Angre kjøp">
+          </div>
+        </form>
+    {% endif %}
 {% else %}
     <form method="POST">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />

@@ -117,22 +117,22 @@
             <div class="comment-image">
               <img class="" src="data:;base64,{{ decode_image2(member.user.image) }}" onerror="this.onerror=null; this.src='/static/img/kenny.jpg'"/>
             </div>
-            
+
             <div class="member-name">
             <p>{{ member.user.first_name }} {{ member.user.last_name }}</p>
           </div>
           <form method="POST">
-          
+
              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-            
+
             {% if (current_user_role.role_id == admin_role.id) %}
               <label for="rolle"></label>
               <select id="rolle" name="rolle">
                 <option value="{{ member.role_id }}" selected disabled hidden>{{ member.role.name }}</option>
-                <option value=1>Admin</option>
-                <option value=2>Moderator</option>
-                <option value=3>Kokk</option>
-                <option value=4>Gjest</option>
+                <option value="{{ admin_role.id }}">Admin</option>
+                <option value="{{ moderator_role.id }}">Moderator</option>
+                <option value="{{ cook_role.id }}">Kokk</option>
+                <option value="{{ guest_role.id }}">Gjest</option>
               </select>
               <input type="hidden" name="member_id" value="{{ member.user_id }}">
               <input type="submit" name="action_change_role" value="Lagre"/>

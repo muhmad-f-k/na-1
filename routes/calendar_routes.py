@@ -7,7 +7,7 @@ from base64 import b64encode
 from db.modul import *
 from flask_login import current_user
 from datetime import date, timedelta, datetime
-from collections import defaultdict
+import queries
 
 calendarroute = Blueprint('calendarroute', __name__)
 
@@ -362,6 +362,7 @@ def show_dinner(dinner_id, group_id):
 @calendarroute.route('/shopping_list/<group_id>', methods=['GET', 'POST'])
 def show_shopping_list(group_id):
     today = date.today()
+    current_user_role = queries.get_user_group_role(current_user.id, group_id)
 
     def add_days(date):
         date += timedelta(days=7)
@@ -391,7 +392,9 @@ def show_shopping_list(group_id):
         shopping_list = Shopping_list(date=new_date, price=price, week_number=week_number, year=year, group_id=group_id)
         session.add(shopping_list)
         session.commit()
-        session.close()
+
+    if "undo_purchase" in request.form:
+        queries.undo_shopping_list(group_id, request.form.get("year"), request.form.get("week_number"))
 
     weekday = new_date.weekday()
     monday = new_date - timedelta(days=weekday)
@@ -400,20 +403,14 @@ def show_shopping_list(group_id):
     week_number = datetime(new_date.year, new_date.month, new_date.day).isocalendar()[1]
     headings = ("Ingrediens", "mengde", "Enhet")
 
-    data = session.query(Ingredient.name, func.round(func.sum(cast(Amount.amount, Float) / Recipe.portions * Meal.portions), 1), Measurement.name). \
-        select_from(Meal).join(Dinner).join(Recipe).join(Recipe_ingredient_helper).join(Ingredient).join(Measurement). \
-        join(Amount).filter(Dinner.id == Meal.dinner_id, Meal.group_id == group_id, Meal.date.between(monday, sunday)). \
-        group_by(Ingredient.name, Measurement.name).all()
+    data = queries.get_shopping_list_data(group_id, monday, sunday)
 
-    shopping_list = session.query(Shopping_list).filter(
-        Shopping_list.year == new_date.year, Shopping_list.week_number == week_number,
-        Shopping_list.group_id == group_id).first()
-
-    session.close()
+    shopping_list = queries.get_shopping_list_object(group_id, new_date.year, week_number)
 
     return render_template('groups/shopping_list.html', headings=headings, data=data, group_id=group_id,
                            week_number=week_number, add_days=add_days, subtract_days=subtract_days,
-                           new_date=new_date, year=new_date.year, shopping_list=shopping_list)
+                           new_date=new_date, year=new_date.year, shopping_list=shopping_list,
+                           current_user_role=current_user_role)
 
 @calendarroute.route('/show_dinner/<dinner_id>/<group_id>', methods=['POST'])
 @login_required
