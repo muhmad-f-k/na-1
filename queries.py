@@ -11,10 +11,6 @@ def detete_user_by_id(id):
     return session.query(User).filter_by(id=id).delete()
 
 
-def get_user_by_id(id):
-    return session.query(User).filter(User.id == id).first()
-
-
 def get_groups_with_user_id(id):
     return session.query(Group).join(
         User_group_role).join(User).filter(User.id == id).all()
