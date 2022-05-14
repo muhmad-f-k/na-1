@@ -42,7 +42,7 @@
     </article>
 
     <article class="testimonial">
-
+{% if current_user_role %}
         <div class="dinner-btn-group">
             <a
             href="{{ url_for('recipe_route.showChangesRecipe', dinner_id=dinner_id) }}">
@@ -54,6 +54,7 @@
                 <button class="button-three">Endre oppskrift</button>
             </a>
             </div>
+{% endif %}
 
             {# 5 #}
     </article>

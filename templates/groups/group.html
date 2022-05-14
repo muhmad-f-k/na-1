@@ -77,8 +77,9 @@
 
   </main>
 
+{% if current_user_role %}
   <section class="btn-group">
-    
+
     <div class="group-header flex">
       <ul class="group-nav flex">
         <li>
@@ -108,8 +109,8 @@
     </div>
     <section class="sidebar">
 
-        
-        
+
+
       <h2 class="member-title">medlemmer</h2>
       {% for member in members %}
 
@@ -147,12 +148,13 @@
           {% endif %}
           </div>
           </form>
-          
+
         {% endfor %}
   
         
     </section>
   </section>
+{% endif %}
 
 </article>
 

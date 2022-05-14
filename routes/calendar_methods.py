@@ -310,7 +310,11 @@ def get_detailed_dinner(current_user, dinner_id, group_id):
     '''current_user_role = session.query(User_group_role).filter(
         User_group_role.user_id == current_user.id,
         User_group_role.group_id == group_id).first()'''
-    current_user_role = queries.get_current_user_role_with_group_id(current_user, group_id)
+    #current_user_role = queries.get_current_user_role_with_group_id(current_user, group_id)
+    if current_user.is_authenticated:
+        current_user_role = queries.get_current_user_role_with_group_id(current_user, group_id)
+    else:
+        current_user_role = None
 
     def decode_image(image):
         if image is not None:
@@ -327,11 +331,19 @@ def get_detailed_dinner(current_user, dinner_id, group_id):
 
     image = b64encode(dinner.image).decode("utf-8")
 
-    user = current_user
+    if current_user.is_authenticated:
+        user = current_user
+        if user.image is not None:
+            image2 = b64encode(user.image).decode("utf-8")
+        else:
+            image2 = ""
+    else:
+        image2 = ""
+    '''user = current_user
     if user.image is not None:
         image2 = b64encode(user.image).decode("utf-8")
     else:
-        image2 = ""
+        image2 = ""'''
 
     # kommentarer til middag
     #comments = session.query(Comment).filter(Comment.dinner_id == dinner_id).all()

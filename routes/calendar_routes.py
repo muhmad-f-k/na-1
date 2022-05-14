@@ -42,7 +42,11 @@ def show_calendar():
                                                                                                incoming_year)
     meals = calendar_methods.get_meals(days_to_cal, group_id)
     dinners = calendar_methods.get_dinners(meals)
-    user_group_role = calendar_methods.get_user_role(group_id)
+
+    if current_user.is_authenticated:
+        user_group_role = calendar_methods.get_user_role(group_id)
+    else:
+        user_group_role = None
 
     return render_template('groups/calendar.html', days_of_week=days_of_week, days_to_cal=days_to_cal,
                            year_to_cal=int(year_to_cal), week_number_to_cal=int(week_number_to_cal),
@@ -79,7 +83,11 @@ def show_calendar_post():
                                                                                                incoming_year)
     meals = calendar_methods.get_meals(days_to_cal, group_id)
     dinners = calendar_methods.get_dinners(meals)
-    user_group_role = calendar_methods.get_user_role(group_id)
+
+    if current_user.is_authenticated:
+        user_group_role = calendar_methods.get_user_role(group_id)
+    else:
+        user_group_role = None
 
     return render_template('groups/calendar.html', days_of_week=days_of_week, days_to_cal=days_to_cal,
                            year_to_cal=int(year_to_cal), week_number_to_cal=int(week_number_to_cal),
@@ -138,7 +146,6 @@ def show_group_dinners(group_id):
 @calendarroute.route('/show_dinner/<dinner_id>/<group_id>')
 def show_dinner(dinner_id, group_id):
     dinner, current_user_role, recipe, image, ingredients_recipe, amounts_recipe, measurements_recipe, comments, comments_users, image2, decode_image = calendar_methods.get_detailed_dinner(current_user, dinner_id, group_id)
-    dinner, current_user_role, recipe, image, ingredients_recipe, amounts_recipe, measurements_recipe, comments, comments_users, image2, decode_image
     return render_template("dinners/dinner.html", dinner=dinner,
                            group_id=group_id,
                            dinner_id=dinner_id,
