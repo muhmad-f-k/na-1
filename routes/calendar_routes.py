@@ -13,7 +13,7 @@ import routes.calendar_methods as calendar_methods
 calendarroute = Blueprint('calendarroute', __name__)
 
 
-@calendarroute.route('/calendar', methods=['GET', 'POST'])
+@calendarroute.route('/calendar')
 def show_calendar():
     import datetime
     import isoweek
@@ -50,9 +50,51 @@ def show_calendar():
                            group_id=group_id, dinners=dinners, meals=meals, add_portions=add_portions,
                            subtract_portions=subtract_portions)
 
+@calendarroute.route('/calendar', methods=['POST'])
+def show_calendar_post():
+    import datetime
+    import isoweek
 
-@calendarroute.route('/createMeal', methods=['GET', 'POST'])
+    def add_portions(portion):
+        portion += 1
+        return portion
+
+    def subtract_portions(portion):
+        portion -= 1
+        return portion
+
+    if request.args.get('group_name'):
+        # group_id = int(request.args.get('group_id'))
+        group_name = request.args.get('group_name')
+        print(group_name)
+        group_id = calendar_methods.get_group(group_name).id
+        # group_name = calendar_methods.get_group_name(group_id)
+    else:
+        group_name = 'Resturant Matmons'
+        group_id = calendar_methods.get_group(group_name).id
+
+    days_of_week = calendar_methods.day_strings()
+    incoming_year, incoming_week_number = calendar_methods.interact_with_calendar(request)
+    days_to_cal, year_to_cal, week_number_to_cal = calendar_methods.get_days_and_week_and_year(incoming_week_number,
+                                                                                               incoming_year)
+    meals = calendar_methods.get_meals(days_to_cal, group_id)
+    dinners = calendar_methods.get_dinners(meals)
+    user_group_role = calendar_methods.get_user_role(group_id)
+
+    return render_template('groups/calendar.html', days_of_week=days_of_week, days_to_cal=days_to_cal,
+                           year_to_cal=int(year_to_cal), week_number_to_cal=int(week_number_to_cal),
+                           group_name=group_name, user_group_role=user_group_role,
+                           group_id=group_id, dinners=dinners, meals=meals, add_portions=add_portions,
+                           subtract_portions=subtract_portions)
+
+
+@calendarroute.route('/createMeal')
 def create_meal():
+    return render_template('groups/add_dinner_to_calendar.html')
+
+
+@calendarroute.route('/createMeal', methods=['POST'])
+def create_meal_post():
     if "choose_dinner" in request.form:
         inc_year, week_number, group_id = calendar_methods.choose_dinner(request)
         group_name = calendar_methods.get_group_name(group_id)
@@ -113,8 +155,17 @@ def show_dinner(dinner_id, group_id):
                            decode_image=decode_image)
 
 
-@calendarroute.route('/shopping_list/<group_id>', methods=['GET', 'POST'])
+@calendarroute.route('/shopping_list/<group_id>')
 def show_shopping_list(group_id):
+    headings, data, week_number, add_days, subtract_days, new_date, year, shopping_list, current_user_role = calendar_methods.get_shopping_list(group_id)
+    return render_template('groups/shopping_list.html', headings=headings, data=data, group_id=group_id,
+                           week_number=week_number, add_days=add_days, subtract_days=subtract_days,
+                           new_date=new_date, year=new_date.year, shopping_list=shopping_list,
+                           current_user_role=current_user_role)
+
+
+@calendarroute.route('/shopping_list/<group_id>', methods=['POST'])
+def show_shopping_list_post(group_id):
     headings, data, week_number, add_days, subtract_days, new_date, year, shopping_list, current_user_role = calendar_methods.get_shopping_list(group_id)
     return render_template('groups/shopping_list.html', headings=headings, data=data, group_id=group_id,
                            week_number=week_number, add_days=add_days, subtract_days=subtract_days,
