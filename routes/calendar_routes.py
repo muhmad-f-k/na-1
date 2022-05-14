@@ -1,13 +1,8 @@
-import base64
+from flask_login import login_user, login_required
 from flask import Blueprint, render_template, request, url_for, redirect
-from flask_login import login_user, login_required, current_user, logout_user
-from flask import Blueprint, render_template, request, url_for, redirect
-from sqlalchemy import desc, func, cast, Float, DECIMAL
 from base64 import b64encode
 from db.modul import *
 from flask_login import current_user
-from datetime import date, timedelta, datetime
-import queries
 import routes.calendar_methods as calendar_methods
 
 calendarroute = Blueprint('calendarroute', __name__)
@@ -15,8 +10,6 @@ calendarroute = Blueprint('calendarroute', __name__)
 
 @calendarroute.route('/calendar')
 def show_calendar():
-    import datetime
-    import isoweek
 
     def add_portions(portion):
         portion += 1
@@ -27,11 +20,8 @@ def show_calendar():
         return portion
 
     if request.args.get('group_name'):
-        # group_id = int(request.args.get('group_id'))
         group_name = request.args.get('group_name')
-        print(group_name)
         group_id = calendar_methods.get_group(group_name).id
-        # group_name = calendar_methods.get_group_name(group_id)
     else:
         group_name = 'Resturant Matmons'
         group_id = calendar_methods.get_group(group_name).id
@@ -56,8 +46,6 @@ def show_calendar():
 
 @calendarroute.route('/calendar', methods=['POST'])
 def show_calendar_post():
-    import datetime
-    import isoweek
 
     def add_portions(portion):
         portion += 1
@@ -68,11 +56,8 @@ def show_calendar_post():
         return portion
 
     if request.args.get('group_name'):
-        # group_id = int(request.args.get('group_id'))
         group_name = request.args.get('group_name')
-        print(group_name)
         group_id = calendar_methods.get_group(group_name).id
-        # group_name = calendar_methods.get_group_name(group_id)
     else:
         group_name = 'Resturant Matmons'
         group_id = calendar_methods.get_group(group_name).id
@@ -136,8 +121,6 @@ def show_group_dinners(group_id):
     def decode_image(image):
         picture = b64encode(image).decode("utf-8")
         return picture
-
-    # image = b64encode(dinners.image).decode("utf-8")
 
     session.close()
     return render_template("dinners.html", dinners=dinners, group_id=group_id, decode_image=decode_image)

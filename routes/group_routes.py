@@ -10,7 +10,6 @@ route_option = 0
 
 
 @grouproute.route('/group/<group_id>')
-#@login_required
 def show_group(group_id):
     admin_role = queries.get_role_by_name("admin")
     moderator_role = queries.get_role_by_name("moderator")
