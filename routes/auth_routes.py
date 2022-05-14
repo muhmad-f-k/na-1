@@ -122,6 +122,7 @@ def privacy():
 def terms_of_use():
     return render_template("/info/terms_of_use.html")
 
+
 @usersroute.route('/Bruksanvisning')
 def instructions_for_use():
     return render_template("/info/instructions_for_use.html")

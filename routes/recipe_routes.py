@@ -3,7 +3,7 @@ from base64 import b64encode
 from flask import Blueprint, redirect, render_template, request, url_for, flash
 from flask_login import current_user
 
-from queries import recipe_queries as rq
+from queries import queries as rq
 from db.modul import *
 from sqlalchemy import desc
 
@@ -11,42 +11,26 @@ recipe_route = Blueprint('recipe_route', __name__)
 
 
 @recipe_route.route('/create_recipe/<dinner_id>')
-def createRecipe(dinner_id):
+def create_recipe(dinner_id):
     return render_template('dinners/create_recipe.html', dinner_id=dinner_id)
 
 
 @recipe_route.route('/create_recipe/<dinner_id>', methods=['POST'])
 def createRecipe_post(dinner_id):
-    highest_existing_version = session.query(Recipe.version).filter(Recipe.dinner_id == dinner_id).order_by(
-        desc(Recipe.version)).first()
-    if highest_existing_version:
-        recipe_version = int(highest_existing_version) + 1
-
-    else:
-        recipe_version = 1
-
     approach = str(request.form.get("dinner-approach"))
     portions = int(request.form.get("portions"))
-    recipe_object = Recipe(
-        approach=approach, version=recipe_version, portions=portions, dinner_id=dinner_id)
-    session.add(recipe_object)
-    session.commit()
+
+    recipe_object = rq.add_new_recipe(approach, dinner_id, portions)
     return redirect(url_for("recipe_route.add_ingredients", recipe_id=recipe_object.id, dinner_id=dinner_id))
 
 
 @recipe_route.route("/add_ingredients/<recipe_id>")
 def add_ingredients(recipe_id):
-    measurements = session.query(Measurement).all()
-    session.close()
-    ingredients_recipe = session.query(Ingredient.name).join(
-        Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe_id).all()
-    session.close()
-    amounts_recipe = session.query(Amount.amount).join(
-        Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe_id).all()
-    session.close()
-    measurements_recipe = session.query(Measurement.name).join(
-        Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe_id).all()
-    session.close()
+    measurements = rq.get_all_measurements()
+
+    ingredients_recipe = rq.get_ingredient_names_with_recipe_id(recipe_id)
+    amounts_recipe = rq.get_amount_amounts_with_recipe_id(recipe_id)
+    measurements_recipe = rq.get_measurement_measurements_with_recipe_id(recipe_id)
     return render_template("dinners/create_ingredients.html", measurements=measurements, len=len(ingredients_recipe),
                            ingredients=ingredients_recipe, amount=amounts_recipe,
                            measurements_recipe=measurements_recipe, recipe_id=recipe_id)

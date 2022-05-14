@@ -280,7 +280,7 @@ def create_dinner_post(group_id):
     session.add(dinner)
     session.commit()
     return redirect(url_for(
-        "recipe_route.createRecipe", dinner_id=dinner.id))
+        "recipe_route.create_recipe", dinner_id=dinner.id))
 
 
 @calendarroute.route('/show_group_dinners/<group_id>')
