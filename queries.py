@@ -1,6 +1,13 @@
 from db.modul import *
 from sqlalchemy import func, cast, Float, desc
 
+def save_user_details(email, first_name, last_name, set_password):
+    new_user = User(email=email, first_name=first_name,
+                        last_name=last_name, set_password=set_password)
+    session.add(new_user)
+    session.commit()
+    session.close()
+    return new_user
 
 def get_user_by_email(email):
     return session.query(User).filter(

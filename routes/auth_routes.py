@@ -89,11 +89,7 @@ def register_post():
         return redirect(url_for("usersroute.register"))
 
     else:
-        new_user = User(email=request.form.get("email").lower(), first_name=request.form.get("first_name").lower(),
-                        last_name=request.form.get("last_name").lower(), set_password=request.form.get("password"))
-        session.add(new_user)
-        session.commit()
-        session.close()
+        save_user_details(request.form.get("email").lower(), request.form.get("first_name").lower(),request.form.get("last_name").lower(),request.form.get("password"))
         flash("Bruker opprettet!", "success")
 
     return redirect(url_for("usersroute.login"))
