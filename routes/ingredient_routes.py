@@ -15,7 +15,6 @@ def ingredient():
 
 @ingredientroute.route("/ingredient", methods=['POST'])
 def ingredient_post():
-
     name = request.form.get("ingredient__name")
     print(name)
 

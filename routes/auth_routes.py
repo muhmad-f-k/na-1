@@ -1,6 +1,8 @@
 from base64 import b64encode
 from cgi import test
 from flask import Blueprint, redirect, render_template, request, url_for, flash
+
+import queries
 from db.modul import *
 from queries import *
 from flask_login import login_user, login_required, current_user, logout_user

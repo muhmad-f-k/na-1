@@ -87,7 +87,9 @@ def show_calendar():
         incoming_year = int(converted_date[1])
         incoming_week_number = int(converted_date[2])
         meal_id = int(converted_date[0])
-        new_portion = request.form.get("set_portion")
+        new_portion = int(request.form.get("set_portion"))
+        if new_portion < 1:
+            new_portion = 1
         meal = session.query(Meal).filter(Meal.id == meal_id).first()
         meal.portions = new_portion
         session.commit()
@@ -105,7 +107,9 @@ def show_calendar():
         incoming_date = request.form.get("mayGodGuideMeTowardTheLight")
         converted_date = incoming_date.strip('][').split(', ')
         meal_id = int(converted_date[0])
-        new_portion = request.form.get("remove_portion")
+        new_portion = int(request.form.get("remove_portion"))
+        if new_portion < 1:
+            new_portion = 1
         meal = session.query(Meal).filter(Meal.id == meal_id).first()
         meal.portions = new_portion
         session.commit()
@@ -280,7 +284,7 @@ def create_dinner_post(group_id):
     session.add(dinner)
     session.commit()
     return redirect(url_for(
-        "recipe_route.createRecipe", dinner_id=dinner.id))
+        "recipe_route.create_recipe", dinner_id=dinner.id))
 
 
 @calendarroute.route('/show_group_dinners/<group_id>')
@@ -302,6 +306,7 @@ def show_dinner(dinner_id, group_id):
     current_user_role = session.query(User_group_role).filter(
         User_group_role.user_id == current_user.id,
         User_group_role.group_id == group_id).first()
+    guest_role = queries.get_role_by_name("gjest")
 
     def decode_image(image):
         if image is not None:
@@ -356,14 +361,17 @@ def show_dinner(dinner_id, group_id):
                            c_len=len(comments),
                            comments_users=comments_users,
                            image2=image2,
-                           decode_image=decode_image)
+                           decode_image=decode_image,
+                           guest_role=guest_role)
 
 
 @calendarroute.route('/shopping_list/<group_id>', methods=['GET', 'POST'])
 def show_shopping_list(group_id):
+    #Henter dagens dato og henter brukeren og hans rolle i gruppen
     today = date.today()
     current_user_role = queries.get_user_group_role(current_user.id, group_id)
 
+    #Metoder som kjøres i shopping_list.html som legger til og trekker fra dagens dato med 7 dager
     def add_days(date):
         date += timedelta(days=7)
         return date
@@ -372,6 +380,7 @@ def show_shopping_list(group_id):
         date -= timedelta(days=7)
         return date
 
+    #Går til neste eller forrige handleliste
     if "next_week" in request.form:
         incoming_date = request.form.get("next_week")
         new_date = date.fromisoformat(incoming_date)
@@ -380,9 +389,11 @@ def show_shopping_list(group_id):
         incoming_date = request.form.get("prev_week")
         new_date = date.fromisoformat(incoming_date)
 
+    #Når brukeren først trykker inn på handlelisten vil nåværernde ukes handleliste vises
     else:
         new_date = today
 
+    #Lager et shopping_list object med prisen brukeren legger inn og lagrer det i databasen
     if "complete" in request.form:
         price = request.form.get("price")
         week_number = request.form.get("week_number")
@@ -393,9 +404,11 @@ def show_shopping_list(group_id):
         session.add(shopping_list)
         session.commit()
 
+    #Sletter handleliste-objektet slik at brukeren kan legge inn ny pris
     if "undo_purchase" in request.form:
         queries.undo_shopping_list(group_id, request.form.get("year"), request.form.get("week_number"))
 
+    #Finner mandag og søndag ved hjelp av dagens dato slik at man kan finne ingredienser til den spesifikke uken
     weekday = new_date.weekday()
     monday = new_date - timedelta(days=weekday)
     sunday = new_date + timedelta(6 - weekday)
@@ -403,8 +416,10 @@ def show_shopping_list(group_id):
     week_number = datetime(new_date.year, new_date.month, new_date.day).isocalendar()[1]
     headings = ("Ingrediens", "mengde", "Enhet")
 
+    #Henter alle ingredienser som trengs for den spesifikke uken
     data = queries.get_shopping_list_data(group_id, monday, sunday)
 
+    #Sjekker om handlelisten for den spesifikke uken er handlet. Returnerer denne null så er ikke ukens handleliste handlet.
     shopping_list = queries.get_shopping_list_object(group_id, new_date.year, week_number)
 
     return render_template('groups/shopping_list.html', headings=headings, data=data, group_id=group_id,

@@ -96,14 +96,18 @@
             <span><i class="uil uil-graph-bar"></i></i>Rapport</span>
           </a>
           </li>
+          {% if current_user_role.role_id != guest_role.id %}
         <li>
           <a href="{{ url_for('calendarroute.create_dinner', group_id=group.id) }}">
             <span><i class="uil uil-pizza-slice"></i>Opprett middag</span>
           </a>
           </li>
+          {% endif %}
+          {% if current_user_role.role_id == admin_role.id or current_user_role.role_id == moderator_role.id %}
           <li>
               <span onclick="showMemberModal()"><i class="uil uil-user-plus"></i>Legg til medlemmer</span>
           </li>
+          {% endif %}
       </ul>
     </div>
     <section class="sidebar">
@@ -122,10 +126,8 @@
             <p>{{ member.user.first_name }} {{ member.user.last_name }}</p>
           </div>
           <form method="POST">
-
+              {% if (current_user_role.role_id == admin_role.id or current_user_role.role_id == moderator_role.id and member.role_id != admin_role.id and member.role_id != moderator_role.id) %}
              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-
-            {% if (current_user_role.role_id == admin_role.id) %}
               <label for="rolle"></label>
               <select id="rolle" name="rolle">
                 <option value="{{ member.role_id }}" selected disabled hidden>{{ member.role.name }}</option>
@@ -139,7 +141,7 @@
           </form>
           <form method="post">
             {% endif %}
-            {% if (current_user_role.role_id == admin_role.id or current_user_role.user_id == member.user_id) %}
+            {% if (current_user_role.role_id == admin_role.id or current_user_role.role_id == moderator_role.id and member.role_id != admin_role.id and member.role_id != moderator_role.id or current_user_role.user_id == member.user_id) %}
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <input type="hidden" name="member_id" value="{{ member.user_id }}">
             <button type="submit" name="action_remove_member" value="fjern_medlem" onclick="return confirm('Er du sikker på at du vil fjerne {{ member.user.first_name }} {{ member.user.last_name }}')">

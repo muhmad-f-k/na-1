@@ -16,10 +16,6 @@ content%}
       <!--card-1-->
       <div class="card">
         <i class="uil uil-edit setting-icon" onclick="showSettingsModal()"></i>
-        <form method="post">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-            <button type="submit" name="action_delete" value="slett_bruker"><span class="delete-icon"><i class="uil uil-trash-alt"></i></span></button>
-        </form>
         
 <div class="relative">
         <img src="data:;base64,{{ image }}" onerror="this.onerror=null; this.src='/static/img/kenny.jpg'" class="center profile">

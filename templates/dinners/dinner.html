@@ -44,15 +44,16 @@
     <article class="testimonial">
 
         <div class="dinner-btn-group">
+            {% if current_user_role.role_id != guest_role.id %}
             <a
-            href="{{ url_for('recipe_route.showChangesRecipe', dinner_id=dinner_id) }}">
+            href="{{ url_for('recipe_route.show_changes_recipe', dinner_id=dinner_id) }}">
              <button class="button-three">Vis endringer i oppskrift</button>
          </a>
-
          <a
-               href="{{ url_for('recipe_route.changeRecipe', dinner_id=dinner_id, group_id=group_id) }}">
+               href="{{ url_for('recipe_route.change_recipe', dinner_id=dinner_id, group_id=group_id) }}">
                 <button class="button-three">Endre oppskrift</button>
             </a>
+            {% endif %}
             </div>
 
             {# 5 #}
