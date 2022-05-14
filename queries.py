@@ -15,7 +15,10 @@ def get_user_by_email(email):
 
 
 def detete_user_by_id(id):
-    return session.query(User).filter_by(id=id).delete()
+    delete_user = session.query(User).filter_by(id=id).first()
+    session.delete(delete_user)
+    session.commit()
+    return delete_user
 
 
 def get_user_by_id(id):

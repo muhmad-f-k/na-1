@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, url_for, flash
+from flask import Blueprint, render_template, request
 from db.modul import *
 from sqlalchemy import Float
 from sqlalchemy.sql import func, cast
