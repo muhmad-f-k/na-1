@@ -35,7 +35,7 @@ def get_group_with_group_name(name):
 
 def get_group_join_with_user(group_id):
     return session.query(Group).select_from(User).join(User_group_role).join(
-            Group).filter(Group.id == group_id).first()
+        Group).filter(Group.id == group_id).first()
 
 
 def get_group_with_group_id(group_id):
@@ -64,17 +64,17 @@ def get_admin_in_group(admin_role, group_id):
 
 def get_moderator_in_group(moderator_role, group_id):
     return session.query(User_group_role).filter(
-            User_group_role.role == moderator_role, User_group_role.group_id == group_id).first()
+        User_group_role.role == moderator_role, User_group_role.group_id == group_id).first()
 
 
 def get_cook_in_group(cook_role, group_id):
     return session.query(User_group_role).filter(
-                User_group_role.role == cook_role, User_group_role.group_id == group_id).first()
+        User_group_role.role == cook_role, User_group_role.group_id == group_id).first()
 
 
 def get_guest_in_group(guest_role, group_id):
     return session.query(User_group_role).filter(
-                    User_group_role.role == guest_role, User_group_role.group_id == group_id).first()
+        User_group_role.role == guest_role, User_group_role.group_id == group_id).first()
 
 
 def save_group_name(name):
@@ -147,4 +147,95 @@ def get_approach_by_approach(approach):
 
 
 def check_recipe_ingredient_helper_by_recipe_id(recipe_id):
-    return session.query(Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).order_by(desc(Recipe.version)).first()
+    return session.query(Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).order_by(
+        desc(Recipe.version)).first()
+
+
+def delete_meal_with_id(meal_id):
+    session.query(Meal).filter_by(id=meal_id).delete()
+    session.commit()
+    session.close()
+
+
+def portion(meal_id, new_portion):
+    meal = session.query(Meal).filter(Meal.id == meal_id).first()
+    meal.portions = new_portion
+    session.commit()
+    session.close()
+
+
+def get_meal_joined_with_dinner_with_group_id(group_id, i):
+    meal = session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(
+        Meal.group_id == group_id).filter(Meal.date == i.date()).first()
+    session.close()
+    return meal
+
+
+def get_meal_joined_with_dinner_without_group_id(i):
+    meal = session.query(Meal, Dinner).filter(Meal.dinner_id == Dinner.id).filter(Meal.date == i).first()
+    session.close()
+    return meal
+
+
+def get_current_user_role_with_group_id(current_user, group_id):
+    return session.query(User_group_role).filter(User_group_role.user_id == current_user.id,
+                                                                  User_group_role.group_id == group_id).first()
+
+
+def create_meal(meal):
+    session.add(meal)
+    session.commit()
+
+
+def create_dinner(dinner):
+    session.add(dinner)
+    session.commit()
+
+
+def get_dinner_by_id(dinner_id):
+    return session.query(Dinner).filter(Dinner.id == dinner_id).first()
+
+
+def get_comments_by_dinner_id(dinner_id):
+    return session.query(Comment).filter(Comment.dinner_id == dinner_id).all()
+
+
+def get_ingredients_by_recipe_id(recipe):
+    return session.query(Ingredient.name).join(Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe.id).all()
+
+
+def get_amounts_by_recipe_id(recipe):
+    return session.query(Amount.amount).join(Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe.id).all()
+
+
+def get_measurements_by_recipe_id(recipe):
+    return session.query(Measurement.name).join(
+        Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe.id).all()
+
+
+def create_shopping_list(shopping_list):
+    session.add(shopping_list)
+    session.commit()
+
+
+def create_comment(comment):
+    session.add(comment)
+    session.commit()
+
+
+def get_comment_by_id(comment_id):
+    return session.query(Comment).filter(Comment.id == comment_id).first()
+
+
+def create_edited_comment(copy_data_to_edit_comment):
+    session.add(copy_data_to_edit_comment)
+
+
+def get_edited_comments_by_comment_id(comment_id):
+    return session.query(Edited_comment).filter(Edited_comment.comment_id == comment_id).all()
+
+
+def delete_comment_by_id(comment_id):
+    delete_comment = session.query(Comment).filter(Comment.id == comment_id).first()
+    session.delete(delete_comment)
+    session.commit()
