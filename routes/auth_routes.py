@@ -17,7 +17,7 @@ def home():
 @usersroute.route('/profile')
 @login_required
 def profile():
-    """ Render current logged inn user with their picture"""
+    """ Render current logged in user with their picture"""
     if current_user.image is not None:
         image = b64encode(current_user.image).decode("utf-8")
     else:
@@ -131,7 +131,6 @@ def update_user():
         get_user_by_id(current_user.id).email = request.form.get(
             "email").lower()
         session.commit()
-        print("endret email")
         flash("Bruker oppdatert!", "success")
     """Sjekker om første navn samme som første navn i database- vi det ikke samme så skrive inn nye første navn -sånn slipper man å skrive over til database når det samme første navn"""
     if current_user.first_name != request.form.get("first_name") and request.form.get("password") == request.form.get(
@@ -158,7 +157,6 @@ def update_user():
         get_user_by_id(
             current_user.id).set_password = request.form.get("password")
         session.commit()
-        print("endret passord")
         flash("Bruker oppdatert!", "success")
 
 
