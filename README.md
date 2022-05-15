@@ -1,2 +1,1 @@
-# jonnisaugust
-design og sånt
+#NA1
