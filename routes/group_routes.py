@@ -10,14 +10,17 @@ route_option = 0
 
 
 @grouproute.route('/group/<group_id>')
-@login_required
 def show_group(group_id):
     admin_role = queries.get_role_by_name("admin")
     moderator_role = queries.get_role_by_name("moderator")
     cook_role = queries.get_role_by_name("kokk")
     guest_role = queries.get_role_by_name("gjest")
     dinners = queries.get_dinners_by_group(group_id)
-    user_in_group = queries.get_user_in_group(group_id, current_user.id)
+    #user_in_group = queries.get_user_in_group(group_id, current_user.id)
+    if current_user.is_authenticated:
+        user_in_group = queries.get_user_in_group(group_id, current_user.id)
+    else:
+        user_in_group = None
 
     def decode_image2(image):
         if image is not None:
@@ -38,7 +41,19 @@ def show_group(group_id):
         return render_template("groups/group.html", group=group, current_user_role=current_user_role, members=members, decode_image=decode_image, dinners=dinners, admin_role=admin_role, moderator_role=moderator_role, cook_role=cook_role, guest_role=guest_role, decode_image2=decode_image2)
 
     if user_in_group is None:
-        return render_template('errors/404.html'), 404
+        current_user_role = None
+        group = queries.get_group_join_with_user(group_id)
+        members = queries.get_members_in_group(group)
+
+        def decode_image(image):
+            picture = b64encode(image).decode("utf-8")
+            return picture
+
+        return render_template("groups/group.html", group=group, current_user_role=current_user_role, members=members,
+                               decode_image=decode_image, dinners=dinners, admin_role=admin_role,
+                               moderator_role=moderator_role, cook_role=cook_role, guest_role=guest_role,
+                               decode_image2=decode_image2)
+        #return render_template('errors/404.html'), 404
 
 
 @grouproute.route('/group/<group_id>', methods=['POST'])
@@ -157,14 +172,3 @@ def remove_member(group_id):
     if route_option == 0 and member_count > 1:
         session.delete(member)
         session.commit()
-
-
-# def delete_group(group_id):
-#     group_to_delete = session.query(Group).filter(Group.id == group_id).first()
-#     user_group_role_to_delete = session.query(User_group_role).filter(
-#         User_group_role.group_id == group_id).all()
-#     for i in user_group_role_to_delete:
-#         session.delete(i)
-#         session.commit()
-#     session.delete(group_to_delete)
-#     session.commit()

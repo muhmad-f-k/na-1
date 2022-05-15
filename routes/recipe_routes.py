@@ -1,4 +1,5 @@
 from base64 import b64encode
+from random import seed
 
 from flask import Blueprint, redirect, render_template, request, url_for, flash
 from flask_login import current_user
@@ -19,10 +20,14 @@ def create_recipe(dinner_id):
 def create_recipe_post(dinner_id):
     approach = str(request.form.get("dinner-approach"))
     portions = int(request.form.get("portions"))
-
-    recipe_object = rq.add_new_recipe(approach, dinner_id, portions)
-    print('Recipe id ' + str(recipe_object.id))
-    return redirect(url_for("recipe_route.add_ingredients", recipe_id=recipe_object.id, dinner_id=dinner_id))
+    save_recipe = Recipe(approach=approach, portions=portions, dinner_id=dinner_id, version=1)
+    session.add(save_recipe)
+    session.commit()
+    get_id = session.query(Recipe).filter(Recipe.approach==str(request.form.get("dinner-approach"))).first()
+    print(get_id.id, "wtf")
+#MERK
+    # recipe_object = rq.add_new_recipe(approach, dinner_id, portions)
+    return redirect(url_for("recipe_route.add_ingredients", recipe_id=get_id.id, dinner_id=dinner_id))
 
 
 @recipe_route.route("/add_ingredients/<recipe_id>")
