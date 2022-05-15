@@ -1,33 +1,7 @@
 {% extends "base.html" %} {% block content %}
 <div class="img-bg general-bg blur"></div>
 <main class="calendar-main">
-  <section class="btn-group top-right">
-    
-    <div class="group-header flex">
-      <ul class="group-nav flex">
-        <li>
-          <a href="{{ url_for('calendarroute.show_calendar', group_id = group_id) }}">
-            <span><i class="uil uil-calender"></i>Kalender</span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ url_for('calendarroute.show_shopping_list', group_id=group_id) }}">
-            <span><i class="uil uil-shopping-cart"></i>Handleliste</span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ url_for('rapportroute.report_post', group_id=group_id) }}">
-            <span><i class="uil uil-graph-bar"></i></i>Rapport</span>
-          </a>
-          </li>
-        <li>
-          <a href="{{ url_for('calendarroute.create_dinner', group_id=group_id) }}">
-            <span><i class="uil uil-pizza-slice"></i>Opprett middag</span>
-          </a>
-          </li>
-      </ul>
-    </div>
-  </section>
+
 
   <div class="back-btn">
     <a href="{{ url_for('grouproute.show_group', group_id=group_id) }}">
@@ -51,7 +25,7 @@
 
 
 <span>{{ year_to_cal }} Uke {{ week_number_to_cal }}</span>
-  
+
     <button
       class="week-btn"
       type="submit"
@@ -144,7 +118,7 @@
         
       {% endif %}
       
-      
+
     </div>
   {% endfor %}
 </div>
