@@ -466,7 +466,7 @@ a {
 }
 
 .control textarea {
-  font-size: 1.2em;
+  font-size: 1em;
   width: 50%;
   display: block;
   padding: 1rem;
@@ -476,7 +476,8 @@ a {
   margin: 1em auto;
   border-radius: 10px;
   min-height: 30rem;
-  min-width: clamp(15rem, 12vw + 1rem, 50rem);
+  min-width: clamp(20rem, 12vw + 1rem, 50rem);
+  resize: horizontal;
 }
 
 
@@ -514,7 +515,7 @@ span input[type="checkbox"] {
   margin: 0 auto;
 }
 
-@media (max-width: 150rem) {
+@media (max-width: 50rem) {
   .approach-container {
     position: absolute;
     padding: 5rem 3rem;
@@ -524,21 +525,12 @@ span input[type="checkbox"] {
   }
 }
 
-@media (max-width: 50rem) {
-  .approach-container {
-    position: absolute;
-    padding: 5rem;
-    left: 0;
-    width: 25rem;
-
-  }
-
   .approach-container h1 {
     font-size: 1.2em;
   }
 
   .control textarea {
-    width: 2rem;
+    resize: none;
   }
   #dinner-approach {
   }
