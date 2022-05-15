@@ -349,3 +349,20 @@ def get_highest_recipe_versions_with_dinner_id(dinner_id):
     get_highest_recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
         desc(Recipe.version)).all()
     return get_highest_recipe_version
+
+#############
+def get_all_group_role_for_user(user_id):
+    return session.query(User_group_role).filter(
+        User_group_role.user_id == user_id).all()
+
+def get_highest_recipe_id_with_dinner_id(dinner_id):
+    get_highest_recipe_version = session.query(Recipe.id).filter(Recipe.dinner_id == dinner_id).order_by(
+        desc(Recipe.version)).first()
+    return get_highest_recipe_version
+
+def get_ingredient_with_name(ingredient):
+    return session.query(Ingredient).filter(Ingredient.name == ingredient).first()
+
+def get_amount_with_name(amount):
+    return session.query(Amount).filter(Amount.amount == amount).first()
+
