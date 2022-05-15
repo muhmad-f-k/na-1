@@ -31,9 +31,6 @@ def profile():
 @login_required
 def profile_post():
     """This post method calls other methods to deal with user delete own profile, update user details, create group and add user profile image."""
-    if request.form.get("action_delete") == "slett_bruker":
-        delete_user()
-        return redirect(url_for("usersroute.home"))
     if request.form.get("action_update_user") == "oppdater":
         update_user()
         return redirect(url_for("usersroute.profile"))
@@ -108,14 +105,6 @@ def privacy():
 def logout():
     """This method log out user and redirect to home page."""
     logout_user()
-    return redirect(url_for("usersroute.home"))
-
-
-def delete_user():
-    """this method deal with delete user profile."""
-    detete_user_by_id(current_user.id)
-    session.commit()
-    flash("Oisann! Bruker slettet :/", "info")
     return redirect(url_for("usersroute.home"))
 
 

@@ -1,13 +1,15 @@
 from db.modul import *
 from sqlalchemy import func, cast, Float, desc
 
+
 def save_user_details(email, first_name, last_name, set_password):
     new_user = User(email=email, first_name=first_name,
-                        last_name=last_name, set_password=set_password)
+                    last_name=last_name, set_password=set_password)
     session.add(new_user)
     session.commit()
     session.close()
     return new_user
+
 
 def get_user_by_email(email):
     return session.query(User).filter(
@@ -45,7 +47,7 @@ def get_group_with_group_name(name):
 
 def get_group_join_with_user(group_id):
     return session.query(Group).select_from(User).join(User_group_role).join(
-            Group).filter(Group.id == group_id).first()
+        Group).filter(Group.id == group_id).first()
 
 
 def get_group_with_group_id(group_id):
@@ -79,17 +81,17 @@ def get_admin_in_group(admin_role, group_id):
 
 def get_moderator_in_group(moderator_role, group_id):
     return session.query(User_group_role).filter(
-            User_group_role.role == moderator_role, User_group_role.group_id == group_id).first()
+        User_group_role.role == moderator_role, User_group_role.group_id == group_id).first()
 
 
 def get_cook_in_group(cook_role, group_id):
     return session.query(User_group_role).filter(
-                User_group_role.role == cook_role, User_group_role.group_id == group_id).first()
+        User_group_role.role == cook_role, User_group_role.group_id == group_id).first()
 
 
 def get_guest_in_group(guest_role, group_id):
     return session.query(User_group_role).filter(
-                    User_group_role.role == guest_role, User_group_role.group_id == group_id).first()
+        User_group_role.role == guest_role, User_group_role.group_id == group_id).first()
 
 
 def save_group_name(name):
@@ -162,7 +164,8 @@ def get_approach_by_approach(approach):
 
 
 def check_recipe_ingredient_helper_by_recipe_id(recipe_id):
-    return session.query(Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).order_by(desc(Recipe.version)).first()
+    return session.query(Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).order_by(
+        desc(Recipe.version)).first()
 
 
 def get_highest_recipe_version_with_dinner_id(dinner_id):
@@ -209,6 +212,7 @@ def check_amount_in_table_and_get_object(amount):
         add_amount_to_table(amount)
         return session.query(Amount).filter(
             Amount.amount == amount).first()
+
 
 def get_ingredient_names_with_recipe_id(recipe_id):
     return session.query(Ingredient.name).join(
