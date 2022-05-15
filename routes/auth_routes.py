@@ -1,10 +1,9 @@
 from base64 import b64encode
-from distutils.log import error
-from email.mime import image
 from flask import Blueprint, redirect, render_template, request, url_for, flash
+
+import queries
 from db.modul import *
-from sqlalchemy import func, null
-from werkzeug.security import generate_password_hash, check_password_hash
+from queries import *
 from flask_login import login_user, login_required, current_user, logout_user
 
 usersroute = Blueprint('usersroute', __name__)
@@ -12,32 +11,25 @@ usersroute = Blueprint('usersroute', __name__)
 
 @usersroute.route("/")
 def home():
+    """ Render home page"""
     return render_template("home.html")
 
 
 @usersroute.route('/profile')
 @login_required
 def profile():
-    user = current_user
-    if user.image is not None:
-        image = b64encode(user.image).decode("utf-8")
+    """ Render current logged in user with their picture"""
+    if current_user.image is not None:
+        image = b64encode(current_user.image).decode("utf-8")
     else:
         image = ""
-    session.close()
-    groups = session.query(Group).join(
-        User_group_role).join(User).filter(User.id == current_user.id).all()
-    session.close()
-
-    roles = session.query(Role.name).join(
-        User_group_role).join(User).filter(User.id == current_user.id).all()
-    session.close()
-
-    return render_template('users/profile.html', user=user, groups=groups, roles=roles, image=image)
+    return render_template('users/profile.html', user=current_user, groups=get_groups_with_user_id(current_user.id), roles=get_roles_with_user_id(current_user.id), image=image)
 
 
 @usersroute.route('/profile', methods=['POST'])
 @login_required
 def profile_post():
+    """This post method calls other methods to deal with user delete own profile, update user details, create group and add user profile image."""
     if request.form.get("action_delete") == "slett_bruker":
         delete_user()
         return redirect(url_for("usersroute.home"))
@@ -54,6 +46,7 @@ def profile_post():
 
 @usersroute.route("/login")
 def login():
+    """Method render login html and deal with login if user authenticated will redirect to user profile and if not authenticated it will redirect to login page """
     if current_user.is_authenticated:
         return redirect(url_for("usersroute.profile"))
     else:
@@ -62,14 +55,14 @@ def login():
 
 @usersroute.route("/login", methods=['POST'])
 def login_post():
-    user = session.query(User).filter(User.email == request.form.get("email").lower()).first()
-
-    if user is None:
+    """This login post method deal with user data and check user details - its verify password, email and if enter data correct then user will be logged in and redicret to current user profile."""
+    if get_user_by_email(request.form.get("email").lower()) is None:
         flash("E-postadressen eksisterer ikke.", 'warning')
-    if user:
-        verify_password = user.verify_password(request.form.get("password"))
+    if get_user_by_email(request.form.get("email").lower()):
+        verify_password = get_user_by_email(request.form.get(
+            "email").lower()).verify_password(request.form.get("password"))
         if verify_password:
-            login_user(user)
+            login_user(get_user_by_email(request.form.get("email").lower()))
         if verify_password is not True:
             flash("Feil passord, Prøv igjen!", 'error')
 
@@ -78,6 +71,7 @@ def login_post():
 
 @usersroute.route("/register")
 def register():
+    """Register method - this render register html page and checks if user is authenticated and if user authenticated then will redirect user to profiler page"""
     if current_user.is_authenticated:
         return redirect(url_for("usersroute.profile"))
     else:
@@ -86,28 +80,17 @@ def register():
 
 @usersroute.route("/register", methods=['POST'])
 def register_post():
-    email = request.form.get("email")
-    first_name = request.form.get("first_name")
-    last_name = request.form.get("last_name")
-    password = request.form.get("password")
-    confirm_password = request.form.get("confirm_password")
-
-    user = session.query(User).filter(User.email == email.lower()).first()
-    session.close()
-    if user:
+    """this is register post method, this deal with data enterd by user and after all details enterd then will redirect user to login page. """
+    if get_user_by_email(request.form.get("email")):
         flash("Email er allerede registrert. Gå til logg inn.", "info")
         return redirect(url_for("usersroute.login"))
 
-    elif password != confirm_password:
+    elif request.form.get("password") != request.form.get("confirm_password"):
         flash("Passordene stemmer ikke overens. Prøv igjen.", "warning")
         return redirect(url_for("usersroute.register"))
 
     else:
-        new_user = User(email=email.lower(), first_name=first_name.lower(),
-                        last_name=last_name.lower(), set_password=password)
-        session.add(new_user)
-        session.commit()
-        session.close()
+        save_user_details(request.form.get("email").lower(), request.form.get("first_name").lower(),request.form.get("last_name").lower(),request.form.get("password"))
         flash("Bruker opprettet!", "success")
 
     return redirect(url_for("usersroute.login"))
@@ -115,86 +98,82 @@ def register_post():
 
 @usersroute.route('/personvern')
 def privacy():
+    """Method renders privacy html page """
     return render_template("/info/privacy.html")
 
 
 @usersroute.route('/logout')
 @login_required
 def logout():
+    """This method log out user and redirect to home page."""
     logout_user()
     return redirect(url_for("usersroute.home"))
 
 
 def delete_user():
-    session.query(User).filter_by(id=current_user.id).delete()
+    """this method deal with delete user profile."""
+    detete_user_by_id(current_user.id)
     session.commit()
     flash("Oisann! Bruker slettet :/", "info")
     return redirect(url_for("usersroute.home"))
 
 
 def update_user():
-    user = session.query(User).filter(User.id == current_user.id).first()
-    check_email = session.query(User).filter(User.email == request.form.get("email")).first()
-    find_id = session.query(User.id).filter(User.email == request.form.get("email")).first()
-    # return true or false
-    final_check_email = check_email.id == find_id.id
-    final_check_2 = current_user.id == find_id.id
-
-    # sjekk email
-
+    """this method deal with user updating their profile details"""
+    """Sjekker om passord stemmer overren"""
     if request.form.get("password") != request.form.get("confirm_password"):
         flash("Passordene stemmer ikke oversens. Prøv igjen!", "warning")
-
-    if check_email and final_check_2 is not True:
+    """sjekker om ny email allerede registert og eies av noen andre"""
+    if get_user_by_email(request.form.get("email")) and bool(current_user.id == get_user_by_email(request.form.get("email")).id) is not True:
         flash("E-postadressen eksisterer allerede.", "warning")
-
+    """Sjekke om email taste av bruker om det samme som eksisterende email da vil den ikke commit til data - sånn slipper man å skrive over til database når det samme email"""
     if current_user.email != request.form.get("email") and request.form.get("password") == request.form.get(
-            "confirm_password") and check_email is None:
-        user.email = request.form.get("email").lower()
+            "confirm_password") and get_user_by_email(request.form.get("email")) is None:
+        get_user_by_id(current_user.id).email = request.form.get(
+            "email").lower()
         session.commit()
-        print("endret email")
         flash("Bruker oppdatert!", "success")
-
+    """Sjekker om første navn samme som første navn i database- vi det ikke samme så skrive inn nye første navn -sånn slipper man å skrive over til database når det samme første navn"""
     if current_user.first_name != request.form.get("first_name") and request.form.get("password") == request.form.get(
-            "confirm_password") and final_check_email is True or check_email is None:
-        user.first_name = request.form.get("first_name").lower()
+            "confirm_password") and bool(current_user.id == get_user_by_email(
+                request.form.get("email")).id) is True or get_user_by_email(request.form.get("email")) is None:
+        get_user_by_id(current_user.id).first_name = request.form.get(
+            "first_name").lower()
         session.commit()
         print("endret first name")
         flash("Bruker oppdatert!", "success")
-
+        """Sjekker om etter navn samme som etter navn i database- vi det ikke samme så skrive inn nye etter navn - sånn slipper man å skrive over til database når det samme etter navn"""
     if current_user.last_name != request.form.get("last_name") and request.form.get("password") == request.form.get(
-            "confirm_password") and final_check_email is True or check_email is None:
-        user.last_name = request.form.get("last_name").lower()
+            "confirm_password") and bool(current_user.id == get_user_by_email(
+                request.form.get("email")).id) is True or get_user_by_email(request.form.get("email")) is None:
+        get_user_by_id(current_user.id).last_name = request.form.get(
+            "last_name").lower()
         session.commit()
         print("endret last name")
         flash("Bruker oppdatert!", "success")
-
-    if user.verify_password(request.form.get("password")) is not True and request.form.get(
-            "password") == request.form.get("confirm_password") and final_check_email is True or check_email is None:
-        user.set_password = request.form.get("password")
+        """Sjekker om passord samme som passord i database- vi det ikke samme så skrive inn nye passord - sånn slipper man å skrive over til database når det samme passord"""
+    if get_user_by_id(current_user.id).verify_password(request.form.get("password")) is not True and request.form.get(
+            "password") == request.form.get("confirm_password") and bool(current_user.id == get_user_by_email(
+                request.form.get("email")).id) is True or get_user_by_email(request.form.get("email")) is None:
+        get_user_by_id(
+            current_user.id).set_password = request.form.get("password")
         session.commit()
-        print("endret passord")
         flash("Bruker oppdatert!", "success")
 
 
 def create_group():
-    name = request.form.get("group-name")
-    group_exist = session.query(Group).filter(Group.name == name).first()
-    if group_exist is not None:
+    """this method deal with create group for a user."""
+    if get_group_with_group_name(request.form.get("group-name")) is not None:
         flash("Gruppenavn er allerede tatt - Vennligst velg et annet navn", "warning")
         return redirect(url_for("usersroute.profile"))
-    elif group_exist is None:
-        group = Group(name=name)
-        session.add(group)
-        session.commit()
-        session.close()
+    if get_group_with_group_name(request.form.get("group-name")) is None:
+        """Hvis Gruppe ikke finnes i database så legges til group table"""
+        save_group_name(request.form.get("group-name"))
 
-        new_group = session.query(Group).filter(Group.name == name).first()
-        role = session.query(Role).filter(Role.id == 1).first()
-        assoc = User_group_role(user_id=current_user.id, group_id=new_group.id, role_id=role.id)
-        session.add(assoc)
-        session.commit()
-        session.close()
+        """Henter admin role og legge til bruker som har oprettet gruppen."""
+        role = "admin"
+        save_role_group(current_user.id, get_group_with_group_name(
+            request.form.get("group-name")).id, get_role_by_name(role).id)
         flash("Gruppe opprettet!", "success")
         return redirect(url_for("usersroute.profile"))
 
@@ -203,9 +182,8 @@ def create_group():
 
 
 def add_profile_img():
-    profile_img = request.files['profile_image'].read()
-    user = session.query(User).get(current_user.id)
-    user.image = profile_img
+    """this method add user profile picture to database."""
+    get_user_by_id(
+        current_user.id).image = request.files['profile_image'].read()
     session.commit()
-    session.close()
     return redirect(url_for("usersroute.home"))
