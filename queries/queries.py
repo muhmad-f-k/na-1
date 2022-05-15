@@ -2,10 +2,22 @@ from sqlalchemy import desc
 
 from db.modul import *
 
+def get_dinner_object_with_dinner_id(dinner_id):
+    return session.query(Dinner).filter(Dinner.id == dinner_id).first()
 
 def get_highest_recipe_version_with_dinner_id(dinner_id):
     get_highest_recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
         desc(Recipe.version)).first()
+    return get_highest_recipe_version
+
+def get_highest_recipe_id_with_dinner_id(dinner_id):
+    get_highest_recipe_version = session.query(Recipe.id).filter(Recipe.dinner_id == dinner_id).order_by(
+        desc(Recipe.version)).first()
+    return get_highest_recipe_version
+
+def get_highest_recipe_versions_with_dinner_id(dinner_id):
+    get_highest_recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
+        desc(Recipe.version)).all()
     return get_highest_recipe_version
 
 
@@ -18,18 +30,19 @@ def add_new_recipe(approach, dinner_id, portions):
 
 
 def get_all_measurements():
-    session.query(Measurement).all()
+    return session.query(Measurement).all()
+
 
 
 def add_new_version_to_recipe(approach, dinner_id):
     highest_recipe_version = get_highest_recipe_version_with_dinner_id(dinner_id)
-    Recipe(approach=approach,
+    add_object = Recipe(approach=approach,
            version=highest_recipe_version.version + 1,
-           dinner_id=dinner_id,
-           portions=highest_recipe_version.portions)
-    session.add(add_new_version_to_recipe)
+            portions=highest_recipe_version.portions,
+           dinner_id=dinner_id
+           )
+    session.add(add_object)
     session.commit()
-    return
 
 
 def add_amount_to_table(amount):
@@ -37,6 +50,20 @@ def add_amount_to_table(amount):
     session.add(add_amount)
     session.commit()
 
+def add_ingredient_to_table(ingredient):
+    add_ingredient = Ingredient(name=ingredient)
+    session.add(add_ingredient)
+    session.commit()
+
+def copy_recipe_ingredient_helper(new_version, original_ingredients, original_amounts, original_measurements):
+    for i in range(0, len(original_ingredients)):
+        helper_object = Recipe_ingredient_helper(
+            measurement_id=original_measurements[i].id,
+            amount_id=original_amounts[i].id,
+            ingredient_id=original_ingredients[i].id,
+            recipe_id=new_version.id)
+        session.add(helper_object)
+        session.commit()
 
 def check_amount_in_table_and_get_object(amount):
     check_amount = session.query(Amount).filter(
@@ -48,44 +75,52 @@ def check_amount_in_table_and_get_object(amount):
         return session.query(Amount).filter(
             Amount.amount == amount).first()
 
+def check_ingredient_in_table_and_get_object(ingredient):
+    check_ingredient = session.query(Ingredient).filter(
+        Ingredient.name == ingredient).first()
+    if check_ingredient:
+        return check_ingredient
+    else:
+        add_ingredient_to_table(ingredient)
+        return session.query(Amount).filter(
+            Amount.amount == amount).first()
+
 def get_ingredient_names_with_recipe_id(recipe_id):
     return session.query(Ingredient.name).join(
         Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe_id).all()
-    session.close()
 
 def get_amount_amounts_with_recipe_id(recipe_id):
     return session.query(Amount.amount).join(
         Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe_id).all()
-    session.close()
 
 def get_measurement_measurements_with_recipe_id(recipe_id):
-    session.query(Measurement.name).join(
+    return session.query(Measurement.name).join(
         Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe_id).all()
-    session.close()
 
-def get_ingredients_with_highest_recipe_version(highest_recipe_version):
+def get_ingredient_ids_with_highest_recipe_version(recipe_id):
     return session.query(Ingredient.id).join(
-        Recipe_ingredient_helper).filter(
-        Recipe_ingredient_helper.recipe_id == highest_recipe_version.id).all()
+        Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).all()
 
 
-def get_amounts_with_highest_recipe_version(highest_recipe_version):
-    return session.query(Amount.id).join(Recipe_ingredient_helper).filter(
-        Recipe_ingredient_helper.recipe_id == highest_recipe_version.id).all()
+def get_amount_ids_with_highest_recipe_version(recipe_id):
+    return session.query(Amount.id).join(
+        Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).all()
 
 
-def get_measurements_with_highest_recipe_version(highest_recipe_version):
+def get_measurement_ids_with_highest_recipe_version(recipe_id):
     return session.query(Measurement.id).join(
-        Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == highest_recipe_version.id).all()
+        Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).all()
 
 
 def get_ingredient_with_name(ingredient):
     return session.query(Ingredient).filter(Ingredient.name == ingredient).first()
 
 
-def get_amount_with_name(ingredient):
-    return session.query(Ingredient).filter(Ingredient.name == ingredient).first()
+def get_amount_with_name(amount):
+    return session.query(Amount).filter(Amount.amount == amount).first()
 
+def get_measurement_with_measurement(measurement):
+    return
 
 def sum_up_amounts_and_get_object(prev_amount, new_amount):
     sum_amount = prev_amount + new_amount
@@ -194,3 +229,6 @@ def undo_shopping_list(group_id, year, week_number):
 
 def get_dinners_by_group(group_id):
     return session.query(Dinner).filter(Dinner.group_id == group_id).all()
+
+def get_dinner_by_dinner_id(dinner_id):
+    return session.query(Dinner).filter(Dinner.id == dinner_id).first()
