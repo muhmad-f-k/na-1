@@ -99,6 +99,10 @@ def privacy():
     """Method renders privacy html page """
     return render_template("/info/privacy.html")
 
+@usersroute.route('/about')
+def about():
+    return render_template("/info/about.html")
+
 
 @usersroute.route('/Vilkår_for_bruk')
 def terms_of_use():

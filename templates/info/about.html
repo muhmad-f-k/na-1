@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block title %} Om MatMons{% endblock %} {% block
+content %}
+<article class="error-grid">
+  <div class="error-area">
+    <div class="error-content">
+      <div class="error-text">
+        <div class="error-paragraph">
+          <h2>MatMons er den beste lokale restaurant!</h2>
+          <div class="flex">
+            <p>Her finner du de mest smakfulle middagene i Norge</p>
+            <a href="{{ url_for('usersroute.home') }}">
+              <button class="home-btn2 black">Hjem</button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+{% endblock %}

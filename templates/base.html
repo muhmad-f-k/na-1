@@ -54,25 +54,25 @@
           class="primary-navigation flex"
         >
           <li class="active">
-            <a href="{{ url_for('calendarroute.show_calendar', group_id = 1) }}">
+            <a
+              href="{{ url_for('calendarroute.show_calendar', group_id = 1) }}"
+            >
               <span><i class="uil uil-restaurant"></i></span>Restaurant
             </a>
           </li>
           {% if current_user.is_authenticated %}
           <li>
-            
             <a href="{{ url_for('usersroute.profile') }}">
               <span><i class="uil uil-user"></i></span>Profil
             </a>
-            </li>
-            <li>
-              <a href="{{ url_for('usersroute.logout') }}">
-                <span><i class="uil uil-user"></i></span>Logg ut
-              </a>
-
-            </li>
-            {% else %}
-            <li>
+          </li>
+          <li>
+            <a href="{{ url_for('usersroute.logout') }}">
+              <span><i class="uil uil-user"></i></span>Logg ut
+            </a>
+          </li>
+          {% else %}
+          <li>
             <a href="{{ url_for('usersroute.login') }}">
               <span><i class="uil uil-user"></i></span>Logg inn
             </a>
@@ -94,7 +94,7 @@
             >
           </li>
           <li>
-            <a href="/templates/info/about.html"
+            <a href="{{ url_for('usersroute.about') }}"
               ><span><i class="uil uil-info-circle"></i></span>Om MatMons</a
             >
           </li>
@@ -109,9 +109,10 @@
               bruk</a
             >
           </li>
-            <li>
+          <li>
             <a href="{{ url_for('usersroute.instructions_for_use') }}"
-              ><span><i class="uil uil-clipboard-notes"></i></span>Bruksanvisning</a
+              ><span><i class="uil uil-clipboard-notes"></i></span
+              >Bruksanvisning</a
             >
           </li>
         </ul>
