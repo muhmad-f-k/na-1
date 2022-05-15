@@ -342,3 +342,10 @@ def copy_recipe_ingredient_helper(new_version, original_ingredients, original_am
             recipe_id=new_version.id)
         session.add(helper_object)
         session.commit()
+def get_dinner_object_with_dinner_id(dinner_id):
+    return session.query(Dinner).filter(Dinner.id == dinner_id).first()
+
+def get_highest_recipe_versions_with_dinner_id(dinner_id):
+    get_highest_recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
+        desc(Recipe.version)).all()
+    return get_highest_recipe_version
