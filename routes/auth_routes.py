@@ -100,6 +100,16 @@ def privacy():
     return render_template("/info/privacy.html")
 
 
+@usersroute.route('/Vilkår_for_bruk')
+def terms_of_use():
+    return render_template("/info/terms_of_use.html")
+
+
+@usersroute.route('/Bruksanvisning')
+def instructions_for_use():
+    return render_template("/info/instructions_for_use.html")
+
+
 @usersroute.route('/logout')
 @login_required
 def logout():

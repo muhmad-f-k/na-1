@@ -16,11 +16,12 @@ def create_recipe(dinner_id):
 
 
 @recipe_route.route('/create_recipe/<dinner_id>', methods=['POST'])
-def createRecipe_post(dinner_id):
+def create_recipe_post(dinner_id):
     approach = str(request.form.get("dinner-approach"))
     portions = int(request.form.get("portions"))
 
     recipe_object = rq.add_new_recipe(approach, dinner_id, portions)
+    print('Recipe id ' + str(recipe_object.id))
     return redirect(url_for("recipe_route.add_ingredients", recipe_id=recipe_object.id, dinner_id=dinner_id))
 
 
@@ -97,27 +98,19 @@ def add_ingredients_post(recipe_id):
 
 @recipe_route.route('/show_changes_recipe/<dinner_id>')
 def show_changes_recipe(dinner_id):
-    dinner = session.query(Dinner).filter(Dinner.id == dinner_id).first()
-    # nåværende
-    recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
-        desc(Recipe.version)).all()
-    current_version_id = recipe_version[0].id
+    dinner = rq.get_dinner_object_with_dinner_id(dinner_id)
+    #                     --nåværende versjon--
 
+    recipe_versions = rq.get_highest_recipe_versions_with_dinner_id(dinner_id)
+    current_version_id = recipe_versions[0].id
+
+    # henter oppskrift, ingredienser, mengder og måleenheter
     recipe = session.query(Recipe).filter(Recipe.id == current_version_id).first()
-    ingredients_recipe = session.query(Ingredient.name).join(
-        Recipe_ingredient_helper).join(Recipe).filter(
-        Recipe.id == current_version_id).all()
-    session.close()
-    amounts_recipe = session.query(Amount.amount).join(
-        Recipe_ingredient_helper).join(Recipe).filter(
-        Recipe.id == current_version_id).all()
-    session.close()
-    measurements_recipe = session.query(Measurement.name).join(
-        Recipe_ingredient_helper).join(Recipe).filter(
-        Recipe.id == current_version_id).all()
-    session.close()
+    ingredients_recipe = rq.get_ingredient_names_with_recipe_id(current_version_id)
+    amounts_recipe = rq.get_amount_amounts_with_recipe_id(current_version_id)
+    measurements_recipe = rq.get_measurement_measurements_with_recipe_id(current_version_id)
 
-    # tidligere
+    #                  --tidligere versjon--
     ingredients_recipe_prev = ""
     amounts_recipe_prev = ""
     measurements_recipe_prev = ""
@@ -125,28 +118,24 @@ def show_changes_recipe(dinner_id):
     len_prev = 0
     ingredient_status = ""
     approach_status = ""
-    if len(recipe_version) < 2:
+    if len(recipe_versions) < 2:
         print('Det finnes kun en versjon av denne')
         approach_status = "Det finnes ingen tidligere versjoner av denne oppskriften"
         ingredient_status = "Det finnes ingen tidligere versjoner av denne oppskriften"
-    elif len(recipe_version) == 2 or len(recipe_version) > 2:
-        previous_version_id = recipe_version[1].id
+    elif len(recipe_versions) == 2 or len(recipe_versions) > 2:
+        previous_version_id = recipe_versions[1].id
         print('det finnes flere versjoner')
         recipe_prev = session.query(Recipe).filter(
             Recipe.id == previous_version_id).first()
-        ingredients_recipe_prev = session.query(Ingredient.name).join(
-            Recipe_ingredient_helper).join(Recipe).filter(
-            Recipe.id == previous_version_id).all()
-        session.close()
-        amounts_recipe_prev = session.query(Amount.amount).join(
-            Recipe_ingredient_helper).join(Recipe).filter(
-            Recipe.id == previous_version_id).all()
-        session.close()
-        measurements_recipe_prev = session.query(Measurement.name).join(
-            Recipe_ingredient_helper).join(Recipe).filter(
-            Recipe.id == previous_version_id).all()
-        session.close()
 
+        # henter oppskrift, ingredienser, mengder og måleenheter
+        ingredients_recipe_prev = rq.get_ingredient_names_with_recipe_id(previous_version_id)
+
+        amounts_recipe_prev = rq.get_amount_amounts_with_recipe_id(previous_version_id)
+
+        measurements_recipe_prev = rq.get_measurement_measurements_with_recipe_id(previous_version_id)
+
+        # fastsetter størrelsen av ingrediens-listen
         len_prev = len(ingredients_recipe_prev)
 
     return render_template("dinners/changed_recipe.html",
@@ -167,35 +156,22 @@ def show_changes_recipe(dinner_id):
 
 @recipe_route.route('/change_Recipe/<dinner_id>/<group_id>')
 def change_recipe(dinner_id, group_id):
-    current_user_role = session.query(User_group_role).filter(
-        User_group_role.user_id == current_user.id,
-        User_group_role.group_id == group_id).first()
+    current_user_role = rq.get_user_group_role(current_user.id, group_id)
 
-    dinner = session.query(Dinner).filter(Dinner.id == dinner_id).first()
+    dinner = rq.session.query(Dinner).filter(Dinner.id == dinner_id).first()
     # nåværende
     recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
         desc(Recipe.version)).all()
     current_version_id = recipe_version[0].id
 
+    # henter oppskrift, ingredienser, mengder og måleenheter
     recipe = session.query(Recipe).filter(Recipe.id == current_version_id).first()
+    ingredients_recipe = rq.get_ingredient_names_with_recipe_id(current_version_id)
+    amounts_recipe = rq.get_amount_amounts_with_recipe_id(current_version_id)
+    measurements_recipe = rq.get_measurement_measurements_with_recipe_id(current_version_id)
+    measurement_recipe_helper = measurements_recipe
 
-    ingredients_recipe = session.query(Ingredient.name).join(
-        Recipe_ingredient_helper).join(Recipe).filter(
-        Recipe.id == current_version_id).all()
-
-    measurement_recipe_helper = session.query(Measurement.name).join(Recipe_ingredient_helper).join(Recipe).filter(
-        Recipe_ingredient_helper.recipe_id == current_version_id
-    ).all()
-
-    amounts_recipe = session.query(Amount.amount).join(
-        Recipe_ingredient_helper).join(Recipe).filter(
-        Recipe.id == current_version_id).all()
-
-    measurements_recipe = session.query(Measurement.name).join(
-        Recipe_ingredient_helper).join(Recipe).filter(
-        Recipe.id == current_version_id).all()
-
-    measurements = session.query(Measurement).all()
+    measurements = rq.get_all_measurements()
 
     return render_template("dinners/change_recipe.html",
                            dinner=dinner,
@@ -219,58 +195,45 @@ def change_recipe_post(dinner_id, group_id):
     if "textareaApproach" in request.form:
         rq.add_new_version_to_recipe(approach, dinner_id)
         new_highest_version = rq.get_highest_recipe_version_with_dinner_id(dinner_id)
-        original_ingredients = rq.get_ingredients_with_highest_recipe_version(highest_recipe_version)
-        original_amounts = rq.get_amounts_with_highest_recipe_version(highest_recipe_version)
-        original_measurements = rq.get_measurements_with_highest_recipe_version(highest_recipe_version)
+        original_ingredients = rq.get_ingredient_ids_with_highest_recipe_version(highest_recipe_version.id)
+        original_amounts = rq.get_amount_ids_with_highest_recipe_version(highest_recipe_version.id)
+        original_measurements = rq.get_measurement_ids_with_highest_recipe_version(highest_recipe_version.id)
 
-        for i in range(0, len(original_ingredients)):
-            helper_object = Recipe_ingredient_helper(
-                measurement_id=original_measurements[i].id,
-                amount_id=original_amounts[i].id,
-                ingredient_id=original_ingredients[i].id,
-                recipe_id=new_highest_version.id)
-            session.add(helper_object)
-            session.commit()
+        rq.copy_recipe_ingredient_helper(new_highest_version, original_ingredients, original_amounts, original_measurements)
 
     if "ingredient" in request.form:
-        get_id_ingredient = rq.get_amount_with_name(request.form.get("ingredient"))
-        get_id_amount = session.query(Amount).filter(Amount.amount == request.form.get("amount")).first()
-        get_new_recipe_version = session.query(Recipe).filter(Recipe.dinner_id == dinner_id).order_by(
-            desc(Recipe.version)).first()
-        if get_id_ingredient is None:
-            add_ingredient = Ingredient(name=request.form.get("ingredient"))
-            session.add(add_ingredient)
-            session.commit()
-        if get_id_amount is None:
-            add_amount = Amount(amount=request.form.get("amount"))
-            session.add(add_amount)
-            session.commit()
+        amount = request.form.get("amount")
+        ingredient = request.form.get("ingredient")
+        measurement = request.form.get("unit")
+
+        # sjekk om ingrediens ligger i tabell, hvis ikke legg til
+        rq.check_ingredient_in_table_and_get_object(ingredient)
+        # sjekk om amount ligger i tabell, hvis ikke legg til
+        rq.check_amount_in_table_and_get_object(amount)
+        # få tak i nyeste versjon
+        get_new_recipe_version = rq.get_highest_recipe_version_with_dinner_id(dinner_id)
         measurement_id = session.query(Measurement.id).filter(Measurement.name == request.form.get("unit")).first()
-        ingredient_id = session.query(Ingredient.id).filter(Ingredient.name == request.form.get("ingredient")).first()
+        ingredient_id = rq.check_ingredient_in_table_and_get_object(ingredient).id
+
         measurement_and_ingredient_check = session.query(Recipe_ingredient_helper).filter(
             Recipe_ingredient_helper.measurement_id == measurement_id.id,
-            Recipe_ingredient_helper.ingredient_id == ingredient_id.id,
+            Recipe_ingredient_helper.ingredient_id == ingredient_id,
             Recipe_ingredient_helper.recipe_id == get_new_recipe_version.id).first()
         if measurement_and_ingredient_check:
             get_old_amount = session.query(Amount).filter(
                 Amount.id == measurement_and_ingredient_check.amount_id).first()
 
-            get_new_amount = int(request.form.get("amount"))
+            check_new_amount = rq.sum_up_amounts_and_get_object(get_old_amount.amount, int(amount))
 
-            sum_amount = get_old_amount.amount + get_new_amount
-            check_new_amount = session.query(Amount).filter(
-                Amount.amount == sum_amount).first()
-            if not check_new_amount:
-                add_amount = Amount(amount=sum_amount)
-                session.add(add_amount)
-                session.commit()
             new_amount_id = session.query(Recipe_ingredient_helper).filter(
                 Recipe_ingredient_helper.recipe_id == get_new_recipe_version.id,
-                Recipe_ingredient_helper.ingredient_id == ingredient_id.id).first()
-            tullekoppen = session.query(Amount).filter(Amount.amount == sum_amount).first()
+                Recipe_ingredient_helper.measurement_id == measurement_id.id,
+                Recipe_ingredient_helper.ingredient_id == ingredient_id).first()
+            tullekoppen = session.query(Amount).filter(Amount.amount == check_new_amount.amount).first()
             new_amount_id.amount_id = tullekoppen.id
             session.add(new_amount_id)
             session.commit()
+
         else:
             ingredient = session.query(Ingredient).filter(Ingredient.name == request.form.get("ingredient")).first()
 
@@ -278,10 +241,7 @@ def change_recipe_post(dinner_id, group_id):
 
             measurement = session.query(Measurement).filter(Measurement.name == request.form.get("unit")).first()
 
-            recipe = session.query(Recipe).filter(
-                Recipe.approach == get_new_recipe_version.approach).first()
-
-            add_ids_to_helper_table = Recipe_ingredient_helper(recipe=recipe, measurement=measurement,
+            add_ids_to_helper_table = Recipe_ingredient_helper(recipe=get_new_recipe_version, measurement=measurement,
                                                                amount=amount,
                                                                ingredient=ingredient)
             session.add(add_ids_to_helper_table)
