@@ -1,6 +1,5 @@
 from base64 import b64encode
 from flask import Blueprint, redirect, render_template, request, url_for, flash
-
 import queries
 from db.modul import *
 from queries import *
