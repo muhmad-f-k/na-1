@@ -87,15 +87,17 @@ def interact_with_calendar(request):
         incoming_week_number = int(converted_date[2])
         queries.delete_meal_with_id(meal_id)
     elif 'set_portion' in request.form:
-        incoming_date = request.form.get("mayGodGuideMeTowardTheLight")
+        incoming_date = request.form.get("list_of_data")
         converted_date = incoming_date.strip('][').split(', ')
         incoming_year = int(converted_date[1])
         incoming_week_number = int(converted_date[2])
         meal_id = int(converted_date[0])
         new_portion = request.form.get("set_portion")
+        if int(new_portion) < 1:
+            new_portion = 1
         queries.portion(meal_id, new_portion)
     elif 'add_portion' in request.form:
-        incoming_date = request.form.get("mayGodGuideMeTowardTheLight")
+        incoming_date = request.form.get("list_of_data")
         converted_date = incoming_date.strip('][').split(', ')
         incoming_year = int(converted_date[1])
         incoming_week_number = int(converted_date[2])
@@ -103,10 +105,12 @@ def interact_with_calendar(request):
         new_portion = request.form.get("add_portion")
         queries.portion(meal_id, new_portion)
     elif 'remove_portion' in request.form:
-        incoming_date = request.form.get("mayGodGuideMeTowardTheLight")
+        incoming_date = request.form.get("list_of_data")
         converted_date = incoming_date.strip('][').split(', ')
         meal_id = int(converted_date[0])
         new_portion = request.form.get("remove_portion")
+        if int(new_portion) < 1:
+            new_portion = 1
         queries.portion(meal_id, new_portion)
 
     elif request.args.get('create_meal_year') and request.args.get('create_meal_week_number'):

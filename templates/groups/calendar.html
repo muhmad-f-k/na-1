@@ -77,19 +77,19 @@
                         <div class="increment-container">
                         <form class="" method="POST">
                       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                        <input type="hidden" name="mayGodGuideMeTowardTheLight" value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}">
+                        <input type="hidden" name="list_of_data" value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}">
                           <button type="submit" name="remove_portion" id="remove_portion" value="{{ subtract_portions(meals[days_to_cal.index(day)][0].portions) }}">
                               <i class="uil uil-minus-circle"></i>
                           </button>
                         </form>
                           <form class="" method="POST">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                            <input type="hidden" name="mayGodGuideMeTowardTheLight" value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}">
+                            <input type="hidden" name="list_of_data" value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}">
                             <input type="number" class="num" name="set_portion" id="set_portion" value={{ meals[days_to_cal.index(day)][0].portions }}>
                         </form>
                         <form class="" method="POST">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                            <input type="hidden" name="mayGodGuideMeTowardTheLight" value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}">
+                            <input type="hidden" name="list_of_data" value="{{ [meals[days_to_cal.index(day)][0].id, year_to_cal, week_number_to_cal] }}">
                           <button type="submit" name="add_portion" id="add_portion" value="{{ add_portions(meals[days_to_cal.index(day)][0].portions) }}">
                               <i class="uil uil-plus-circle"></i>
                           </button>
