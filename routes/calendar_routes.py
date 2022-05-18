@@ -12,7 +12,8 @@ calendarroute = Blueprint('calendarroute', __name__)
 
 @calendarroute.route('/calendar')
 def show_calendar():
-
+    """ Render calendar with dinners belonging to either the restaurant's dinner or the group of your choice,
+     it also allows users to add or remove dinners, and navigate between weeks"""
     def add_portions(portion):
         portion += 1
         return portion
@@ -48,7 +49,8 @@ def show_calendar():
 
 @calendarroute.route('/calendar', methods=['POST'])
 def show_calendar_post():
-
+    """This method is called when the user navigates betwwen calendar's
+    weeks in order to show the correct week and it's dinners"""
     def add_portions(portion):
         portion += 1
         return portion
@@ -85,11 +87,13 @@ def show_calendar_post():
 
 @calendarroute.route('/createMeal')
 def create_meal():
+    """Render page that shows all dinners belonging to current group, and lets user add them to that group's calendar"""
     return render_template('groups/add_dinner_to_calendar.html')
 
 
 @calendarroute.route('/createMeal', methods=['POST'])
 def create_meal_post():
+    """This method receives the chosen dinner and adds it to the current group's calendar"""
     if "choose_dinner" in request.form:
         inc_year, week_number, group_id = calendar_methods.choose_dinner(request)
         group_name = calendar_methods.get_group_name(group_id)
@@ -105,12 +109,14 @@ def create_meal_post():
 
 @calendarroute.route('/createDinner/<group_id>')
 def create_dinner(group_id):
+    """Render the page that allows user to create a dinner for current group"""
     current_user_role = calendar_methods.get_current_user_role(group_id)
     return render_template('dinners/create_dinner.html', current_user_role=current_user_role)
 
 
 @calendarroute.route('/createDinner/<group_id>', methods=['POST'])
 def create_dinner_post(group_id):
+    """This method receives values from the dinner creation page and creates a new dinner"""
     dinner = calendar_methods.create_dinner(current_user, group_id)
     #session.close()
     return redirect(url_for(
@@ -119,6 +125,7 @@ def create_dinner_post(group_id):
 
 @calendarroute.route('/show_group_dinners/<group_id>')
 def show_group_dinners(group_id):
+    """Render page that shows all dinner belonging to that group"""
     dinners = session.query(Dinner).filter(Dinner.group_id == group_id).all()
 
     def decode_image(image):
@@ -131,6 +138,7 @@ def show_group_dinners(group_id):
 
 @calendarroute.route('/show_dinner/<dinner_id>/<group_id>')
 def show_dinner(dinner_id, group_id):
+    """Render page that shows ingredients, recipe, comments and picture belonging to one dinner"""
     dinner, current_user_role, recipe, image, ingredients_recipe, amounts_recipe, measurements_recipe, comments, comments_users, image2, decode_image = calendar_methods.get_detailed_dinner(current_user, dinner_id, group_id)
     return render_template("dinners/dinner.html", dinner=dinner,
                            group_id=group_id,
@@ -150,6 +158,7 @@ def show_dinner(dinner_id, group_id):
 
 @calendarroute.route('/shopping_list/<group_id>', methods=['GET', 'POST'])
 def show_shopping_list(group_id):
+    """Render page that shows the shopping list of ingredients of dinners in a chosen period of time"""
     #Henter dagens dato og henter brukeren og hans rolle i gruppen
     today = date.today()
     current_user_role = queries.get_user_group_role(current_user.id, group_id)
@@ -213,7 +222,7 @@ def show_shopping_list(group_id):
 @calendarroute.route('/show_dinner/<dinner_id>/<group_id>', methods=['POST'])
 @login_required
 def comment_post(dinner_id, group_id):
-    #
+    """This method takes in values from a dinner's info page and creates/edits or deletes a comment"""
     user_id = current_user.id
 
     if "comment" in request.form:
