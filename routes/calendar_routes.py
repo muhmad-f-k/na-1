@@ -12,7 +12,7 @@ calendarroute = Blueprint('calendarroute', __name__)
 
 @calendarroute.route('/calendar')
 def show_calendar():
-    """show"""
+    """show the calendar"""
     def add_portions(portion):
         portion += 1
         return portion
@@ -248,14 +248,14 @@ def comment_post(dinner_id, group_id):
 
         session.flush()
 
-        """update text in comment"""
+        # update the text in comment
 
         newcomment = session.query(Comment).filter(Comment.id == comment_id).first()
 
         newcomment.text = updated_text
         session.commit()
 
-        """delete comment"""
+        #delete selected comment
     if "delBtn" in request.form:
         dinner_id = request.form.get("dinner_id2")
         group_id = request.form.get("group_id2")
