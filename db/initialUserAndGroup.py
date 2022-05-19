@@ -5,9 +5,9 @@ def create_initial_user_and_group():
     if not session.query(User).filter(User.id == 1).first():
         session.close()
         try:
-            firstuser = User(email='mikal95@live.no',
-                             first_name='Mikal',
-                             last_name='Eriksen',
+            firstuser = User(email='admin@live.no',
+                             first_name='Admin',
+                             last_name='MatMons',
                              password_hash=generate_password_hash('123', method="sha256"))
             session.add(firstuser)
             session.commit()

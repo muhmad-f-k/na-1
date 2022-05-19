@@ -12,6 +12,7 @@ calendarroute = Blueprint('calendarroute', __name__)
 
 @calendarroute.route('/calendar')
 def show_calendar():
+    """show"""
     def add_portions(portion):
         portion += 1
         return portion
@@ -48,6 +49,7 @@ def show_calendar():
 
 @calendarroute.route('/calendar', methods=['POST'])
 def show_calendar_post():
+    """performs operations on the calendar based on args from user"""
     def add_portions(portion):
         portion += 1
         return portion
