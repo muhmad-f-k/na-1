@@ -12,7 +12,6 @@ calendarroute = Blueprint('calendarroute', __name__)
 
 @calendarroute.route('/calendar')
 def show_calendar():
-
     def add_portions(portion):
         portion += 1
         return portion
@@ -46,9 +45,9 @@ def show_calendar():
                            group_id=group_id, dinners=dinners, meals=meals, add_portions=add_portions,
                            subtract_portions=subtract_portions)
 
+
 @calendarroute.route('/calendar', methods=['POST'])
 def show_calendar_post():
-
     def add_portions(portion):
         portion += 1
         return portion
@@ -99,7 +98,8 @@ def create_meal_post():
     else:
         inc_year, inc_month, inc_day, conv_dinners, group_id = calendar_methods.add_dinner(request)
         group_name = calendar_methods.get_group_name(group_id)
-        return render_template('groups/add_dinner_to_calendar.html', inc_year=inc_year, inc_month=inc_month, inc_day=inc_day,
+        return render_template('groups/add_dinner_to_calendar.html', inc_year=inc_year, inc_month=inc_month,
+                               inc_day=inc_day,
                                dinners=conv_dinners, group_id=group_id, group_name=group_name)
 
 
@@ -112,7 +112,7 @@ def create_dinner(group_id):
 @calendarroute.route('/createDinner/<group_id>', methods=['POST'])
 def create_dinner_post(group_id):
     dinner = calendar_methods.create_dinner(current_user, group_id)
-    #session.close()
+    # session.close()
     return redirect(url_for(
         "recipe_route.create_recipe", dinner_id=dinner.id))
 
@@ -131,7 +131,8 @@ def show_group_dinners(group_id):
 
 @calendarroute.route('/show_dinner/<dinner_id>/<group_id>')
 def show_dinner(dinner_id, group_id):
-    dinner, current_user_role, recipe, image, ingredients_recipe, amounts_recipe, measurements_recipe, comments, comments_users, image2, decode_image = calendar_methods.get_detailed_dinner(current_user, dinner_id, group_id)
+    dinner, current_user_role, recipe, image, ingredients_recipe, amounts_recipe, measurements_recipe, comments, comments_users, image2, decode_image = calendar_methods.get_detailed_dinner(
+        current_user, dinner_id, group_id)
     return render_template("dinners/dinner.html", dinner=dinner,
                            group_id=group_id,
                            dinner_id=dinner_id,
@@ -150,11 +151,11 @@ def show_dinner(dinner_id, group_id):
 
 @calendarroute.route('/shopping_list/<group_id>', methods=['GET', 'POST'])
 def show_shopping_list(group_id):
-    #Henter dagens dato og henter brukeren og hans rolle i gruppen
+    # Henter dagens dato og henter brukeren og hans rolle i gruppen
     today = date.today()
     current_user_role = queries.get_user_group_role(current_user.id, group_id)
 
-    #Metoder som kjøres i shopping_list.html som legger til og trekker fra dagens dato med 7 dager
+    # Metoder som kjøres i shopping_list.html som legger til og trekker fra dagens dato med 7 dager
     def add_days(date):
         date += timedelta(days=7)
         return date
@@ -163,7 +164,7 @@ def show_shopping_list(group_id):
         date -= timedelta(days=7)
         return date
 
-    #Går til neste eller forrige handleliste
+    # Går til neste eller forrige handleliste
     if "next_week" in request.form:
         incoming_date = request.form.get("next_week")
         new_date = date.fromisoformat(incoming_date)
@@ -172,11 +173,11 @@ def show_shopping_list(group_id):
         incoming_date = request.form.get("prev_week")
         new_date = date.fromisoformat(incoming_date)
 
-    #Når brukeren først trykker inn på handlelisten vil nåværernde ukes handleliste vises
+    # Når brukeren først trykker inn på handlelisten vil nåværernde ukes handleliste vises
     else:
         new_date = today
 
-    #Lager et shopping_list object med prisen brukeren legger inn og lagrer det i databasen
+    # Lager et shopping_list object med prisen brukeren legger inn og lagrer det i databasen
     if "complete" in request.form:
         price = request.form.get("price")
         week_number = request.form.get("week_number")
@@ -187,11 +188,11 @@ def show_shopping_list(group_id):
         session.add(shopping_list)
         session.commit()
 
-    #Sletter handleliste-objektet slik at brukeren kan legge inn ny pris
+    # Sletter handleliste-objektet slik at brukeren kan legge inn ny pris
     if "undo_purchase" in request.form:
         queries.undo_shopping_list(group_id, request.form.get("year"), request.form.get("week_number"))
 
-    #Finner mandag og søndag ved hjelp av dagens dato slik at man kan finne ingredienser til den spesifikke uken
+    # Finner mandag og søndag ved hjelp av dagens dato slik at man kan finne ingredienser til den spesifikke uken
     weekday = new_date.weekday()
     monday = new_date - timedelta(days=weekday)
     sunday = new_date + timedelta(6 - weekday)
@@ -199,10 +200,10 @@ def show_shopping_list(group_id):
     week_number = datetime(new_date.year, new_date.month, new_date.day).isocalendar()[1]
     headings = ("Ingrediens", "mengde", "Enhet")
 
-    #Henter alle ingredienser som trengs for den spesifikke uken
+    # Henter alle ingredienser som trengs for den spesifikke uken
     data = queries.get_shopping_list_data(group_id, monday, sunday)
 
-    #Sjekker om handlelisten for den spesifikke uken er handlet. Returnerer denne null så er ikke ukens handleliste handlet.
+    # Sjekker om handlelisten for den spesifikke uken er handlet. Returnerer denne null så er ikke ukens handleliste handlet.
     shopping_list = queries.get_shopping_list_object(group_id, new_date.year, week_number)
 
     return render_template('groups/shopping_list.html', headings=headings, data=data, group_id=group_id,
@@ -210,10 +211,12 @@ def show_shopping_list(group_id):
                            new_date=new_date, year=new_date.year, shopping_list=shopping_list,
                            current_user_role=current_user_role)
 
+
 @calendarroute.route('/show_dinner/<dinner_id>/<group_id>', methods=['POST'])
 @login_required
 def comment_post(dinner_id, group_id):
-    #
+    """handles comments in dinner page"""
+
     user_id = current_user.id
 
     if "comment" in request.form:
@@ -234,7 +237,6 @@ def comment_post(dinner_id, group_id):
         comment_id = request.form.get("comment_id")
         updated_text = request.form.get("updated_text")
 
-        # Her må tekst fra Rediger kommentar legges inn
         copy_comment_to_edit_comment = session.query(Comment).filter(Comment.id == comment_id).first()
 
         copy_data_to_edit_comment = Edited_comment(comment_id=copy_comment_to_edit_comment.id,
@@ -244,14 +246,14 @@ def comment_post(dinner_id, group_id):
 
         session.flush()
 
-        # update text in comment
+        """update text in comment"""
 
         newcomment = session.query(Comment).filter(Comment.id == comment_id).first()
 
         newcomment.text = updated_text
         session.commit()
 
-        # delete Comment
+        """delete comment"""
     if "delBtn" in request.form:
         dinner_id = request.form.get("dinner_id2")
         group_id = request.form.get("group_id2")
