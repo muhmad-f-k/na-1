@@ -258,18 +258,6 @@ def comment_post(dinner_id, group_id):
         dinner_id = request.form.get("dinner_id2")
         group_id = request.form.get("group_id2")
         comment_id = request.form.get("comment_id")
-        # //////////////////////////////////////////////////////////////////////////
-        # Denne må vi huske på å legge inn når vi har modul med Deleted-comment <3
-        # ///////////////////////////////////////////////////////////////////////////
-
-        # copy_comment_to_deleted_comment = session.query(Comment).filter(Comment.id == comment_id).first()
-        #
-        # copy_data_to_deleted_comment = Deleted_comment(comment_id=copy_comment_to_edit_comment.id,
-        #                                                text=copy_comment_to_edit_comment.text)
-        #
-        # session.add(copy_data_to_edit_comment)
-        #
-        # session.flush()
 
         delete_comment_edit = session.query(Edited_comment).filter(Edited_comment.comment_id == comment_id).all()
 
