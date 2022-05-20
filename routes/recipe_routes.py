@@ -10,7 +10,6 @@ from sqlalchemy import desc
 
 recipe_route = Blueprint('recipe_route', __name__)
 
-
 @recipe_route.route('/create_recipe/<dinner_id>')
 def create_recipe(dinner_id):
     return render_template('dinners/create_recipe.html', dinner_id=dinner_id)
@@ -20,6 +19,7 @@ def create_recipe(dinner_id):
 def create_recipe_post(dinner_id):
     approach = str(request.form.get("dinner-approach"))
     portions = int(request.form.get("portions"))
+    """create a new recipe given approach and portions and dinner"""
     save_recipe = Recipe(approach=approach, portions=portions, dinner_id=dinner_id, version=1)
     session.add(save_recipe)
     session.commit()
@@ -34,6 +34,7 @@ def create_recipe_post(dinner_id):
 def add_ingredients(recipe_id):
     measurements = rq.get_all_measurements()
 
+    """send ingredients with measurements and amounts given newly created recipe_id"""
     ingredients_recipe = rq.get_ingredient_names_with_recipe_id(recipe_id)
     amounts_recipe = rq.get_amount_amounts_with_recipe_id(recipe_id)
     measurements_recipe = rq.get_measurement_measurements_with_recipe_id(recipe_id)
@@ -45,16 +46,20 @@ def add_ingredients(recipe_id):
 @recipe_route.route('/add_ingredients/<recipe_id>', methods=['POST'])
 def add_ingredients_post(recipe_id):
     if "ingredient" in request.form:
+        """get ingredients from the form"""
         ingredient = request.form.get("ingredient")
         amount = request.form.get("amount")
         unit = request.form.get("unit")
 
         recipe = session.query(Recipe).filter(
             Recipe.id == recipe_id).first()
+        """check if ingredient and amount allready in recipe"""
         ingredient_check = session.query(Ingredient).filter(
             Ingredient.name == ingredient).first()
         amount_check = session.query(Amount).filter(
             Amount.amount == amount).first()
+
+        """check which data needs to be added to database"""
         if ingredient_check and amount_check:
             print("det finnes ingrediens, og det finnes amount i generell tabell")
         if ingredient_check and not amount_check:
@@ -75,7 +80,7 @@ def add_ingredients_post(recipe_id):
             new_ingredient = Ingredient(name=ingredient)
             session.add_all([new_ingredient, new_amount])
             session.commit()
-
+        """add ingredient from form to the recipe"""
         ingredients = session.query(Ingredient).filter(
             Ingredient.name == ingredient).first()
         amounts = session.query(Amount).filter(Amount.amount == amount).first()
@@ -84,6 +89,8 @@ def add_ingredients_post(recipe_id):
         final = Recipe_ingredient_helper(ingredient=ingredients, recipe=recipe, amount=amounts, measurement=units)
         session.add(final)
         session.commit()
+
+        """check if del_Ingredient in form, if so delete the clicked element from the list of ingredients"""
     if "delIngredient" in request.form:
         recipe_id = request.form.get("recipe_id")
         print(recipe_id)
@@ -106,6 +113,7 @@ def show_changes_recipe(dinner_id):
     dinner = rq.get_dinner_object_with_dinner_id(dinner_id)
     #                     --nåværende versjon--
 
+    """get current version of recipe and its contents"""
     recipe_versions = rq.get_highest_recipe_versions_with_dinner_id(dinner_id)
     current_version_id = recipe_versions[0].id
 
@@ -115,6 +123,7 @@ def show_changes_recipe(dinner_id):
     amounts_recipe = rq.get_amount_amounts_with_recipe_id(current_version_id)
     measurements_recipe = rq.get_measurement_measurements_with_recipe_id(current_version_id)
 
+    """set standard data to show for previous version of the recipe"""
     #                  --tidligere versjon--
     ingredients_recipe_prev = ""
     amounts_recipe_prev = ""
@@ -123,10 +132,12 @@ def show_changes_recipe(dinner_id):
     len_prev = 0
     ingredient_status = ""
     approach_status = ""
+    """if there is only one recipe version, show that there is only one version of the recipe"""
     if len(recipe_versions) < 2:
         print('Det finnes kun en versjon av denne')
         approach_status = "Det finnes ingen tidligere versjoner av denne oppskriften"
         ingredient_status = "Det finnes ingen tidligere versjoner av denne oppskriften"
+        """if there is a previous version of the recipe, then show the previous version data"""
     elif len(recipe_versions) == 2 or len(recipe_versions) > 2:
         previous_version_id = recipe_versions[1].id
         print('det finnes flere versjoner')
@@ -161,6 +172,7 @@ def show_changes_recipe(dinner_id):
 
 @recipe_route.route('/change_Recipe/<dinner_id>/<group_id>')
 def change_recipe(dinner_id, group_id):
+    """show current recipe, and present opportunity to change via forms"""
     current_user_role = rq.get_user_group_role(current_user.id, group_id)
 
     dinner = rq.session.query(Dinner).filter(Dinner.id == dinner_id).first()
@@ -195,8 +207,10 @@ def change_recipe(dinner_id, group_id):
 
 @recipe_route.route('/change_Recipe/<dinner_id>/<group_id>', methods=['POST'])
 def change_recipe_post(dinner_id, group_id):
+    """change the recipe given data from forms"""
     highest_recipe_version = rq.get_highest_recipe_version_with_dinner_id(dinner_id)
     approach = request.form.get("textareaApproach")
+    """if user updates the approach, create a new version with the approach and copy ingredients"""
     if "textareaApproach" in request.form:
         rq.add_new_version_to_recipe(approach, dinner_id)
         new_highest_version = rq.get_highest_recipe_version_with_dinner_id(dinner_id)
@@ -207,6 +221,7 @@ def change_recipe_post(dinner_id, group_id):
         rq.copy_recipe_ingredient_helper(new_highest_version, original_ingredients, original_amounts, original_measurements)
 
     if "ingredient" in request.form:
+        """if user updates the ingredient, update for newest version"""
         amount = request.form.get("amount")
         ingredient = request.form.get("ingredient")
         measurement = request.form.get("unit")
@@ -224,6 +239,7 @@ def change_recipe_post(dinner_id, group_id):
             Recipe_ingredient_helper.measurement_id == measurement_id.id,
             Recipe_ingredient_helper.ingredient_id == ingredient_id,
             Recipe_ingredient_helper.recipe_id == get_new_recipe_version.id).first()
+        """if measurement and ingredient is in form, sum up the amount and replace"""
         if measurement_and_ingredient_check:
             get_old_amount = session.query(Amount).filter(
                 Amount.id == measurement_and_ingredient_check.amount_id).first()
@@ -238,7 +254,7 @@ def change_recipe_post(dinner_id, group_id):
             new_amount_id.amount_id = tullekoppen.id
             session.add(new_amount_id)
             session.commit()
-
+            """if measurement and ingredient is not allready in newest recipe-version, add it"""
         else:
             ingredient = session.query(Ingredient).filter(Ingredient.name == request.form.get("ingredient")).first()
 
@@ -251,6 +267,7 @@ def change_recipe_post(dinner_id, group_id):
                                                                ingredient=ingredient)
             session.add(add_ids_to_helper_table)
             session.commit()
+            """if user hits delete-button, delete the selected ingredient from the recipe"""
     if "ingredient_name" in request.form:
         recipe_id = session.query(Recipe.id).filter(Recipe.dinner_id == dinner_id).order_by(
             desc(Recipe.version)).first()
@@ -266,7 +283,7 @@ def change_recipe_post(dinner_id, group_id):
             Recipe_ingredient_helper.measurement_id == delete_measurement.id).first()
         session.delete(delete_data)
         session.commit()
-
+        """if user hits videre button, redirect to show_group"""
     if "btnVidere" in request.form:
         session.commit()
         session.close()

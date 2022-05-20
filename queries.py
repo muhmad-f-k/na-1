@@ -1,14 +1,16 @@
 from db.modul import *
 from sqlalchemy import func, cast, Float, desc
 
+
 def save_user_details(email, first_name, last_name, set_password):
     """This method creates a new user"""
     new_user = User(email=email, first_name=first_name,
-                        last_name=last_name, set_password=set_password)
+                    last_name=last_name, set_password=set_password)
     session.add(new_user)
     session.commit()
     session.close()
     return new_user
+
 
 def get_user_by_email(email):
     """This method returns a user with the correct email"""
@@ -224,7 +226,7 @@ def get_meal_joined_with_dinner_without_group_id(i):
 def get_current_user_role_with_group_id(current_user, group_id):
     """This method returns the group role of the current user in a specific group"""
     return session.query(User_group_role).filter(User_group_role.user_id == current_user.id,
-                                                                  User_group_role.group_id == group_id).first()
+                                                 User_group_role.group_id == group_id).first()
 
 
 def create_meal(meal):
@@ -250,8 +252,10 @@ def get_comments_by_dinner_id(dinner_id):
 
 
 def get_ingredients_by_recipe_id(recipe):
+
     """This method returns all ingredients with the correct recipe id"""
     return session.query(Ingredient.name).join(Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe.id).all()
+
 
 
 def get_amounts_by_recipe_id(recipe):
@@ -298,33 +302,38 @@ def delete_comment_by_id(comment_id):
     session.delete(delete_comment)
     session.commit()
 
+
 def add_new_recipe(approach, dinner_id, portions):
     """This method creates a new recipe"""
     recipe_object = Recipe(
         approach=approach, version=1, portions=portions, dinner_id=dinner_id)
     session.add(recipe_object)
     session.commit()
-    return 
+    return
 
 
 def get_all_measurements():
     """This method returns all measurements"""
     return session.query(Measurement).all()
 
+
 def get_ingredient_names_with_recipe_id(recipe_id):
     """This method returns all ingredient's names with the correct recipe id"""
     return session.query(Ingredient.name).join(
         Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe_id).all()
+
 
 def get_amount_amounts_with_recipe_id(recipe_id):
     """This method returns all amount's amounts with the correct recipe id"""
     return session.query(Amount.amount).join(
         Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe_id).all()
 
+
 def get_measurement_measurements_with_recipe_id(recipe_id):
     """This method returns all measurement's measurement with the correct recipe id"""
     return session.query(Measurement.name).join(
         Recipe_ingredient_helper).join(Recipe).filter(Recipe.id == recipe_id).all()
+
 
 def get_highest_recipe_version_with_dinner_id(dinner_id):
     """This method returns the newest recipe with the correct dinner id"""
@@ -332,11 +341,13 @@ def get_highest_recipe_version_with_dinner_id(dinner_id):
         desc(Recipe.version)).first()
     return get_highest_recipe_version
 
+
 def add_ingredient_to_table(ingredient):
     """This method creates a new ingredient"""
     add_ingredient = Ingredient(name=ingredient)
     session.add(add_ingredient)
     session.commit()
+
 
 def check_ingredient_in_table_and_get_object(ingredient):
     """This method checks if an ingredient already exists, if true returns true,
@@ -357,6 +368,7 @@ def sum_up_amounts_and_get_object(prev_amount, new_amount):
     amount_obj = check_amount_in_table_and_get_object(sum_amount)
     return amount_obj
 
+
 def check_amount_in_table_and_get_object(amount):
     """This method checks if an amount already exists, if true returns true,
          if false add it to the database and returns the amount's amount"""
@@ -369,37 +381,43 @@ def check_amount_in_table_and_get_object(amount):
         return session.query(Amount).filter(
             Amount.amount == amount).first()
 
+
 def add_amount_to_table(amount):
     """This method creates a new amount"""
     add_amount = Amount(amount=amount)
     session.add(add_amount)
     session.commit()
 
+
 def add_new_version_to_recipe(approach, dinner_id):
     """this method creates a new recipe and makes it a version of an existing one"""
     highest_recipe_version = get_highest_recipe_version_with_dinner_id(dinner_id)
     add_object = Recipe(approach=approach,
-           version=highest_recipe_version.version + 1,
-            portions=highest_recipe_version.portions,
-           dinner_id=dinner_id
-           )
+                        version=highest_recipe_version.version + 1,
+                        portions=highest_recipe_version.portions,
+                        dinner_id=dinner_id
+                        )
     session.add(add_object)
     session.commit()
+
 
 def get_ingredient_ids_with_highest_recipe_version(recipe_id):
     """this method returns the ingredients of the newest recipe of a dinner"""
     return session.query(Ingredient.id).join(
         Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).all()
 
+
 def get_amount_ids_with_highest_recipe_version(recipe_id):
     """this method returns the amount id's of a dinner's newest recipe"""
     return session.query(Amount.id).join(
         Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).all()
 
+
 def get_measurement_ids_with_highest_recipe_version(recipe_id):
     """this method returns the measurement id's of a dinner's newest recipe"""
     return session.query(Measurement.id).join(
         Recipe_ingredient_helper).filter(Recipe_ingredient_helper.recipe_id == recipe_id).all()
+
 
 def copy_recipe_ingredient_helper(new_version, original_ingredients, original_amounts, original_measurements):
     """this method makes a cope of a recipe ingredient helper"""
@@ -412,9 +430,11 @@ def copy_recipe_ingredient_helper(new_version, original_ingredients, original_am
         session.add(helper_object)
         session.commit()
 
+
 def get_dinner_object_with_dinner_id(dinner_id):
     """this method returns a dinner with the correct id"""
     return session.query(Dinner).filter(Dinner.id == dinner_id).first()
+
 
 def get_highest_recipe_versions_with_dinner_id(dinner_id):
     """this method returns all recipes of a dinner in descending version number order"""
@@ -422,11 +442,13 @@ def get_highest_recipe_versions_with_dinner_id(dinner_id):
         desc(Recipe.version)).all()
     return get_highest_recipe_version
 
+
 #############
 def get_all_group_role_for_user(user_id):
     """this method returns all roles a user has"""
     return session.query(User_group_role).filter(
         User_group_role.user_id == user_id).all()
+
 
 def get_highest_recipe_id_with_dinner_id(dinner_id):
     """this method returns the recipe id of the newest recipe of a dinner"""
@@ -434,11 +456,12 @@ def get_highest_recipe_id_with_dinner_id(dinner_id):
         desc(Recipe.version)).first()
     return get_highest_recipe_version
 
+
 def get_ingredient_with_name(ingredient):
     """this method returns an ingredient with the correct name"""
     return session.query(Ingredient).filter(Ingredient.name == ingredient).first()
 
+
 def get_amount_with_name(amount):
     """this method returns an amount with the correct name"""
     return session.query(Amount).filter(Amount.amount == amount).first()
-

@@ -34,9 +34,19 @@
 
 5. Profile
 
-6. Components
+6. Ingredient
 
-7. Utilities
+7. Components
+
+8. Dinner
+
+9. Calendar
+
+10. Shopping List
+
+11. Homepage
+
+12. Utilities
 
 */
 
@@ -523,7 +533,7 @@ span input[type="checkbox"] {
     width: 25rem;
     text-align: center;
   }
-}
+
 
   .approach-container h1 {
     font-size: 1.2em;
@@ -531,8 +541,6 @@ span input[type="checkbox"] {
 
   .control textarea {
     resize: none;
-  }
-  #dinner-approach {
   }
 }
 
@@ -1739,7 +1747,7 @@ span input[type="checkbox"] {
 
 
   /* ==============
-    8. Kalender
+    9. Calendar
     ===============*/
 
     .calendar-main {
@@ -2001,7 +2009,7 @@ span input[type="checkbox"] {
 
 
    /* ================
-   8. Handleliste
+   10. Shopping List
    ================*/
 
    .shopping-container {
@@ -2087,7 +2095,7 @@ span input[type="checkbox"] {
 
 
 /* ================
-   9. Components
+   11. Components
    ================*/
 
    .plus, .minus {
@@ -2171,7 +2179,7 @@ input::-webkit-inner-spin-button {
   }
 
   /* ================
-   9. Homepage
+   11. Homepage
    ================*/
 
    .home-grid {
@@ -2307,10 +2315,10 @@ input::-webkit-inner-spin-button {
 
 
 /* ================
-   9. Utilities
+   12. Utilities
    ================*/
 
-/* 9.1 flash messages */
+/* 12.1 flash messages */
 
 .alert {
   padding: 1rem 2rem;
@@ -2393,7 +2401,7 @@ input::-webkit-inner-spin-button {
   opacity: 1;
 }
 
-/* 7.2 header & footer support */
+/* 12.2 header & footer support */
 
 @supports (backdrop-filter: blur(1rem)) {
   .primary-navigation {
@@ -2402,7 +2410,7 @@ input::-webkit-inner-spin-button {
   }
 }
 
-/* 7.3 general */
+/* 12.3 general */
 
 img,
 picture {
@@ -2420,7 +2428,7 @@ picture {
   place-items: center;
 }
 
-/* 7.4 content div */
+/* 12.4 content div */
 
 #content {
   position: relative;
@@ -2428,24 +2436,12 @@ picture {
 }
 
 
-/* 7.5 background images */
-
-.login-bg {
-  background-image: url(/static/img/cool-background.svg);
-  filter: saturate(100%);
-}
+/* 12.5 background images */
 
 .general-bg {
   background-image: url(/static/img/testbg.jpg);
 }
 
-.bgimg {
-  z-index: -1;
-  position: relative;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-image: url("/static/img/home2.jpg");
-}
 
 .error-grid {
   display: grid;
