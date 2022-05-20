@@ -11,6 +11,7 @@ import queries
 
 
 def day_strings():
+    """This method returns the norwegian translation of all weekdays"""
     days_of_week = {"Monday": "Mandag",
                     "Tuesday": "Tirsdag",
                     "Wednesday": "Onsdag",
@@ -22,6 +23,7 @@ def day_strings():
 
 
 def month_strings():
+    """This method returns the norwegian translation of all months of the year"""
     months_of_year = {"January": "Januar",
                       "February": "Februar",
                       "March": "Mars",
@@ -38,16 +40,19 @@ def month_strings():
 
 
 def get_group(group_name):
+    """This method returns the group with the correct name"""
     group = queries.get_group_with_group_name(group_name)
     return group
 
 
 def get_group_name(group_id):
+    """This method returns the group's name with the correct id"""
     group_name = queries.get_group_with_group_id(group_id).name
     return group_name
 
 
 def get_year_and_week_number(incoming_date):
+    """This method returns the year and week number from the provided date"""
     if type(incoming_date) is str:
         tmp = incoming_date.strip('][').split(', ')
         incoming_date = tmp
@@ -57,6 +62,7 @@ def get_year_and_week_number(incoming_date):
 
 
 def delete_meal(incoming_date):
+    """This method deletes the meal connecting a dinner to a date, using the provided date"""
     converted_date = incoming_date.strip('][').split(', ')
     meal_id = int(converted_date[0])
     incoming_year = int(converted_date[1])
@@ -66,6 +72,9 @@ def delete_meal(incoming_date):
 
 
 def interact_with_calendar(request):
+    """This method decides what happens when the user uses the calendar, either navigate to next/previous week,
+    create/delete meal or add/remove portions from dinners.
+    It also only allows user to navigate 2000 years back in time"""
     incoming_week_number = None
     incoming_year = None
 
@@ -147,6 +156,7 @@ def interact_with_calendar(request):
 
 
 def get_days_and_week_and_year(incoming_week_number, incoming_year):
+    """This method returns all day dates of a week with the provided week number and year"""
     current_date = datetime.date.today()
     days = ['1', '2', '3', '4', '5', '6', '0']
 
@@ -173,6 +183,8 @@ def get_days_and_week_and_year(incoming_week_number, incoming_year):
 
 
 def get_meals(days_to_cal, group_id):
+    """This method returns all dinners for a week belonging to a specific group,
+    using the provided dates and group id"""
     meals = []
     for i in days_to_cal:
         if group_id:
@@ -183,6 +195,7 @@ def get_meals(days_to_cal, group_id):
 
 
 def get_dinners(meals):
+    """This method returns all dinners belonging to the provided meals"""
     dinners = []
     for n in meals:
         if n:
@@ -197,18 +210,22 @@ def get_dinners(meals):
 
 
 def get_user_role(group_id):
+    """This method returns the user's role within the provided group"""
     user_group_role = queries.get_user_group_role(current_user.id, group_id)
     session.close()
     return user_group_role
 
 
 def get_current_user_role(group_id):
+    """This method returns the current user's role within the provided group"""
     current_user_role = queries.get_current_user_role_with_group_id(current_user, group_id)
     session.close()
     return current_user_role
 
 
 def choose_dinner(request):
+    """This method creates a new meal and assigns a dinner to it,
+     and returns the year, week number and group id of that meal"""
     dinner_id = request.form.get('choose_dinner')
 
     converted_date = dinner_id.strip('][').split(', ')
@@ -230,6 +247,8 @@ def choose_dinner(request):
 
 
 def add_dinner(request):
+    """This method returns all dinners belogning to current group so user can select on for a meal,
+    including the year, month, day and group id for that meal"""
     incoming_date = request.form.get("add_dinner")
     converted_date = incoming_date.strip('][').split(', ')
     inc_year = int(converted_date[0])
@@ -250,6 +269,7 @@ def add_dinner(request):
 
 
 def create_dinner(current_user, group_id):
+    """This method creates and returns a dinner"""
     dinner_title = request.form.get('dinner-name')
     user_id = current_user.id
     dinner_image = request.files['dinner_image'].read()
@@ -262,6 +282,8 @@ def create_dinner(current_user, group_id):
 
 
 def get_detailed_dinner(current_user, dinner_id, group_id):
+    """This method returns all information about a dinner,
+    including the current user's role, which decides if hte user is allowed to change the dinner"""
     if current_user.is_authenticated:
         current_user_role = queries.get_current_user_role_with_group_id(current_user, group_id)
     else:
@@ -313,6 +335,7 @@ def get_detailed_dinner(current_user, dinner_id, group_id):
 
 
 def get_shopping_list(group_id):
+    """This method returns the shopping list for a specified period"""
     today = date.today()
     current_user_role = queries.get_user_group_role(current_user.id, group_id)
 
@@ -362,6 +385,7 @@ def get_shopping_list(group_id):
 
 
 def comment_post(request, dinner_id, group_id):
+    """This method takes in values from a dinner's info page and creates/edits or deletes a comment"""
     user_id = current_user.id
 
     if "comment" in request.form:
