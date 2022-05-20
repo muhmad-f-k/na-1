@@ -334,56 +334,6 @@ def get_detailed_dinner(current_user, dinner_id, group_id):
     return dinner, current_user_role, recipe, image, ingredients_recipe, amounts_recipe, measurements_recipe, comments, comments_users, image2, decode_image
 
 
-def get_shopping_list(group_id):
-    """This method returns the shopping list for a specified period"""
-    today = date.today()
-    current_user_role = queries.get_user_group_role(current_user.id, group_id)
-
-    def add_days(date):
-        date += timedelta(days=7)
-        return date
-
-    def subtract_days(date):
-        date -= timedelta(days=7)
-        return date
-
-    if "next_week" in request.form:
-        incoming_date = request.form.get("next_week")
-        new_date = date.fromisoformat(incoming_date)
-
-    elif "prev_week" in request.form:
-        incoming_date = request.form.get("prev_week")
-        new_date = date.fromisoformat(incoming_date)
-
-    else:
-        new_date = today
-
-    if "complete" in request.form:
-        price = request.form.get("price")
-        week_number = request.form.get("week_number")
-        year = request.form.get("year")
-        incoming_date = request.form.get("shopping_list_date")
-        new_date = date.fromisoformat(incoming_date)
-        shopping_list = Shopping_list(date=new_date, price=price, week_number=week_number, year=year, group_id=group_id)
-        queries.create_shopping_list(shopping_list)
-
-    if "undo_purchase" in request.form:
-        queries.undo_shopping_list(group_id, request.form.get("year"), request.form.get("week_number"))
-
-    weekday = new_date.weekday()
-    monday = new_date - timedelta(days=weekday)
-    sunday = new_date + timedelta(6 - weekday)
-
-    week_number = datetime(new_date.year, new_date.month, new_date.day).isocalendar()[1]
-    headings = ("Ingrediens", "mengde", "Enhet")
-
-    data = queries.get_shopping_list_data(group_id, monday, sunday)
-
-    shopping_list = queries.get_shopping_list_object(group_id, new_date.year, week_number)
-
-    return headings, data, week_number, add_days, subtract_days, new_date
-
-
 def comment_post(request, dinner_id, group_id):
     """This method takes in values from a dinner's info page and creates/edits or deletes a comment"""
     user_id = current_user.id
