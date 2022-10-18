@@ -1,1 +1,1 @@
-#NA1
+Skoleprosjekt - Lage fullfungerende restaurant.
